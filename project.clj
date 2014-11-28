@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.5.1"]]
+  :dependencies [[org.clojure/clojure "1.6.0"]]
 
   :plugins [[com.keminglabs/cljx "0.4.0"]
             [lein-cljsbuild "1.0.3"]
@@ -21,7 +21,7 @@
 
   :cljsbuild {:builds [{
                         :source-paths ["target/classes" "src-cljs" ]
-                        :compiler { 
+                        :compiler {
                                    :output-to "browser-based/js/main.js"
                                    :optimizations :whitespace
                                    :pretty-print true }
@@ -29,7 +29,6 @@
 
   :hooks [cljx.hooks leiningen.cljsbuild]
 
-  
+
   :aot [patterning.core]
   :main patterning.core)
-   
