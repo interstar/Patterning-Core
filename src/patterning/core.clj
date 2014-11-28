@@ -20,6 +20,7 @@
 
   (:require [patterning.examples.interactive :as interactive])
   (:require [patterning.examples.testing :as testing])
+  (:require [patterning.api :refer :all])
 
 
 )
@@ -62,6 +63,7 @@
                                                 (p-color 100 255 200 100 )
                                                 (p-color 150 100 255 100)]))
                               (map a-round [3 4 5 6 7])))) ))
+
 
 
 
