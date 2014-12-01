@@ -1,6 +1,6 @@
 (ns patterning.sshapes
   (:require [patterning.maths :as maths])
-  (#+clj :require #+cljs :require-macros 
+  (#+clj :require #+cljs :require-macros
          [patterning.macros :refer [optional-styled-primitive]])
  )
 
@@ -44,7 +44,7 @@
         o4 (maths/distance e2 e4)
         dists [ o1 o2 o3 o4 ]
         m (apply min dists)]
-    (cond 
+    (cond
       (= m o1) (concat (reverse shape1) shape2)
       (= m o2) (concat (reverse shape1) (reverse shape2))
       (= m o3) (concat shape1 shape2)
@@ -61,9 +61,13 @@
   [shape1 shape2] (cond (and (empty? shape1) (empty? shape2)) true
                         (not= (count shape1) (count shape2)) false
                         :else
-                      (and 
+                      (and
                        (maths/molp= (first shape1) (first shape2))
                        (mol=shapes (rest shape1) (rest shape2)))  ))
+
+;; Styles (dictionaries of style info)
+(defn add-property [style prop val] (conj style {prop val} ))
+
 
 ;; SShape (styled shape)
 ;; SShape, is a shape with a style attached ({:points points :style style}
