@@ -1,5 +1,5 @@
 (ns patterning.examples.testing
-  (:require [patterning.maths :as maths] 
+  (:require [patterning.maths :as maths]
             [patterning.sshapes :refer [->SShape]]
             [patterning.groups :refer [group clip rotate scale translate h-reflect reframe over-style empty-group]]
             [patterning.layouts :refer [clock-rotate stack flower-of-life-positions nested-stack diamond-layout
@@ -17,7 +17,7 @@
 
             )  )
 
-;; This file for testing new patterns 
+;; This file for testing new patterns
 
 (defn framed_fol [frame-size rotated] (stack tutorial/m2 (scale 0.7 (symbols/folexample)) )
   (framed frame-size (repeat (clock-rotate rotated tutorial/dline))
@@ -26,7 +26,7 @@
 
 
 (def l-sys  (l-system [["F" "F[+F]F[-F][GF]"] ["G" "H"] ["H" "IZ"] ]))
-        
+
 (defn draw-it [da]
   (basic-turtle [0 0] 0.1 (/ maths/PI -2) (/ maths/PI da) (l-sys 4 "F")
                 {\Z (fn [x y a] (let []  (poly x y 0.05 8 {:fill design-language/my-red})))}
@@ -51,7 +51,7 @@
 (def flower (over-style {:stroke (p-color 240 200 180)
                          :fill (p-color 200 150 100)} design-language/flower ))
 
- 
+
 (defn test1 [frame-size grid-size shrink ]
   (framed frame-size (repeat flower) (repeat (diamonds shrink))
           (grid-layout grid-size (cycle [flower (diamonds shrink)]))))
@@ -68,7 +68,7 @@
 
 (def test3 (stack tutorial/m2
                   (clock-rotate 6  (poly 0.3 0.3 0.4 5 {:fill (p-color 120 90 160 100) }))
-                  (clock-rotate 6 
+                  (clock-rotate 6
                                 (drunk-line 10 0.1 {:stroke (p-color 200 200 100) :stroke-weight 4}))))
 
 (def previous (rotate (/ maths/PI 2)
@@ -90,7 +90,7 @@
                   previous))
 
 (def embroider1 (stack (clock-rotate 6 (translate 0.63 0 (scale 0.2 tutorial/dl-clock)))
-                       (let [c (fn [col] {:stroke col})] 
+                       (let [c (fn [col] {:stroke col})]
                          (nested-stack (map c [design-language/my-purple
                                                design-language/my-blue
                                                design-language/my-orange
@@ -101,10 +101,10 @@
 (def hex (poly 0.15 0.6 0.3 6 {:stroke design-language/my-purple} ))
 (def hex-round (clock-rotate 6 hex))
 
-(def embroider2 (let [c (fn [col] {:stroke col :stroke-weight 2})] 
+(def embroider2 (let [c (fn [col] {:stroke col :stroke-weight 2})]
                          (nested-stack (map c [design-language/my-blue
                                                design-language/my-pink
-                                               design-language/my-green])                                     
+                                               design-language/my-green])
                                        hex-round (fn [x] (- x 0.25)) )) )
 
 (def embroider3
@@ -127,10 +127,10 @@
 (defn purpoly [n] (clock-rotate n (poly 0.15 0.6 0.3 n {:stroke design-language/my-purple} )))
 
 
-(defn nested [n] (let [c (fn [col] {:stroke col :stroke-weight 2})] 
+(defn nested [n] (let [c (fn [col] {:stroke col :stroke-weight 2 :fill (p-color 255 255 240)})]
                          (nested-stack (map c [design-language/my-blue
                                                design-language/my-pink
-                                               design-language/my-green])                                     
+                                               design-language/my-green])
                                        (purpoly n) (fn [x] (- x 0.25)) )) )
 
 
