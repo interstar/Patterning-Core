@@ -1,8 +1,8 @@
 (ns patterning.groups
-  (:require [patterning.maths :as maths] 
+  (:require [patterning.maths :as maths]
             [patterning.sshapes :as sshapes]
             [clojure.set :refer [union]]))
- 
+
 
 ;; Groups
 ;; A Group is a vector of sshapes. All patterns are basically groups.
@@ -10,14 +10,14 @@
 ;; (because they have disjoint geometric forms, or multiple colors
 ;; etc.
 ;; Groups are also the flattened results of combining multiple groups
-;; together, eg. when running them through a layout. 
+;; together, eg. when running them through a layout.
 
 
 ;;; Making groups
 (defn group "a vector of sshapes" [& sshapes] (into [] sshapes) )
 
 
-(defn empty-group [] [(sshapes/empty-sshape)])
+(defn empty-group [] [])
 
 
 ;;; Simple transforms
@@ -25,7 +25,7 @@
 
 (defn translate  [dx dy group] (into [] (map (partial sshapes/translate dx dy) group))  )
 
-(defn translate-to [x y group] (translate (- x) (- y) group) )  
+(defn translate-to [x y group] (translate (- x) (- y) group) )
 
 (defn h-reflect [group] (into [] (map sshapes/h-reflect group) ) )
 (defn v-reflect [group] (into [] (map sshapes/v-reflect group) ) )
@@ -42,7 +42,7 @@
 
 (defn style-attribute-set [group attribute]
   (reduce (fn [atts sshape]
-            (let [style (get sshape :style) ] 
+            (let [style (get sshape :style) ]
               (if (contains? style attribute)
                 (conj atts (get style :stroke) )
                 atts)) )
@@ -83,11 +83,11 @@
     (if (empty? points) {:style style :points points}
         (loop [p (first points) ps (rest points) acc-sshape-ps [] acc-group []]
           (cond
-           (and (empty? ps) (not (p? p))) (conj acc-group {:style style :points acc-sshape-ps})           
+           (and (empty? ps) (not (p? p))) (conj acc-group {:style style :points acc-sshape-ps})
            (empty? ps) (conj acc-group {:style style :points (conj acc-sshape-ps p)})
            (p? p) (recur (first ps) (rest ps) (conj acc-sshape-ps p) acc-group)
            :else (recur (first ps) (rest ps) [] (conj acc-group {:style style :points acc-sshape-ps}))
-           )          
+           )
           )
         )
     ))
@@ -98,6 +98,6 @@
 
 (defn mol= "more or less equal groups"
   [group1 group2]
-  (if (not= (count group1) (count group2)) false 
-      (let [ssmol= (fn [[ss1 ss2]] (sshapes/mol= ss1 ss2))]    
+  (if (not= (count group1) (count group2)) false
+      (let [ssmol= (fn [[ss1 ss2]] (sshapes/mol= ss1 ss2))]
         (every? ssmol= (map vector group1 group2) )))  )
