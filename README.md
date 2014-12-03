@@ -8,6 +8,12 @@ A Clojure library for generating patterns, both at the small scale and the "layo
 
 *Now **eventually** this repository **will** be the official Patterning Core. And new development on the core is now taking place here.*
 
+A compiled version of this library is now available on Clojars. Include in your Lein project using
+
+    [com.alchemyislands/patterning "0.3.0-SNAPSHOT"]]
+    
+as in [the project file of Patterning_Quil](https://github.com/interstar/Patterning-Quil)
+
 ## What Patterning looks like 
 
 ![Patterning Image](http://alchemyislands.com/blog/wp-content/uploads/2014/09/fp6.png)
