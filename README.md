@@ -6,7 +6,7 @@ A Clojure library for generating patterns, both at the small scale and the "layo
 
 *This refactoring is work in progress and right now, you'd be better off looking at [the old repository](https://github.com/interstar/patterning) unless you know you are meant to be here. That one actually **does** something.* 
 
-* **Eventually** this repository **will** be the official Patterning Core. And new development on the core is now taking place here.*
+*Now **eventually** this repository **will** be the official Patterning Core. And new development on the core is now taking place here.*
 
 ## What Patterning looks like 
 
@@ -58,5 +58,5 @@ See [Alchemy Islands](http://alchemyislands.com) for more examples and discussio
 
 Copyright © 2014 Phil Jones
 
-Distributed under the [Gnu Affero General Public License](http://www.gnu.org/licenses/agpl.html) 
+Distributed under the [Gnu Lesser General Public License](https://www.gnu.org/licenses/lgpl.html) 
 either version 3.0 or (at your option) any later version.
