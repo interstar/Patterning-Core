@@ -12,6 +12,8 @@ A Clojure library for generating patterns, both at the small scale and the "layo
 
 ![Patterning Image](http://alchemyislands.com/blog/wp-content/uploads/2014/09/fp6.png)
 
+See how we made this in the [Functional Patterning Tutorial](http://alchemyislands.com/tutorial/fp.html).
+
 # DEPRECATED READ ME 
 If you are interested in using this project, please see [the current Patterning repository](https://github.com/interstar/patterning).
 
