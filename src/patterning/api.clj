@@ -45,15 +45,18 @@
              #^{:static true} [superimpose [clojure.lang.IPersistentVector clojure.lang.IPersistentVector]
                                clojure.lang.IPersistentVector ]
              #^{:static true} [grid [int clojure.lang.IPersistentVector] clojure.lang.IPersistentVector]
+             #^{:static true} [gridList [int "[Lclojure.lang.IPersistentVector;"] clojure.lang.IPersistentVector]
+
              #^{:static true} [fourRound [clojure.lang.IPersistentVector] clojure.lang.IPersistentVector]
              #^{:static true} [fourMirror [clojure.lang.IPersistentVector] clojure.lang.IPersistentVector]
-             #^{:static true} [clock [clojure.lang.IPersistentVector] clojure.lang.IPersistentVector]
+             #^{:static true} [clock [int clojure.lang.IPersistentVector] clojure.lang.IPersistentVector]
 
              #^{:static true} [makeLSystem [ "[[Ljava.lang.String;" ] clojure.lang.IFn]
              #^{:static true} [runLSystem [clojure.lang.IFn int String] String]
 
              #^{:static true} [makeSVG ["[Ljava.lang.Float;" float float clojure.lang.IPersistentVector] String]
              #^{:static true} [spit [String String] Object ]
+             #^{:static true} [makeShapePattern [clojure.lang.IPersistentMap "[[Ljava.lang.Float;" ] clojure.lang.IPersistentVector]
              ] )
   )
 
@@ -76,6 +79,7 @@
 (defn -emptyGroup [] (groups/empty-group))
 
 ; Shape making
+(defn -makeShapePattern [style points] [(->SShape style points)])
 (defn -poly [cx cy radius no-sides style] (poly cx cy radius no-sides style))
 (defn -basicTurtle [startX startY d a da script leafMap style] (basic-turtle [startX startY] d a da script leafMap style))
 (defn -test1 [n] (testing/nested n))
@@ -84,6 +88,8 @@
 (defn -superimpose [p1 p2] (superimpose-layout p1 p2))
 
 (defn -grid [size p] (into [] (grid-layout size (repeat p))))
+(defn -gridList [size p] (into [] (grid-layout size (cycle p)) ))
+
 (defn -fourRound [p] (into [] (four-round p)))
 (defn -fourMirror [p] (into [] (four-mirror p)))
 (defn -clock [n p] (into [] (clock-rotate n p)))
