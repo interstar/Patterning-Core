@@ -1,6 +1,19 @@
 # Patterning
 
-A Clojure / Quil system for generating patterns, both at the small scale and the "layout" of smaller units. Units can be recursively nested.
+A Clojure library for generating patterns, both at the small scale and the "layout" of smaller units. Units can be recursively nested.
+
+*Please note that Patterning is in the process of being broken into several separate projects. This repository, Patterning Core, contains code to generate patterns, but is no longer referencing or dependent on Quil / Processing. The generated patterns are merely data-structures, although this library contains a function to render as simple SVG.*
+
+*This refactoring is work in progress and right now, you'd be better off looking at [the old repository](https://github.com/interstar/patterning) unless you know you are meant to be here. That one actually **does** something.* 
+
+* **Eventually** this repository **will** be the official Patterning Core. And new development on the core is now taking place here.*
+
+## What Patterning looks like 
+
+![Patterning Image](http://alchemyislands.com/blog/wp-content/uploads/2014/09/fp6.png)
+
+# DEPRECATED READ ME 
+If you are interested in using this project, please see [the current Patterning repository](https://github.com/interstar/patterning).
 
 ## Quick Start
 Make sure you have [Clojure](http://clojure.org/), [Leiningen](http://leiningen.org/) and [Quil](https://github.com/quil/) installed.
