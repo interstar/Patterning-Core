@@ -63,6 +63,8 @@
   (let [wob (fn [n qn] (+ n (- (rand qn) (/ qn 2))))]
      [(wob x qx) (wob y qy)]  ) )
 
+(defn point-in-list [p ps] (reduce (fn [a b] (or a b)) (map (fn [x] (molp= x p) ) ps)  ))
+
 
 ;; Triangle geometry
 (defn triangle [ax ay bx by cx cy]

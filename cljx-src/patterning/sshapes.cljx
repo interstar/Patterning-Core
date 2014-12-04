@@ -126,6 +126,23 @@
 (defn triangles-in-sshape [{:keys [style points]}] (triangles-list points))
 
 (defn is-ear [{:keys [style points]} t]
-  (let [other (get (diff points t) 0)]
-    (not-any? (partial maths/contains-point t) other)
-    )  )
+  (let [tpts (maths/triangle-points t)
+        not-in-tri? (fn [p] (not  (maths/point-in-list p tpts)))
+        other (filter not-in-tri? points)
+        ]
+    (not-any? (partial maths/contains-point t) other)    )  )
+
+(defn to-triangles [{:keys [style points] :as original-shape}]
+  (loop [shape original-shape saved-ears []]
+    (let [pts (:points shape)
+          count-pts (count pts)
+          tl (take count-pts (triangles-list pts))
+          ears (filter (partial is-ear shape) tl)
+          no-ears (count ears)   ]
+      (if (< no-ears 1) saved-ears
+          (let [ear (first ears)
+                new-list (remove (fn [p] (maths/molp= p (:B ear))) (:points shape))  ]
+            (if (< (count new-list) 3)
+              saved-ears
+              (recur (->SShape style new-list) (conj saved-ears ear)))))
+      )))

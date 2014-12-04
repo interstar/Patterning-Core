@@ -70,12 +70,18 @@
       (is (= (nth tls 1)
              (maths/triangle 0 1 1 1 1 0)))
       )
-    (testing "other points from shape are in this triangle"
+    (testing "generating list of 'ears' (triangles without other points inside"
       (let [t (first tls) t2 (first tls2)]
         (is (= true (sshapes/is-ear s1 t)))
+        (is (= [[0 0] [0 1] [1 1]]
+               (maths/triangle-points (first tls2) )))
         (is (= false (sshapes/is-ear s2 t2) ))))
 
-    (testing "generating list of 'ears' (triangles without other points inside"
-
-      )
-    ))
+    (testing "trianglization"
+      (let [out1 [(maths/triangle-points (maths/triangle 0 0 0 1 1 1))
+                  (maths/triangle-points (maths/triangle 0 1 1 1 1 0))]]
+        (is (= (first out1)
+               (maths/triangle-points (first (sshapes/to-triangles s1)))))
+        (is (= (get out1 1)
+               (maths/triangle-points (get (sshapes/to-triangles s1) 1 ))))
+        ) )    ))
