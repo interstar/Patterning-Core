@@ -37,7 +37,7 @@
     ))
 
 (deftest flatten-point-list
-  (let [ss (sshapes/->SShape {} [[0 0] [1 1] [2 2]])  ] 
+  (let [ss (sshapes/->SShape {} [[0 0] [1 1] [2 2]])  ]
     (testing "flatten-point-list"
       (is (= (sshapes/flat-point-list ss)
              (list 0 0 1 1 2 2))))))
@@ -51,11 +51,31 @@
     (is (maths/p-eq (maths/unit [10 0]) [1 0] ))
     ))
 
+(deftest as-triangles
+  (let [s1 (sshapes/->SShape {} [[0 0] [0 1] [1 1] [1 0]])
+        tl (sshapes/triple-list (:points s1))
+        tls (sshapes/triangles-in-sshape s1)
+        s2 (sshapes/->SShape {} [[0 0] [0 1] [1 1] [0.5 0.8]])
+        tls2 (sshapes/triangles-list (:points s2))
+        ;ears (sshapes/ears s1)
+       ]
+    (testing "generating a list of three point triples from a shape"
+      (is (= (nth tl 0)
+             [[0 0] [0 1] [1 1]]))
+      (is (= (nth tl 1)
+             [[0 1] [1 1] [1 0]]))
+      (is (= (nth tl 2)
+             [[1 1] [1 0] [0 0]] )))
+    (testing "generating a list of triangles from a sshape"
+      (is (= (nth tls 1)
+             (maths/triangle 0 1 1 1 1 0)))
+      )
+    (testing "other points from shape are in this triangle"
+      (let [t (first tls) t2 (first tls2)]
+        (is (= true (sshapes/is-ear s1 t)))
+        (is (= false (sshapes/is-ear s2 t2) ))))
 
+    (testing "generating list of 'ears' (triangles without other points inside"
 
-
-
-
-
-
-
+      )
+    ))

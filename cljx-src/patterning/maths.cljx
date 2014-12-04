@@ -8,7 +8,7 @@
 (def q-PI (float (/ PI 4)))
 
 (defn sqrt [x] #+clj (Math/sqrt x) #+cljs (js/Math.sqrt x) )
-(defn abs [x] (Math/abs x))
+(defn abs [n] (max n (- n)))
 (defn atan2 [x y] (Math/atan2 x y))
 (defn cos [a] (Math/cos a))
 (defn sin [a] (Math/sin a))
@@ -22,7 +22,7 @@
   (+ (* (float (/ (- x o1) (- o2 o1))) (- t2 t1)) t1) )
 
 
-(defn mol= "more or less equal" [x y] (< (Math/abs (- x y)) 0.0000001) )
+(defn mol= "more or less equal" [x y] (< (abs (- x y)) 0.0000001) )
 (defn molp= "more or less equal points" [[x1 y1] [x2 y2]] (and (mol= x1 x2) (mol= y1 y2)))
 
 
@@ -46,14 +46,14 @@
 (defn pol-to-rec [[r a]] [(* r (cos a)) (* r (sin a))])
 
 (defn line-to-segments [points]
-  (if (empty? points) [] 
+  (if (empty? points) []
       (loop [p (first points) ps (rest points) acc []]
         (if (empty? ps) acc
-            (recur (first ps) (rest ps) (conj acc [p (first ps)]) )  )        
+            (recur (first ps) (rest ps) (conj acc [p (first ps)]) )  )
         )))
 
 (defn rotate-point [a [x y]]
-  (let [cos-a (cos a) sin-a (sin a)]  
+  (let [cos-a (cos a) sin-a (sin a)]
     [(- (* x cos-a) (* y sin-a))
      (+ (* x sin-a) (* y cos-a))]))
 
@@ -63,3 +63,25 @@
   (let [wob (fn [n qn] (+ n (- (rand qn) (/ qn 2))))]
      [(wob x qx) (wob y qy)]  ) )
 
+
+;; Triangle geometry
+(defn triangle [ax ay bx by cx cy]
+  {:A [ax ay] :B [bx by] :C [cx cy]
+   :a [[bx by] [cx cy]] :b [[ax ay] [cx cy]] :c [[ax ay] [bx by]]
+   :ax ax :ay ay :bx bx :by by :cx cx :cy cy})
+
+(defn perimeter [t] (+ (apply distance (:a t)) (apply distance (:b t)) (apply distance (:c t))))
+
+(defn area [t]
+  (let [ axby (* (:ax t) (:by t)) bxcy (* (:bx t) (:cy t)) cxay (* (:cx t) (:ay t))
+         axcy (* (:ax t) (:cy t)) cxby (* (:cx t) (:by t)) bxay (* (:bx t) (:ay t)) ]
+    (/ (abs (- (- (- (+ axby bxcy cxay) axcy) cxby) bxay)) 2 )  ))
+
+(defn contains-point [t [x y]]
+  (let [pab (triangle x y (:ax t) (:ay t) (:bx t) (:by t))
+        pbc (triangle x y (:bx t) (:by t) (:cx t) (:cy t))
+        pac (triangle x y (:ax t) (:ay t) (:cx t) (:cy t))        ]
+    (mol= (+ (area pab) (area pbc) (area pac)) (area t))
+    ))
+
+(defn triangle-points [t] [(:A t) (:B t) (:C t)])

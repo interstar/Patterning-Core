@@ -26,7 +26,7 @@
       (is (= (l-systems/apply-rule-to-char rule2 "A")
              "DE"))
       )
-    
+
     (testing "rules on a string"
       (is (= (l-systems/apply-rules-to-char [rule1] "A") "B") )
       (is (= (l-systems/apply-rules-to-char [rule1] "C") "C"))
@@ -43,25 +43,25 @@
     (testing "string to group"
       (is (= (turtle/basic-turtle [0 0] 0.1 0 0 "F" {} {:stroke "red"})
              [(sshapes/->SShape {:stroke "red"} [[0 0] [0.1 0.0]])]))
-      
+
       (let [stg (turtle/basic-turtle [0 0] 0.1 0 1.5707963705062866 "F+F" {} {} )
-            ps (get (first stg) :points)] 
+            ps (get (first stg) :points)]
         (is (= (first ps) [0 0]))
         (is (= (get ps 1) [0.1 0.0]))
         (is (mol= (second (get ps 2)) 0.1))
         )
       )
-    
+
     (is (= (second (turtle/l-string-turtle-to-group-r [0 0] 0.1 0 1.5707963705062866 "F" {} {} ))
            [(sshapes/->SShape {} [[0 0] [0.1 0.0]])]))
-      
+
     (let [stg (second (turtle/l-string-turtle-to-group-r [0 0] 0.1 0 1.5707963705062866 "F+F" {} {}))
             ps (get (first stg) :points)]
         (is (= (first ps) [0 0]))
         (is (= (get ps 1) [0.1 0.0]))
         (is (molp= (get ps 2) [0.1  0.1]))
         )
-      
+
     (let [leaf (fn [x y a] (let [] (println "in leaf function") (groups/group ( sshapes/->SShape {} [[-10 -10]]))))
           stg (second (turtle/l-string-turtle-to-group-r [0 0] 0.1 0 1.5707963705062866 "F+F[FF]Z" {\Z leaf} {}))
             s2 (get stg 0)
@@ -71,7 +71,7 @@
             ps2 (get s2 :points)
             ps3 (get s3 :points)
             ]
-        
+
         (is (= (count stg) 3))
         (is (= (count ps1) 3))
         (is (= (first ps1) [0 0]))
@@ -80,5 +80,5 @@
         (is (= (count ps2) 3))
         (is (= (first ps3) [-10 -10]))
         )
-      
+
     ))

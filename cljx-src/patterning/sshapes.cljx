@@ -1,5 +1,6 @@
 (ns patterning.sshapes
   (:require [patterning.maths :as maths])
+  (:require [clojure.data :refer [diff]])
   (#+clj :require #+cljs :require-macros
          [patterning.macros :refer [optional-styled-primitive]])
  )
@@ -119,3 +120,12 @@
 (defn mol= "more or less equal sshapes"
   [sshape1 sshape2] (and (= (get sshape1 :style) (get sshape2 :style) )
                          (mol=shapes (get sshape1 :points) (get sshape2 :points))) )
+
+(defn triple-list [points] (partition 3 1 (cycle points))  )
+(defn triangles-list [points] (map (fn [pts3] (apply maths/triangle (flatten pts3))) (triple-list points ) ))
+(defn triangles-in-sshape [{:keys [style points]}] (triangles-list points))
+
+(defn is-ear [{:keys [style points]} t]
+  (let [other (get (diff points t) 0)]
+    (not-any? (partial maths/contains-point t) other)
+    )  )
