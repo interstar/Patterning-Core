@@ -17,9 +17,9 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 ### Patterning for Processing
 
-Patterning was originally written to be used with Quil, in all-Clojure projects. But for those who are already more familiar with, or need to work in, Java and the Processing development environment itself, there's now a standard Processing Library wrapper around Patterning.
+Patterning was originally written to be used in all-Clojure projects. But for those who are already more familiar with, or need to work in, Java and the Processing development environment itself, there's now a standard Processing Library wrapper around Patterning.
 
-The source for that library and examples are on (Patterning for Processing)[https://github.com/interstar/Patterning-for-Processing]. They are based on the standard Processing Library template.
+The source for that library and examples are on [Patterning for Processing](https://github.com/interstar/Patterning-for-Processing). They are based on the standard Processing Library template.
 
 ## What Patterning looks like 
 
