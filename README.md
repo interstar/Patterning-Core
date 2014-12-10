@@ -1,18 +1,25 @@
 # Patterning
 
-A Clojure library for generating patterns, both at the small scale and the "layout" of smaller units. Units can be recursively nested.
+A Clojure library for generating patterns, both at the small scale and the "layout" of smaller units. Units can be recursively nested. It was originally written to work with Quil, the Clojure wrapper around Processing, but has now been broken into several separate projects.
 
-*Please note that Patterning is in the process of being broken into several separate projects. This repository, Patterning Core, contains code to generate patterns, but is no longer referencing or dependent on Quil / Processing. The generated patterns are merely data-structures, although this library contains a function to render as simple SVG.*
-
-*This refactoring is work in progress and right now, you'd be better off looking at [the old repository](https://github.com/interstar/patterning) unless you know you are meant to be here. That one actually **does** something.* 
-
-*Now **eventually** this repository **will** be the official Patterning Core. And new development on the core is now taking place here.*
+### Patterning Core
+This repository, Patterning Core, contains code to generate patterns. But is no longer referencing or dependent on Quil / Processing at all. The generated patterns are merely data-structures. This library contains a function to render them as simple SVG. But it's likely you will want to write your own renderer for the pattern in the framework / environment you are working in.
 
 A compiled version of this library is now available on Clojars. Include in your Lein project using
 
     [com.alchemyislands/patterning "0.3.0-SNAPSHOT"]]
-    
-as in [the project file of Patterning_Quil](https://github.com/interstar/Patterning-Quil)
+
+(See below for an example of how to do this.)
+
+### Patterning Quil 
+
+[A separate project](https://github.com/interstar/Patterning-Quil) now shows how to use Patterning Core in a Quil / Processing project. See the example on that page.
+
+### Patterning for Processing
+
+Patterning was originally written to be used with Quil, in all-Clojure projects. But for those who are already more familiar with, or need to work in, Java and the Processing development environment itself, there's now a standard Processing Library wrapper around Patterning.
+
+The source for that library and examples are on (Patterning for Processing)[https://github.com/interstar/Patterning-for-Processing]. They are based on the standard Processing Library template.
 
 ## What Patterning looks like 
 
