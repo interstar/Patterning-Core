@@ -1,6 +1,6 @@
 # Patterning
 
-A Clojure library for generating patterns, both at the small scale and the "layout" of smaller units. Units can be recursively nested. It was originally written to work with Quil, the Clojure wrapper around Processing, but has now been broken into several separate projects.
+A Clojure library for generating patterns, both at the small scale and the "layout" of smaller units. Units can be recursively nested. It was originally written to work with (Quil)[https://github.com/quil/quil], the Clojure wrapper around (Processing)[https://processing.org/], but has now been broken into several separate projects.
 
 ### Patterning Core
 This repository, Patterning Core, contains code to generate patterns. But is no longer referencing or dependent on Quil / Processing at all. The generated patterns are merely data-structures. This library contains a function to render them as simple SVG. But it's likely you will want to write your own renderer for the pattern in the framework / environment you are working in.
