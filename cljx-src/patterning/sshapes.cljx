@@ -1,6 +1,6 @@
 (ns patterning.sshapes
-  (:require [patterning.maths :as maths])
-  (:require [clojure.data :refer [diff]])
+  (:require [patterning.maths :as maths]
+            [clojure.data :refer [diff]])
   (#+clj :require #+cljs :require-macros
          [patterning.macros :refer [optional-styled-primitive]])
  )
