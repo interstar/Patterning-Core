@@ -1,4 +1,4 @@
-(ns patterning.color  
+(ns patterning.color
   (:require [patterning.strings :as strings]))
 
 ;; Now we'll use a custom vector as a color
@@ -29,5 +29,5 @@
 
 
 (defn color-to-web [[r g b a]] (if (= a 255)
-                                 (str (strings/gen-format "rgb(%d,%d,%d)" r g b))
-                                 (str (strings/gen-format "rgba(%d,%d,%d,%d)" r g b a) )))
+                                 (str (strings/gen-format "rgb(%d,%d,%d)" (int r) (int g) (int b)))
+                                 (str (strings/gen-format "rgba(%d,%d,%d,%d)" (int r) (int g) (int b) (int a)) )))
