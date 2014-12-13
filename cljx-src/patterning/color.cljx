@@ -1,5 +1,6 @@
 (ns patterning.color
-  (:require [patterning.strings :as strings]))
+  (:require [patterning.strings :as strings]
+            [patterning.maths :as maths]))
 
 ;; Now we'll use a custom vector as a color
 (defn p-color
@@ -28,6 +29,15 @@
 (defn setup-colors [colors c] (map (edge-col c) (color-seq colors)  ))
 
 
-(defn color-to-web [[r g b a]] (if (= a 255)
-                                 (str (strings/gen-format "rgb(%d,%d,%d)" (int r) (int g) (int b)))
-                                 (str (strings/gen-format "rgba(%d,%d,%d,%d)" (int r) (int g) (int b) (int a)) )))
+(defn remove-transparency [c] (conj (take 3 c) 255))
+
+
+;; COlours for SVG
+(defn transparent-gen [name [r g b a]]
+  (let [tx (fn [x] (maths/tx 0 255 0 1 x))]
+    (if (= a 255) (strings/gen-format "%s='rgb(%s,%s,%s)'" name (int r) (int g) (int b))
+        (strings/gen-format "%s='rgb(%s,%s,%s)' %s-opacity='%.2f' "name (int r) (int g) (int b)  name (tx a) )
+        )) )
+
+(defn stroke-gen [c] (transparent-gen "stroke" c))
+(defn fill-gen [c] (transparent-gen "fill" c))

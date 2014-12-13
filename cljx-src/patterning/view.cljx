@@ -4,7 +4,7 @@
             [patterning.strings :as strings]
             [patterning.sshapes :refer []]
             [patterning.groups :refer []]
-            [patterning.color :refer [color-to-web p-color]]) )
+            [patterning.color :refer [stroke-gen fill-gen p-color]]) )
 
 
 
@@ -28,6 +28,7 @@
 
 ;; SVG generation
 
+
 (defn sshape-to-SVG-path [txpt sshape]
   (let [linify (fn [[x y]] (str " L " x " " y))
         bezify (fn [[x y]] (str x " " y " " ))
@@ -40,15 +41,15 @@
                  (cons s1 (cons "C" (mapcat bezify (rest points) )))
                  (cons s1 (mapcat linify (rest points)))
                  )
-        col (if (contains? style :stroke) (color-to-web (get style :stroke)) (color-to-web (p-color 0)) )
-        fill (str "fill=\""  (if (contains? style :fill)
-                               (color-to-web (get style :fill))
-                               "none")
-                  "\" ")
+        stroke (if (contains? style :stroke) (stroke-gen (get style :stroke)) (stroke-gen (p-color 0)) )
+        stroke-width (if (contains? style :stroke-weight) (strings/gen-format "stroke-width='%spx'" (:stroke-weight style) ) )
+        fill (str (if (contains? style :fill)
+                    (fill-gen (get style :fill))
+                    "fill='none' ") )
         ]
 
-    (str (strings/gen-format "\n<path style='-webkit-tap-highlight-color: rgba(0, 0, 0, 0);' stroke='%s' %s " col fill )
-         "d='"
+    (str (strings/gen-format "\n<path style='-webkit-tap-highlight-color: rgba(0, 0, 0, 0);' %s %s %s " stroke-width stroke fill )
+         " d='"
          (apply str strung)
          "'></path>"
          )  ) )
