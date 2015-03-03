@@ -9,6 +9,8 @@ A compiled version of this library is now available on Clojars. Include in your 
 
     [com.alchemyislands/patterning "0.3.0-SNAPSHOT"]]
 
+[![Clojars Project](http://clojars.org/com.alchemyislands/patterning/latest-version.svg)](http://clojars.org/com.alchemyislands/patterning)
+
 (See below for an example of how to do this.)
 
 ### Patterning Quil 
