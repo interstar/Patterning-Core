@@ -7,7 +7,7 @@ This repository, Patterning Core, contains code to generate patterns. But is no 
 
 A compiled version of this library is now available on Clojars. Include in your Lein project using
 
-    [com.alchemyislands/patterning "0.3.0-SNAPSHOT"]]
+    [com.alchemyislands/patterning "0.3.0-SNAPSHOT"]
 
 [![Clojars Project](http://clojars.org/com.alchemyislands/patterning/latest-version.svg)](http://clojars.org/com.alchemyislands/patterning)
 
