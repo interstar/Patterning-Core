@@ -6,9 +6,9 @@
 (deftest color-svg
   (testing "color for svg"
     (is (= (color/stroke-gen (color/p-color 100 200 150 150))
-           "stroke='rgba(100,200,150,0.59)' stroke-opacity='0.59' "))
+           "stroke='rgb(100,200,150)' stroke-opacity='0.59' "))
     (is (= (color/fill-gen (color/p-color 200 200 100 50))
-           "fill='rgba(200,200,100,0.20)' fill-opacity='0.20' ")) ))
+           "fill='rgb(200,200,100)' fill-opacity='0.20' ")) ))
 
 (deftest color-stuff
   (let []
