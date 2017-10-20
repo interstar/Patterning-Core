@@ -1,4 +1,4 @@
-(defproject com.alchemyislands/patterning "0.5.0-SNAPSHOT"
+(defproject com.alchemyislands/patterning "0.5.1-SNAPSHOT"
   :description "Generating Patterns with Clojure"
   :url "http://alchemyislands.com/"
   :license {:name "Gnu Lesser Public License"
@@ -12,10 +12,10 @@
             [lein-localrepo "0.4.0"]
             ]
 
-  :source-paths ["cljc" "src" ]
+  :source-paths ["src/clj" "src/cljc" ]
 
   :cljsbuild {:builds [{
-                        :source-paths ["cljc" "src" ]
+                        :source-paths ["src/cljc" ]
                         :compiler {
                                    :output-to "browser-based/js/main.js"
                                    :optimizations :whitespace
