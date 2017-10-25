@@ -42,7 +42,7 @@
                  (cons s1 (mapcat linify (rest points)))
                  )
         stroke (if (contains? style :stroke) (stroke-gen (get style :stroke)) (stroke-gen (p-color 0)) )
-        stroke-width (if (contains? style :stroke-weight) (strings/gen-format "stroke-width='%spx'" (:stroke-weight style) ) )
+        stroke-width (if (contains? style :stroke-weight) (strings/gen-format "stroke-width='%spx'" (:stroke-weight style) ) "" )
         fill (str (if (contains? style :fill)
                     (fill-gen (get style :fill))
                     "fill='none' ") )
