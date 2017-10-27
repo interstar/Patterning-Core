@@ -5,7 +5,7 @@
             [patterning.layouts :refer [clock-rotate stack flower-of-life-positions place-groups-at-positions framed]]
             [patterning.library.std :refer [poly]]
             [patterning.library.turtle :refer [basic-turtle]]
-           
+
             [patterning.color :refer [p-color]]
             )  )
 
@@ -26,7 +26,7 @@
   ([style] (flower-of-life 80 style)))
 
 (defn ringed-flower-of-life
-  ([sides style] (stack (flower-of-life sides style)  (poly 0 0 1.2 sides style)))
+  ([sides style] (stack (poly 0 0 1.2 sides style) (flower-of-life sides style)  ))
       ([style] (ringed-flower-of-life 80 style ) ))
 
 (defn god-pattern []
