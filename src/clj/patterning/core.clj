@@ -135,7 +135,7 @@
 (defn finals [ps]
   (doseq [[n p] ps]
     (println n)
-    (spit (str "outs/" n ".patdat") (into [] p))
+    (spit (str "outs/" n ".patdat") p)
 ;    (println p)
     (spit (str "outs/" n ".svg") (make-svg 800 800 p) ))
   )
