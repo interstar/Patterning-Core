@@ -7,7 +7,8 @@
                                         four-mirror four-round nested-stack checked-layout
                                         half-drop-grid-layout random-turn-groups h-mirror]])
 
-  (:require [patterning.library.std :refer [poly spiral horizontal-line]])
+  (:require [patterning.library.std :refer [poly spiral diamond
+                                            horizontal-line square]])
   (:require [patterning.library.turtle :refer [basic-turtle]])
   (:require [patterning.library.complex_elements :refer [vase zig-zag]])
   (:require [patterning.view :refer [make-txpt make-svg]])
@@ -16,11 +17,14 @@
   (:require [patterning.examples.tutorial :as tutorial])
   (:require [patterning.examples.framedplant :as framedplant])
   (:require [patterning.examples.design_language1 :as design-language])
+
   (:require [patterning.library.symbols :as symbols])
 
   (:require [patterning.examples.interactive :as interactive])
   (:require [patterning.examples.testing :as testing])
   (:require [patterning.api :refer :all])
+
+  (:require [patterning.library.complex_elements :refer [petal-pair-group petal-group]])
 
 
 )
@@ -43,14 +47,103 @@
                     (map randomize-color (cycle (map a-round [3 4 5 6 7])))) )
 
 
+(def p2
+  (let [blue {:fill (p-color 150 150 255)
+              :stroke (p-color 50 50 255)
+              :stroke-weight 2}
 
+        yellow {:fill (p-color 180 250 50)
+                :stroke-weight 1
+                :stroke (p-color 150 120 20)}
+
+        green {:fill (p-color 20 100 30)}
+
+        rand-rot #(groups/rotate (* (mod (rand-int 100) 8) (/ maths/PI 4)) %)
+
+        inner (stack
+               (poly 0 0 0.3 12 {:fill (p-color 50 50 220)
+                                 :stroke-weight 0})
+               (->> (poly 0 0.1 0.06 5 yellow)
+                    (clock-rotate 5)
+                    (groups/translate -0.09 -0.07)
+                    ))
+
+        flower (stack
+                (clock-rotate 15 (petal-group blue 0.3 0.8 ))
+                (let [y-stream
+                      (clock-rotate 15 (petal-group yellow 0.3 0.8 ))]
+                  (stack (list (nth y-stream 5))
+                         (take 2 y-stream)
+                         ))
+                inner)
+
+
+        leafy (fn [n]
+                (stack
+                 (->> (diamond green)
+                      (groups/stretch 0.5 0.25)
+                      (groups/translate -0.6 0)
+                      (clock-rotate 4)
+                      (drop 2)
+                      (take n))
+                 (->> (diamond {:fill (p-color 200 255 200)
+                                :stroke-weight 0})
+                      (groups/stretch 0.2 0.1)
+                      (groups/translate -0.6 0)
+                      (clock-rotate 4)
+                      (drop 2)
+                      (take n))
+                 flower))
+
+        whites (stack
+                (->> (poly 0 0.3 0.2 5
+                           {:fill (p-color 255 255 255)
+                            :stroke-weight 0})
+                     (clock-rotate 7)
+
+                     )
+                (poly 0 0 0.2 8 {:fill (p-color 0 0 200)}))
+
+        small-yellow (let [all (->> (diamond yellow)
+                                    (groups/stretch 0.4 0.5)
+                                    (groups/translate 0 -0.6 )
+                                    (clock-rotate 5)
+                                    (groups/scale 0.6 ))
+                           blues (groups/over-style blue all)]
+
+                       (stack
+                        all
+                        (list (nth blues 0))
+                        (list (nth blues 2))))
+
+        leafy-seq (->> (iterate (fn [x] (+ 1 (mod (rand-int 100) 2))) 0)
+                       (map leafy)
+                       (map rand-rot))
+        ]
+    (stack
+     (square {:fill (p-color 255 10 10)})
+     (half-drop-grid-layout
+      17 (map rand-rot
+              (map rand-nth
+                   (repeat [whites []
+                            small-yellow small-yellow ]))))
+
+     (half-drop-grid-layout 6 leafy-seq)
+     ) ))
+
+
+(defn finals [ps]
+  (doseq [[n p] ps]
+    (println n)
+    (spit (str "outs/" n ".patdat") (into [] p))
+;    (println p)
+    (spit (str "outs/" n ".svg") (make-svg 800 800 p) ))
+  )
 
 (defn -main [& args]
-
-  ;; Write the pattern data-structure to a file
-  (spit "out.patdat" (into [] final-pattern) )
-
-  ;; AND THIS IS WHERE WE WRITE IT TO out.svg
-  (let [svg (make-svg 800 800 final-pattern) ]
-    (spit "out.svg" svg ) )
-  )
+  (finals
+   [["p1" (framedplant/framed-plant)]
+    ["p2" p2]
+    ["p3" (groups/scale 0.8 (symbols/ringed-flower-of-life {:fill (p-color 160 120 180 20)
+                                                            :stroke-weight 3
+                                                            :stroke (p-color 0 100 255)}))]])  )

@@ -1,5 +1,5 @@
 (ns patterning.library.complex_elements
-  (:require [patterning.maths :as maths] 
+  (:require [patterning.maths :as maths]
             [patterning.sshapes :as sshapes]
             [patterning.sshapes :refer [->SShape tie-together]]
             [patterning.groups :as groups]
@@ -19,28 +19,27 @@
         inner-circle (std/poly 0 0 inner-radius 30 style)
         sp1 [0 inner-radius]
         sp2 [0 (+ inner-radius arm-radius)]
-      
+
         one-spoke (groups/group (->SShape style [sp1 sp2 sp1 sp2])
-                                (std/poly 0 (+ outer-radius (last sp2)) outer-radius 25 style )  )
-      ]
-    (into [] (concat (std/poly 0 0 inner-radius 35 style)
+                                (std/poly 0 (+ outer-radius (last sp2)) outer-radius 25 style )  )]
+    (lazy-seq (concat (std/poly 0 0 inner-radius 35 style)
                      (layouts/clock-rotate 8 one-spoke)       ) ) ) )
 
 
 (defn polyflower-group "number of polygons rotated and superimosed"
   ( [sides-per-poly no-polies radius style]
       (layouts/clock-rotate no-polies (std/poly 0 0 radius sides-per-poly style)))
-  
+
   ( [sides-per-poly no-polies radius] (polyflower-group sides-per-poly no-polies radius {})))
 
 
 
 (defn face-group "[head, eyes, nose and mouth] each argument is a pair to describe a poly [no-sides color]"
-  ( [[ head-sides head-color] [ eye-sides eye-color] [ nose-sides nose-color] [ mouth-sides mouth-color]] 
+  ( [[ head-sides head-color] [ eye-sides eye-color] [ nose-sides nose-color] [ mouth-sides mouth-color]]
       (let [left-eye (groups/stretch 1.3 1 (std/poly -0.3 -0.1 0.1 eye-sides { :stroke eye-color }))
             right-eye (groups/h-reflect left-eye)
             ]
-                
+
         (std/poly 0 0 0.8 head-sides {:stroke head-color } )
         (groups/stretch 1.3 0.4 (std/poly 0 1.3 0.2 mouth-sides {:stroke mouth-color }))
         (groups/translate 0 0.1
@@ -80,12 +79,9 @@
 (defn scroll [[x y] d da number style extras]
   (turtle/basic-turtle [x y] d 0 da (all number) extras style ))
 
-(defn r-scroll [d da number style extras] (groups/reframe (scroll [0 0] d da number  
+(defn r-scroll [d da number style extras] (groups/reframe (scroll [0 0] d da number
                                       style extras) ))
 
 (defn vase [d da count style]
   (let [scroll (r-scroll d da count style {})]
     (layouts/stack scroll (groups/v-reflect scroll) )))
-
-
-

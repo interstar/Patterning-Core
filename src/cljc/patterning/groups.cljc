@@ -14,29 +14,29 @@
 
 
 ;;; Making groups
-(defn group "a vector of sshapes" [& sshapes] (into [] sshapes) )
+(defn group "a vector of sshapes" [& sshapes] (lazy-seq sshapes) )
 
 
 (defn empty-group [] [])
 
 
 ;;; Simple transforms
-(defn scale ([val group] (into [] (map (partial sshapes/scale val) group )))   )
+(defn scale ([val group] (lazy-seq (map (partial sshapes/scale val) group )))   )
 
-(defn translate  [dx dy group] (into [] (map (partial sshapes/translate dx dy) group))  )
+(defn translate  [dx dy group] (lazy-seq (map (partial sshapes/translate dx dy) group))  )
 
 (defn translate-to [x y group] (translate (- x) (- y) group) )
 
-(defn h-reflect [group] (into [] (map sshapes/h-reflect group) ) )
-(defn v-reflect [group] (into [] (map sshapes/v-reflect group) ) )
+(defn h-reflect [group] (lazy-seq (map sshapes/h-reflect group) ) )
+(defn v-reflect [group] (lazy-seq (map sshapes/v-reflect group) ) )
 
-(defn stretch [sx sy group] (into [] (map (partial sshapes/stretch sx sy) group)))
-(defn rotate [da group] (into [] (map (partial sshapes/rotate da) group)))
+(defn stretch [sx sy group] (lazy-seq (map (partial sshapes/stretch sx sy) group)))
+(defn rotate [da group] (lazy-seq (map (partial sshapes/rotate da) group)))
 
-(defn wobble [noise group] (into [] (map (partial sshapes/wobble noise) group)))
+(defn wobble [noise group] (lazy-seq (map (partial sshapes/wobble noise) group)))
 
 (defn over-style "Changes the style of a group" [style group]
-  (into [] (map (partial sshapes/add-style style) group)))
+  (lazy-seq (map (partial sshapes/add-style style) group)))
 
 (defn extract-points [{:keys [style points]}] points)
 

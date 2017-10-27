@@ -7,7 +7,7 @@
 ;; Note layouts combine and multiply groups to make larger groups
 
 (defn superimpose-layout "simplest layout, two groups located on top of each other "
-  [group1 group2] (into [] (concat group1 group2))   )
+  [group1 group2] (lazy-seq (concat group1 group2))   )
 
 (defn stack "superimpose a number of groups"
   [& groups] (reduce superimpose-layout groups))
@@ -15,7 +15,7 @@
 (defn nested-stack "superimpose smaller copies of a shape"
   [styles group reducer]
   (let [gen-next (fn [[style x]] (groups/over-style style (groups/scale x group)))]
-    (into [] (stack (mapcat gen-next (map vector styles (iterate reducer 1 )))))  ))
+    (lazy-seq (stack (mapcat gen-next (map vector styles (iterate reducer 1 )))))  ))
 
 
 (defn cart "Cartesian Product of two collections" [colls]
