@@ -31,6 +31,10 @@
 
 (defn remove-transparency [c] (conj (take 3 c) 255))
 
+(defn rand-col [] (p-color (rand-int 255) (rand-int 255) (rand-int 255) ))
+(defn darker-color [c] (apply p-color (map (partial * 0.7) c)))
+
+
 
 ;; Colours for SVG
 (defn transparent-gen [name [r g b a]]
