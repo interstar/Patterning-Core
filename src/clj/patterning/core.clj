@@ -5,10 +5,11 @@
   (:require [patterning.groups :as groups])
   (:require [patterning.layouts :refer [framed clock-rotate stack grid-layout diamond-layout
                                         four-mirror four-round nested-stack checked-layout
-                                        half-drop-grid-layout random-turn-groups h-mirror]])
+                                        half-drop-grid-layout random-turn-groups h-mirror ring
+                                        sshape-as-layout]])
 
-  (:require [patterning.library.std :refer [poly spiral diamond
-                                            horizontal-line square]])
+  (:require [patterning.library.std :refer [poly star nangle spiral diamond
+                                            horizontal-line square drunk-line]])
   (:require [patterning.library.turtle :refer [basic-turtle]])
   (:require [patterning.library.complex_elements :refer [vase zig-zag]])
   (:require [patterning.view :refer [make-txpt make-svg]])
@@ -132,6 +133,17 @@
      ) ))
 
 
+(defn a-nangle [n] (nangle 0 0 0.6 n {:stroke (p-color 0 0 0) :stroke-weight 2 }   ))
+(defn randomize-color [p] (let [c (rand-col)] (groups/over-style {:fill (darker-color c)
+                                                                  :stroke c} p ) ))
+
+(def p4 (ring 8 0.5 (map randomize-color (cycle (map a-nangle [5 7 9])))))
+
+(def p5 (let [l (drunk-line 10 0.1)
+              s (map randomize-color (cycle (map a-nangle [5 7 9])))   ]
+          (clock-rotate 12 (stack l (sshape-as-layout (first l) s 0.1)))))
+
+
 (defn finals [ps]
   (doseq [[n p] ps]
     (println n)
@@ -146,4 +158,6 @@
     ["p2" p2]
     ["p3" (groups/scale 0.8 (symbols/ringed-flower-of-life {:fill (p-color 160 120 180 20)
                                                             :stroke-weight 3
-                                                            :stroke (p-color 0 100 255)}))]])  )
+                                                            :stroke (p-color 0 100 255)}))]
+    ["p4" p4]
+    ["p5" p5]])  )
