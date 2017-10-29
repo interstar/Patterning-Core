@@ -59,6 +59,22 @@
 (defn reframe-scaler "Takes a sshape and returns a scaler to reduce it to usual viewport coords [-1 -1][1 1] "
   [sshape] (/ 2.0 (max (sshapes/width sshape) (sshapes/height sshape))))
 
+(defn leftmost [group] (apply min (map sshapes/leftmost group)))
+(defn rightmost [group] (apply max (map sshapes/rightmost group)))
+(defn width [group] (- (rightmost group) (leftmost group)))
+(defn top [group] (apply min (map sshapes/top group)))
+(defn bottom [group] (apply max (map sshapes/bottom group)))
+(defn height [group] (- (bottom group) (top group)))
+
+(defn h-centre "Assumes group is taller than wide so move it to horizontal centre" [group]
+  (let [lb (leftmost group)
+        rb (rightmost group)
+        width (- rb lb)
+        target-left  (/ (- width) 2)
+        shift (- target-left lb)
+       ]
+    (translate shift 0 group)))
+
 (defn reframe [group]
   (let [sshape (flatten-group {} group)
         scaled (scale (reframe-scaler sshape) group)
