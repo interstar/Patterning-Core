@@ -193,7 +193,21 @@
   [n group]
   (let [angs (maths/clock-angles n)]
     (concat (mapcat (fn [a] (groups/rotate a group)) angs ))
-   ))
+    ))
+
+(defn ring "Better clock-rotate" [n offset groups]
+  (let [shift-f (fn [g] (groups/translate
+                        (* offset 2)
+                        0
+                        (groups/scale
+                         (/ (- 1 offset) 2)
+                         (groups/rotate maths/PI (groups/h-centre (groups/reframe g))))))]
+
+    (groups/reframe (groups/rotate (- (/ maths/PI 2))
+                                    (mapcat (fn [a g]
+                                              (groups/rotate a (shift-f g)))
+                                            (iterate (partial + (* 2 (/ maths/PI n))) 0 )
+                                            (take n (cycle groups)))))))
 
 
 (defn four-round "Four squares rotated" [group]
@@ -237,3 +251,8 @@
             rec-points (mapcat (partial flower-of-life-positions r (- depth 1)) round-points)]
         (set (conj rec-points [cx cy]))
         ))  )
+
+(defn sshape-to-positions [{:keys [style points] :as sshape}] points )
+
+(defn sshape-as-layout [sshape group-stream scalar]
+  (place-groups-at-positions (map #(groups/scale scalar %) group-stream) (sshape-to-positions sshape )  ))
