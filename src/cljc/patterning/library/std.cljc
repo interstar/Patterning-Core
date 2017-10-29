@@ -25,6 +25,19 @@
                 (close-shape (into [] (map make-point (maths/clock-angles no-sides))))  )
            ))
 
+(def star (optional-styled-primitive
+           [cx cy rads n]
+           (close-shape (sshapes/translate-shape
+                         cx cy
+                         (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles n)) ))) ))
+
+(def nangle (optional-styled-primitive
+             [cx cy rad n]
+             (let [dropped (maths/take-every (int (/ n 2)) (cycle (maths/clock-points n rad)))
+                   finite (maths/map-until-repeat (fn [x] x) maths/molp= dropped) ]
+               (close-shape (sshapes/translate-shape
+                             cx cy finite)))))
+
 (defn random-rect [style]
   (let [ rr (fn [l] (rand l))
         m1 (fn [x] (- x 1))]
