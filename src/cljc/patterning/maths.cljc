@@ -22,8 +22,9 @@
   (+ (* (float (/ (- x o1) (- o2 o1))) (- t2 t1)) t1) )
 
 
-(defn mol= "more or less equal" [x y] (< (abs (- x y)) 0.0000001) )
+(defn mol= "more or less equal" [x y] (< (abs (- x y)) 0.000001) )
 (defn molp= "more or less equal points" [[x1 y1] [x2 y2]] (and (mol= x1 x2) (mol= y1 y2)))
+(defn mol=v "more or less equal vectors" [xs ys] (every? (fn [[x y]] (mol= x y) ) (map vector xs ys) ) )
 
 
 
@@ -63,7 +64,15 @@
   (let [wob (fn [n qn] (+ n (- (rand qn) (/ qn 2))))]
      [(wob x qx) (wob y qy)]  ) )
 
-(defn point-in-list [p ps] (reduce (fn [a b] (or a b)) (map (fn [x] (molp= x p) ) ps)  ))
+(defn x-in-list [x my= xs]
+  (if (empty? xs) false
+      (reduce (fn [a b] (or a b)) (map (fn [y] (my= y x)) xs) )))
+
+(defn point-in-list [p ps] (x-in-list p molp= ps))
+
+(defn clock-points [n r]
+  (let [ make-point (fn [a] (pol-to-rec [r a]))]
+    (into [] (map make-point (clock-angles n)))  ))
 
 
 ;; Triangle geometry
@@ -87,3 +96,17 @@
     ))
 
 (defn triangle-points [t] [(:A t) (:B t) (:C t)])
+
+
+;; Useful functions
+(defn drop-every [n xs] (lazy-seq (if (seq xs) (concat (take (dec n) xs) (drop-every n (drop n xs))))))
+
+(defn take-every [n xs] (lazy-seq (if (seq xs) (concat (take 1 xs) (take-every n (drop n xs))) )))
+
+
+(defn map-until-repeat [f eq-test ins]
+  (loop [xs ins build []]
+    (if (empty? xs) build
+        (let [fx (f (first xs))]
+          (if (x-in-list fx eq-test build) build
+              (recur (rest xs) (conj build fx)))))))
