@@ -37,11 +37,12 @@
 
 
 ;; Colours for SVG
-(defn transparent-gen [name [r g b a]]
-  (let [tx (fn [x] (maths/tx 0 255 0 1 x))]
-    (if (= a 255) (strings/gen-format "%s='rgb(%s,%s,%s)'" name (int r) (int g) (int b))
-        (strings/gen-format "%s='rgb(%s,%s,%s)' %s-opacity='%.2f' "name (int r) (int g) (int b)  name (tx a) )
-        )) )
+(defn transparent-gen
+  ([name [r g b a]]
+   (let [tx (fn [x] (maths/tx 0 255 0 1 x))]
+     (if (= a 255) (strings/gen-format "%s='rgb(%s,%s,%s)'" name (int r) (int g) (int b))
+         (strings/gen-format "%s='rgb(%s,%s,%s)' %s-opacity='%.2f' "name (int r) (int g) (int b)  name (tx a) )
+         )))  )
 
 (defn stroke-gen [c] (transparent-gen "stroke" c))
 (defn fill-gen [c] (transparent-gen "fill" c))
