@@ -4,7 +4,7 @@
   :license {:name "Gnu Lesser Public License"
             :url "https://www.gnu.org/licenses/lgpl.html"}
 
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.7.28"]
                 ]
 
