@@ -15,14 +15,14 @@
   (:require [patterning.view :refer [make-txpt make-svg]])
   (:require [patterning.color :refer [p-color remove-transparency] ])
 
-  (:require [patterning.examples.tutorial :as tutorial])
+
   (:require [patterning.examples.framedplant :as framedplant])
   (:require [patterning.examples.design_language1 :as design-language])
 
   (:require [patterning.library.symbols :as symbols])
 
-  (:require [patterning.examples.interactive :as interactive])
-  (:require [patterning.examples.testing :as testing])
+
+
   (:require [patterning.api :refer :all])
 
   (:require [patterning.library.complex_elements :refer [petal-pair-group petal-group]])

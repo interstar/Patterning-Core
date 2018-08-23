@@ -1,6 +1,7 @@
 (ns patterning.sshapes
   (:require [patterning.maths :as maths]
-            [clojure.data :refer [diff]])
+            [clojure.data :refer [diff]]
+            [clojure.spec.alpha :as s])
 
   #?(:clj (:require [patterning.macros :refer [optional-styled-primitive]])
      :cljs (:require-macros [patterning.macros :refer [optional-styled-primitive]] )
@@ -67,6 +68,12 @@
                        (maths/molp= (first shape1) (first shape2))
                        (mol=shapes (rest shape1) (rest shape2)))  ))
 
+
+
+;; Specs
+
+(s/def ::style (s/keys :opt-un [::stroke ::stroke-weight ::fill ::hidden ::bezier]))
+
 ;; Styles (dictionaries of style info)
 (defn add-property [style prop val] (conj style {prop val} ))
 
@@ -74,6 +81,11 @@
 ;; SShape (styled shape)
 ;; SShape, is a shape with a style attached ({:points points :style style}
 ;; style is a dictionary of style hints eg. stroke, fill and stroke-weight
+
+(s/def ::point (s/coll-of number? :kind vector? :count 2))
+(s/def ::points (s/* ::point))
+
+(s/def ::SShape (s/keys :req-un [::points ::style]))
 
 (defrecord SShape [style points])
 
@@ -91,6 +103,7 @@
 
 (defn bez-curve [style points] (add-style {:bezier true} (->SShape style points )))
 
+;; SShape Transforms
 (defn scale [val sshape] (->SShape (get sshape :style) (scale-shape val (get sshape :points)))  )
 (defn translate [dx dy {:keys [style points]}] (->SShape style (translate-shape dx dy points)))
 (defn h-reflect [{:keys [style points]}] (->SShape style (h-reflect-shape points)))

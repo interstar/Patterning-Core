@@ -1,7 +1,7 @@
 (ns patterning.library.symbols
   (:require [patterning.maths :as maths]
             [patterning.sshapes :refer [->SShape  ]]
-            [patterning.groups :refer [group clip rotate scale]]
+            [patterning.groups :refer [APattern clip rotate scale]]
             [patterning.layouts :refer [clock-rotate stack flower-of-life-positions place-groups-at-positions framed]]
             [patterning.library.std :refer [poly]]
             [patterning.library.turtle :refer [basic-turtle]]
@@ -34,7 +34,7 @@
         for-x (fn [x a d] (+ x (* d (maths/cos a))) )
         for-y (fn [y a d] (+ y (* d (maths/sin a))) )
         sq (* 0.1 (Math/sqrt 5))
-        diag (fn [x y a] (group (->SShape s [[x y] [(for-x x a sq) (for-y y a sq)] ] )))
+        diag (fn [x y a] (APattern (->SShape s [[x y] [(for-x x a sq) (for-y y a sq)] ] )))
         part1 (basic-turtle [0 0] 0.1 0 (/ maths/PI 4)
                            "F++F++F++F++FFF++F++F++FF++FF++FFF+FFF+++FF"
                            {"M" diag} s)

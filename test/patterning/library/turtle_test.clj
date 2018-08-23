@@ -62,7 +62,7 @@
         (is (molp= (get ps 2) [0.1  0.1]))
         )
 
-    (let [leaf (fn [x y a] (let [] (println "in leaf function") (groups/group ( sshapes/->SShape {} [[-10 -10]]))))
+    (let [leaf (fn [x y a] (let [] (println "in leaf function") (groups/APattern ( sshapes/->SShape {} [[-10 -10]]))))
           stg (second (turtle/l-string-turtle-to-group-r [0 0] 0.1 0 1.5707963705062866 "F+F[FF]Z" {\Z leaf} {}))
             s2 (get stg 0)
             s3 (get stg 1)

@@ -2,7 +2,7 @@
   (:require [patterning.maths :as maths]
             [patterning.sshapes :refer [add-style ->SShape set-weight set-color h-reflect]]
             [patterning.library.std :refer [poly square diamond drunk-line cross ogee]]
-            [patterning.groups :refer [group rotate stretch scale] ]
+            [patterning.groups :refer [rotate stretch scale] ]
             [patterning.groups :as groups]
             [patterning.layouts :refer [clock-rotate nested-stack stack diamond-layout v-mirror random-turn-groups
                                         superimpose-layout half-drop-grid-layout framed random-grid-layout four-round
@@ -55,7 +55,7 @@
 (def complex-diamond (nested-stack (setup-colors  [my-green my-pink my-cream] (p-color 0))
                                           simple-diamond (fn [x] (- x 0.25)) ))
 
-(def pink-tile (stack complex-diamond (group (->SShape {:stroke my-blue :stroke-weight 5} [[0 0] [0 1] ]))))
+(def pink-tile (stack complex-diamond (groups/APattern (->SShape {:stroke my-blue :stroke-weight 5} [[0 0] [0 1] ]))))
 
 (def edge (rotate maths/half-PI (stretch 0.7 1 pink-tile)))
 
@@ -66,7 +66,7 @@
 
 (def tri (poly 0 0 0.7 3 {:stroke (p-color 240 200 170)}))
 (def star (stack tri (groups/rotate maths/PI tri)))
-(def emp (groups/empty-group))
+(def emp (groups/empty-pattern))
 (def star-band (grid-layout 7 (cycle [emp emp emp star emp emp emp])))
 
 (defn complex-ogee
@@ -77,7 +77,7 @@
                    (fn [x] (- x 0.2)))))
 
 
-(defn square2 [] (stack (group (->SShape {:fill my-cream :stroke my-blue :stroke-weight 3}
+(defn square2 [] (stack (groups/APattern (->SShape {:fill my-cream :stroke my-blue :stroke-weight 3}
                                          [[-1 -1] [-1 1] [1 1] [1 -1] [-1 -1]]))
                         less-complex-diamond simple-clock  ))
 
@@ -102,11 +102,11 @@
 
 
         half-bird (->SShape {:stroke my-purple :stroke-weight 2} [[0 0] [0.4 (- 0.2)] [0.8 (- 0.3)]])
-        bird (groups/group half-bird (h-reflect half-bird ))
+        bird (groups/APattern half-bird (h-reflect half-bird ))
 
 
         test-shape (stack
-                    (clock-rotate 3 (groups/group  (->SShape {:stroke my-green :stroke-weight 3} [[0 0] [(-  0.25) (- 1)]]) ))
+                    (clock-rotate 3 (groups/APattern  (->SShape {:stroke my-green :stroke-weight 3} [[0 0] [(-  0.25) (- 1)]]) ))
                     )
 
 
@@ -122,7 +122,7 @@
 
         my-style {:stroke (p-color 0) :stroke-weight 1}
 
-        half (groups/group (->SShape {:fill my-black :stroke my-black} [[-1 -1] [1 1] [1 -1]]) )
+        half (groups/APattern (->SShape {:fill my-black :stroke my-black} [[-1 -1] [1 1] [1 -1]]) )
 
 
 

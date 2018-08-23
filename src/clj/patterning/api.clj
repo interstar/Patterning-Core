@@ -16,22 +16,18 @@
   (:require [patterning.view :refer [make-txpt make-svg transformed-sshape ]])
   (:require [patterning.color :refer [p-color]])
 
-  (:require [patterning.examples.tutorial :as tutorial])
   (:require [patterning.examples.framedplant :as framedplant])
   (:require [patterning.examples.design_language1 :as design-language])
   (:require [patterning.library.symbols :as symbols])
-
-  (:require [patterning.examples.interactive :as interactive])
-  (:require [patterning.examples.testing :as testing])
 
 
   (:gen-class
    :name com.alchemyislands.patterning.api
    :methods [#^{:static true} [makeTransformPointFunction [double double double double double double double double] clojure.lang.IFn ]
              #^{:static true} [transformSShape [clojure.lang.IFn clojure.lang.IPersistentMap] clojure.lang.IPersistentMap ]
-             #^{:static true} [test1 [int] clojure.lang.IPersistentVector]
 
-             #^{:static true} [emptyGroup [] clojure.lang.IPersistentVector]
+
+             #^{:static true} [emptyPattern [] clojure.lang.IPersistentVector]
              #^{:static true} [poly [float float float float clojure.lang.IPersistentMap] clojure.lang.IPersistentVector]
              #^{:static true} [basicTurtle [float float float float float String clojure.lang.IPersistentMap
                                             clojure.lang.IPersistentMap] clojure.lang.IPersistentVector ]
@@ -76,13 +72,13 @@
 (defn -setStrokeWeight [style w] (add-property style :stroke-weight w))
 (defn -removeProperty [style prop] (dissoc style prop))
 
-(defn -emptyGroup [] (groups/empty-group))
+(defn -emptyPattern [] (groups/empty-pattern))
 
 ; Shape making
 (defn -makeShapePattern [style points] [(->SShape style points)])
 (defn -poly [cx cy radius no-sides style] (poly cx cy radius no-sides style))
 (defn -basicTurtle [startX startY d a da script leafMap style] (basic-turtle [startX startY] d a da script leafMap style))
-(defn -test1 [n] (testing/nested n))
+
 
 ; Layouts (simplified)
 (defn -superimpose [p1 p2] (superimpose-layout p1 p2))

@@ -20,7 +20,7 @@
         sp1 [0 inner-radius]
         sp2 [0 (+ inner-radius arm-radius)]
 
-        one-spoke (groups/group (->SShape style [sp1 sp2 sp1 sp2])
+        one-spoke (groups/APattern (->SShape style [sp1 sp2 sp1 sp2])
                                 (std/poly 0 (+ outer-radius (last sp2)) outer-radius 25 style )  )]
     (lazy-seq (concat (std/poly 0 0 inner-radius 35 style)
                      (layouts/clock-rotate 8 one-spoke)       ) ) ) )

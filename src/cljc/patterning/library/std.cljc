@@ -2,15 +2,11 @@
   (:require [patterning.maths :as maths]
             [patterning.sshapes :refer [rotate-shape close-shape ->SShape set-color tie-together ]]
             [patterning.sshapes :as sshapes]
-            [patterning.groups :refer [group]]
+            [patterning.groups :refer [APattern]]
             [patterning.layouts :refer [stack four-mirror]]
             [patterning.macros :refer [optional-styled-primitive]]
 
- )
-
-
-  )
-
+            ))
 
 ;;; Some basic sshapes
 
@@ -81,9 +77,9 @@
 (def spiral (optional-styled-primitive [n a da r dr]
                                        (take n (spiral-points a da r dr))))
 
-;; Complex patterns made as groups (these have several disjoint sshapes)
+;; Complex patterns made as patterns (these have several disjoint sshapes)
 
-(defn cross "A cross, can only be made as a group (because sshapes are continuous lines) which is why we only define it now"
+(defn cross "A cross, can only be made as a pattern (because sshapes are continuous lines) which is why we only define it now"
   [color x y] (stack (horizontal-line y {:stroke color})  (vertical-line x {:stroke color}))  )
 
 
@@ -95,11 +91,11 @@
         o3 (get (get o-group 3) :points)
         top (tie-together o0 o1)
         bottom (tie-together o2 o3) ]
-    (group (->SShape style ( tie-together top bottom))) )  )
+    (APattern (->SShape style ( tie-together top bottom))) )  )
 
 
 (defn bez-curve
-  ([points style] (group (sshapes/bez-curve style points))  )
+  ([points style] (APattern (sshapes/bez-curve style points))  )
   ([points] (bez-curve points {})) )
 
 

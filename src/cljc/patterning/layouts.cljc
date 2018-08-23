@@ -229,7 +229,7 @@
         sw ( groups/v-reflect d)
         edge (first edges)
         col (concat [ (q1-rot-group edge)]
-                    (repeat gs2 (groups/empty-group))
+                    (repeat gs2 (groups/empty-pattern))
                     [ (q3-rot-group edge)]
             )     ]
     (grid-layout grid-size (concat [nw] (repeat gs2 edge) [sw]

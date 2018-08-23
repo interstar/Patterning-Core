@@ -1,10 +1,10 @@
 (ns patterning.macros
  )
 
-(defmacro optional-styled-primitive [args body] 
-   (let [extra (conj args 'style)] 
-     `(fn (~extra (~'group (~'->SShape ~'style ~body)))
-         (~args  (~'group (~'->SShape {} ~body))) 
+(defmacro optional-styled-primitive [args body]
+   (let [extra (conj args 'style)]
+     `(fn (~extra (~'APattern (~'->SShape ~'style ~body)))
+         (~args  (~'APattern (~'->SShape {} ~body)))
       )
    )
 )
