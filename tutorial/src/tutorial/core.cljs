@@ -19,7 +19,9 @@
    [tutorial.fp :as fp]
    [tutorial.page2 :as page2]
    [tutorial.download :as download]
-;   [tutorial.month :as month]
+   [tutorial.turtorial :as turtorial]
+
+   ;[tutorial.month :as month]
 
    )
   (:require-macros
@@ -27,7 +29,6 @@
 
 (enable-console-print!)
 (devcards.core/start-devcard-ui!)
-
 
 
 
@@ -320,7 +321,7 @@ Like clock-rotate them
   ;; conditionally start the app based on whether the #main-aptp-area
   ;; node is on the page
   (if-let [node (.getElementById js/document "main-app-area")]
-    (.render js/ReactDOM (sab/html [:div "This is working"]) node)))
+    (.render js/ReactDOM (sab/html [:div ""]) node)))
 
 (main)
 

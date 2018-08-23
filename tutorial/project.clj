@@ -22,6 +22,8 @@
                  #_[reagent "0.6.0"]
                  ]
 
+  :jvm-opts ["--add-modules" "java.xml.bind"]
+
   :plugins [[lein-figwheel "0.5.9"]
             [lein-cljsbuild "1.1.5" :exclusions [org.clojure/clojure]]]
 
