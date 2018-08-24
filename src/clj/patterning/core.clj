@@ -1,6 +1,6 @@
 (ns patterning.core
   (:require [patterning.maths :as maths])
-  (:require [patterning.sshapes :refer [->SShape ]])
+  (:require [patterning.sshapes :refer [->SShape to-triangles ]])
   (:require [patterning.strings :as strings])
   (:require [patterning.groups :as groups])
   (:require [patterning.layouts :refer [framed clock-rotate stack grid-layout diamond-layout
@@ -144,6 +144,16 @@
           (clock-rotate 12 (stack l (sshape-as-layout (first l) s 0.1)))))
 
 
+(def p6 (let [p (poly 0 0 0.8 9 {:fill (p-color 200 100 100 100) :stroke-weight 2 :stroke (p-color 100 200 150)})
+              ss (first p)
+              p2 (groups/triangle-list-to-pattern
+                  (to-triangles ss))
+
+              p3 (map #(-> % (vector) randomize-color) p2)
+              d1 (println p3)
+              ]
+          p3)  )
+
 (defn finals [ps]
   (doseq [[n p] ps]
     (println n)
@@ -160,4 +170,5 @@
                                                             :stroke-weight 3
                                                             :stroke (p-color 0 100 255)}))]
     ["p4" p4]
-    ["p5" p5]])  )
+    ["p5" p5]
+    ["p6" p6]])  )

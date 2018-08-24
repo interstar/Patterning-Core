@@ -6,6 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.7.28"]
+                 [orchestra "2018.08.19-1"]
                 ]
 
   :plugins [[lein-cljsbuild "1.0.6"]

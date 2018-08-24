@@ -1,4 +1,5 @@
-(ns patterning.maths)
+(ns patterning.maths
+  (:require [clojure.spec.alpha :as s]))
 
 ;; My maths library (to factor out all the maths functions that will
 ;; need to be different in Clojure / ClojureScript cljx
@@ -76,10 +77,16 @@
 
 
 ;; Triangle geometry
-(defn triangle [ax ay bx by cx cy]
-  {:A [ax ay] :B [bx by] :C [cx cy]
-   :a [[bx by] [cx cy]] :b [[ax ay] [cx cy]] :c [[ax ay] [bx by]]
-   :ax ax :ay ay :bx bx :by by :cx cx :cy cy})
+
+(s/def ::point (s/coll-of number? :kind vector? :count 2))
+(s/def ::Triangle (s/keys :req-un [::A ::B ::C ::a ::b ::c ::ax ::ay ::bx ::by ::cx ::cy]))
+
+(defn triangle
+  ([[ax ay] [bx by] [cx cy]] (triangle ax ay bx by cx cy))
+  ([ax ay bx by cx cy]
+   {:A [ax ay] :B [bx by] :C [cx cy]
+    :a [[bx by] [cx cy]] :b [[ax ay] [cx cy]] :c [[ax ay] [bx by]]
+    :ax ax :ay ay :bx bx :by by :cx cx :cy cy}))
 
 (defn perimeter [t] (+ (apply distance (:a t)) (apply distance (:b t)) (apply distance (:c t))))
 
@@ -95,8 +102,12 @@
     (mol= (+ (area pab) (area pbc) (area pac)) (area t))
     ))
 
+(s/fdef contains-point :args (s/cat :t ::Triangle :p ::point) :ret boolean?)
+
 (defn triangle-points [t] [(:A t) (:B t) (:C t)])
 
+(defn tri= [t1 t2]
+  (= (set (triangle-points t1)) (set (triangle-points t2))))
 
 ;; Useful functions
 (defn drop-every [n xs] (lazy-seq (if (seq xs) (concat (take (dec n) xs) (drop-every n (drop n xs))))))

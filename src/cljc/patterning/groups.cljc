@@ -1,6 +1,10 @@
 (ns patterning.groups
   (:require [patterning.maths :as maths]
             [patterning.sshapes :as sshapes]
+            [patterning.color :refer [p-color]]
+            [clojure.spec.alpha :as s]
+            [orchestra.spec.test :as stest]
+
             [clojure.set :refer [union]]))
 
 
@@ -19,6 +23,17 @@
 
 (defn empty-pattern [] [])
 
+
+(defn triangle-list-to-pattern [ts]
+  (map #(sshapes/->SShape {:fill (p-color 100 100 100 100)
+                           :stroke (p-color 0)}
+                          (maths/triangle-points %)) ts ))
+
+(s/fdef triangle-list-to-pattern
+        :args (s/cat :ts (s/* ::maths/Triangle))
+        :ret ::sshapes/Pattern)
+
+;(stest/instrument `triangle-list-to-pattern)
 
 ;;; Simple transforms
 (defn scale ([val pattern] (lazy-seq (map (partial sshapes/scale val) pattern )))   )
