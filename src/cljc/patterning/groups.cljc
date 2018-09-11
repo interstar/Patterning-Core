@@ -24,16 +24,18 @@
 (defn empty-pattern [] [])
 
 
-(defn triangle-list-to-pattern [ts]
+(defn triangle-list-to-pattern [trs]
   (map #(sshapes/->SShape {:fill (p-color 100 100 100 100)
                            :stroke (p-color 0)}
-                          (maths/triangle-points %)) ts ))
+                          (maths/triangle-points %)) trs ))
+
 
 (s/fdef triangle-list-to-pattern
-        :args (s/cat :ts (s/* ::maths/Triangle))
-        :ret ::sshapes/Pattern)
+        :args (s/cat :trs (s/coll-of  ::maths/Triangle))
+        :ret ::sshapes/Pattern
+        )
 
-;(stest/instrument `triangle-list-to-pattern)
+(stest/instrument `triangle-list-to-pattern)
 
 ;;; Simple transforms
 (defn scale ([val pattern] (lazy-seq (map (partial sshapes/scale val) pattern )))   )

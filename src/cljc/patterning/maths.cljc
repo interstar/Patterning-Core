@@ -1,5 +1,7 @@
 (ns patterning.maths
-  (:require [clojure.spec.alpha :as s]))
+  (:require [clojure.spec.alpha :as s]
+            [orchestra.spec.test :as stest]
+            ))
 
 ;; My maths library (to factor out all the maths functions that will
 ;; need to be different in Clojure / ClojureScript cljx
@@ -88,6 +90,15 @@
     :a [[bx by] [cx cy]] :b [[ax ay] [cx cy]] :c [[ax ay] [bx by]]
     :ax ax :ay ay :bx bx :by by :cx cx :cy cy}))
 
+(s/fdef triangle
+        :args (s/alt :pairs (s/cat :A ::point :B ::point :C ::point)
+                     :scalars (s/cat :ax number? :ay number?
+                                     :bx number? :by number?
+                                     :cx number? :cy number?))
+        :ret ::Triangle)
+
+(stest/instrument `triangle)
+
 (defn perimeter [t] (+ (apply distance (:a t)) (apply distance (:b t)) (apply distance (:c t))))
 
 (defn area [t]
@@ -103,8 +114,11 @@
     ))
 
 (s/fdef contains-point :args (s/cat :t ::Triangle :p ::point) :ret boolean?)
+(stest/instrument `contains-point )
 
 (defn triangle-points [t] [(:A t) (:B t) (:C t)])
+
+
 
 (defn tri= [t1 t2]
   (= (set (triangle-points t1)) (set (triangle-points t2))))

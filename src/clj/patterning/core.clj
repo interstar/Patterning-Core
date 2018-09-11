@@ -1,6 +1,8 @@
 (ns patterning.core
   (:require [patterning.maths :as maths])
-  (:require [patterning.sshapes :refer [->SShape to-triangles ]])
+  (:require [patterning.sshapes
+             :refer [->SShape to-triangles ]
+             :as sshapes])
   (:require [patterning.strings :as strings])
   (:require [patterning.groups :as groups])
   (:require [patterning.layouts :refer [framed clock-rotate stack grid-layout diamond-layout
@@ -22,8 +24,9 @@
   (:require [patterning.library.symbols :as symbols])
 
 
-
   (:require [patterning.api :refer :all])
+
+  (:require [clojure.spec.alpha :as s])
 
   (:require [patterning.library.complex_elements :refer [petal-pair-group petal-group]])
 
@@ -146,11 +149,8 @@
 
 (def p6 (let [p (poly 0 0 0.8 9 {:fill (p-color 200 100 100 100) :stroke-weight 2 :stroke (p-color 100 200 150)})
               ss (first p)
-              p2 (groups/triangle-list-to-pattern
-                  (to-triangles ss))
-
-              p3 (map #(-> % (vector) randomize-color) p2)
-              d1 (println p3)
+              p2 (groups/triangle-list-to-pattern (to-triangles ss))
+              p3 (apply stack (map #(-> % vector randomize-color) p2))
               ]
           p3)  )
 
@@ -158,7 +158,7 @@
   (doseq [[n p] ps]
     (println n)
     (spit (str "outs/" n ".patdat") p)
-;    (println p)
+    (s/explain ::sshapes/Pattern p)
     (spit (str "outs/" n ".svg") (make-svg 800 800 p) ))
   )
 

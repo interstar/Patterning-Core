@@ -6,7 +6,7 @@
             [patterning.sshapes :as sshapes]
             [patterning.sshapes :refer [mol=shapes ->SShape]]
             [clojure.spec.alpha :as s]
-            [clojure.spec.test.alpha :as stest]
+            [orchestra.spec.test :as stest]
             ))
 
 (deftest mol-equal-shapes

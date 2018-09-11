@@ -87,7 +87,7 @@
 
 (s/def ::points (s/* ::maths/point))
 (s/def ::SShape (s/keys :req-un [::points ::style]))
-(s/def ::Pattern (s/* ::SShape))
+(s/def ::Pattern (s/coll-of ::SShape))
 
 (defrecord SShape [style points])
 (defn empty-sshape [] (->SShape {} []))
