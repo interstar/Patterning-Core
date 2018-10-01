@@ -35,7 +35,7 @@ The source for that library and examples are on [Patterning for Processing](http
 
 ![Patterning Image](http://alchemyislands.com/blog/wp-content/uploads/2014/09/fp6.png)
 
-See how we made this in the [Functional Patterning Tutorial](http://alchemyislands.com/tutorial/fp.html).
+See how we made this in the [Functional Patterning Tutorial](http://alchemyislands.com/bs/assets/patterning/tutorial_site/index.html#!/tutorial.fp).
 
 ## Quick Start
 
