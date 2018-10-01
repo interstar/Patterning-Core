@@ -26,6 +26,9 @@ cd tutorial
 lein figwheel devcards
 ```
 
+Then navigate to : http://localhost:3449/
+
+
 ### Patterning Quil 
 
 [A separate project](https://github.com/interstar/Patterning-Quil) now shows how to use Patterning Core in a Quil / Processing project. See the example on that page.
