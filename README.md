@@ -14,12 +14,17 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 (See below for an example of how to do this.)
 
-### Figwheel Patterning
 
-An example of using Patterning in browser in a Figwheel project.
 
-[https://github.com/interstar/Patterning-Figwheel-Example](https://github.com/interstar/Patterning-Figwheel-Example)
+### Patterning works in ClojureScript and Figwheel
 
+The `tutorial` subdirectory of this repository is actually a separate leiningen project. It uses Patterning with Figwheel.
+
+```
+cd tutorial
+
+lein figwheel devcards
+```
 
 ### Patterning Quil 
 
@@ -46,7 +51,7 @@ See how we made this in the [Functional Patterning Tutorial](http://alchemyislan
     
 You should see that Patterning has produced several example patterns in the outs directory.
     
-Check the src/clj/core.clj for code that made these patterns.    
+Check the src/clj/core.clj for code that made these patterns.
 
 
 # DEPRECATED 
@@ -56,7 +61,7 @@ Check the src/clj/core.clj for code that made these patterns.
 
 ## License
 
-Copyright © 2014-2017 Phil Jones
+Copyright © 2014-2018 Phil Jones
 
 Distributed under the [Gnu Lesser General Public License](https://www.gnu.org/licenses/lgpl.html) 
 either version 3.0 or (at your option) any later version.
