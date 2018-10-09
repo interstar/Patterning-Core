@@ -20,6 +20,7 @@
    [tutorial.page2 :as page2]
    [tutorial.download :as download]
    [tutorial.turtorial :as turtorial]
+   [tutorial.inter :as inter]
 
    ;[tutorial.month :as month]
 

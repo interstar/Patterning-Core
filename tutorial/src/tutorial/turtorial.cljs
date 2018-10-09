@@ -17,7 +17,8 @@
    [tutorial.common :refer [render]]
    [clojure.string :as str])
 
-    (:require-macros [devcards.core :as dc :refer [defcard deftest]])
+  (:require-macros [devcards.core :as dc :refer [defcard deftest]])
+
 )
 
 

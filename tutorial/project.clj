@@ -11,6 +11,8 @@
                  [devcards "0.2.3"]
                  [sablono "0.7.4"]
 
+                 [reagent "0.7.0"]
+
 
                  [com.alchemyislands/patterning "0.5.4-SNAPSHOT"]
 
