@@ -41,9 +41,13 @@ The source for that library and examples are on [Patterning for Processing](http
 
 ## What Patterning looks like 
 
-![Patterning Image](http://alchemyislands.com/blog/wp-content/uploads/2014/09/fp6.png)
+![Patterning Image](http://alchemyislands.com/bs/assets/patterning/p1.png)
 
-See how we made this in the [Functional Patterning Tutorial](http://alchemyislands.com/bs/assets/patterning/tutorial_site/index.html#!/tutorial.fp).
+![Patterning Image2](http://alchemyislands.com/bs/assets/patterning/p3.png)
+
+![Patterning Image3](http://alchemyislands.com/bs/assets/patterning/p4.png)
+
+See more examples in the [Functional Patterning Tutorial](http://alchemyislands.com/bs/assets/patterning/tutorial_site/index.html#!/tutorial.fp).
 
 ## Quick Start
 
