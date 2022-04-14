@@ -15,6 +15,11 @@ A compiled version of this library is now available on Clojars. Include in your 
 (See below for an example of how to do this.)
 
 
+### Patterning in Cardigan Bay
+
+[Cardigan Bay](https://github.com/interstar/cardigan-bay) a wiki / note-takeing / digital gardening engine written in Clojure also has Patterning built in. That means you can add patterns to your wiki in the form of short embedded scripts. See [this page](http://thoughtstorms.info/view/PatterningInCardiganBay) for an example.
+
+
 
 ### Patterning works in ClojureScript and Figwheel
 
