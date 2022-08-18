@@ -3,7 +3,7 @@
             [patterning.sshapes :as sshapes]
             [patterning.color :refer [p-color]]
             [clojure.spec.alpha :as s]
-            [orchestra.spec.test :as stest]
+
 
             [clojure.set :refer [union]]))
 
@@ -35,7 +35,7 @@
         :ret ::sshapes/Pattern
         )
 
-(stest/instrument `triangle-list-to-pattern)
+
 
 ;;; Simple transforms
 (defn scale ([val pattern] (lazy-seq (map (partial sshapes/scale val) pattern )))   )

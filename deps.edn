@@ -1,0 +1,6 @@
+{:deps
+ {org.clojure/clojure {:mvn/version "1.10.0"}
+  org.clojure/clojurescript {:mvn/version "1.7.28"}
+  orchestra/orchestra {:mvn/version "2018.08.19-1"}
+  }
+ :paths ["src" "src/cljc"]}

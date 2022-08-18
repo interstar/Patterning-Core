@@ -2,7 +2,7 @@
   (:require [patterning.maths :as maths]
             [clojure.data :refer [diff]]
             [clojure.spec.alpha :as s]
-            [orchestra.spec.test :as stest]
+
             )
 
   #?(:clj (:require [patterning.macros :refer [optional-styled-primitive]])
@@ -191,6 +191,3 @@
                     (s/valid? ::SShape pruned)
                     (recur pruned (conj saved-ears ear))))))
           )))))
-
-(s/fdef to-triangles :args (s/cat :original-shape ::SShape) :ret (s/* ::maths/Triangle))
-(stest/instrument `to-triangles)

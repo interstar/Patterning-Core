@@ -1,6 +1,6 @@
 (ns patterning.maths
   (:require [clojure.spec.alpha :as s]
-            [orchestra.spec.test :as stest]
+
             ))
 
 ;; My maths library (to factor out all the maths functions that will
@@ -97,7 +97,7 @@
                                      :cx number? :cy number?))
         :ret ::Triangle)
 
-(stest/instrument `triangle)
+
 
 (defn perimeter [t] (+ (apply distance (:a t)) (apply distance (:b t)) (apply distance (:c t))))
 
@@ -114,7 +114,7 @@
     ))
 
 (s/fdef contains-point :args (s/cat :t ::Triangle :p ::point) :ret boolean?)
-(stest/instrument `contains-point )
+
 
 (defn triangle-points [t] [(:A t) (:B t) (:C t)])
 
