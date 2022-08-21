@@ -7,6 +7,7 @@
 ;; need to be different in Clojure / ClojureScript cljx
 
 (def PI #?(:clj (Math/PI) :cljs js/Math.PI) )
+(def TwoPI (* PI 2))
 (def half-PI (float (/ PI 2)))
 (def q-PI (float (/ PI 4)))
 
@@ -17,7 +18,17 @@
 (defn sin [a] #?(:clj (Math/sin a) :cljs (js/Math.sin a)) )
 
 
-(defn clock-angles [number]  (take number (iterate (fn [a] (+ a (float (/ (* 2 PI) number)))) (- PI))) )
+(defn clock-angles [number]
+  (let [da (float(/ TwoPI number))]
+    (take number (iterate #(+ da %) (- half-PI)))) )
+
+
+(defn rec-to-pol [[x y]] [(sqrt (+ (* x x) (* y y))) (atan2  x y)])
+(defn pol-to-rec [[r a]] [(* r (cos a)) (* r (sin a))])
+
+
+(defn clock-angles-as-point-spiral [n]
+  (map pol-to-rec (map vector (iterate #(+ % 0.05) 0.05) (clock-angles n) )))
 
 (defn tx
   "transform a scalar from one space to another. o1 is origin min, o2 is origin max, t1 is target min, t2 is target max"
@@ -45,9 +56,6 @@
 (defn unit [[dx dy]] (let [m (magnitude [dx dy])] [(float (/ dx m)) (float (/ dy m))]) )
 
 (defn rev [[dx dy]] [(- dx) (- dy)])
-
-(defn rec-to-pol [[x y]] [(sqrt (+ (* x x) (* y y))) (atan2  x y)])
-(defn pol-to-rec [[r a]] [(* r (cos a)) (* r (sin a))])
 
 (defn line-to-segments [points]
   (if (empty? points) []
