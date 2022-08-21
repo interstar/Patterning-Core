@@ -20,6 +20,7 @@
 ;;; Making patterns
 (defn APattern "a vector of sshapes" [& sshapes] (lazy-seq sshapes) )
 
+(defn group [& sshapes] sshapes)
 
 (defn empty-pattern [] [])
 
