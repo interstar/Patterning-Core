@@ -1,5 +1,5 @@
 (ns patterning.core
-  (:require [patterning.maths :as maths])
+  (:require [patterning.maths :as maths :refer [PI]])
   (:require [patterning.sshapes
              :refer [->SShape to-triangles ]
              :as sshapes])
@@ -13,6 +13,7 @@
   (:require [patterning.library.std :refer [poly star nangle spiral diamond
                                             horizontal-line square drunk-line]])
   (:require [patterning.library.turtle :refer [basic-turtle]])
+  (:require [patterning.library.l_systems :refer [l-system]])
   (:require [patterning.library.complex_elements :refer [vase zig-zag]])
   (:require [patterning.view :refer [make-txpt make-svg]])
   (:require [patterning.color :refer [p-color remove-transparency] ])
@@ -52,7 +53,7 @@
 
 
 (def p2
-  (let [blue {:fill (p-color 150 150 255)
+  '(let [blue {:fill (p-color 150 150 255)
               :stroke (p-color 50 50 255)
               :stroke-weight 2}
 
@@ -140,35 +141,55 @@
 (defn randomize-color [p] (let [c (rand-col)] (groups/over-style {:fill (darker-color c)
                                                                   :stroke c} p ) ))
 
-(def p4 (ring 8 0.5 (map randomize-color (cycle (map a-nangle [5 7 9])))))
+(def p4 '(ring 8 0.5 (map randomize-color (cycle (map a-nangle [5 7 9])))))
 
-(def p5 (let [l (drunk-line 10 0.1)
+(def p5 '(let [l (drunk-line 10 0.1)
               s (map randomize-color (cycle (map a-nangle [5 7 9])))   ]
           (clock-rotate 12 (stack l (sshape-as-layout (first l) s 0.1)))))
 
 
-(def p6 (let [p (poly 0 0 0.8 9 {:fill (p-color 200 100 100 100) :stroke-weight 2 :stroke (p-color 100 200 150)})
+(def p6 '(let [p (poly 0 0 0.8 9 {:fill (p-color 200 100 100 100) :stroke-weight 2 :stroke (p-color 100 200 150)})
               ss (first p)
               p2 (groups/triangle-list-to-pattern (to-triangles ss))
               p3 (apply stack (map #(-> % vector randomize-color) p2))
               ]
           p3)  )
 
+(def p7
+  '(let
+      [grow (l-system [["F" "F[+F]F[-F]Y[F]"] ["Y" "Z"]])]
+    (basic-turtle
+     [0 1]
+     0.1
+     (/ PI -2)
+     (/ PI 9)
+     (grow 4 "F")
+     {\Z
+      (fn [x y a]
+        (do
+          (poly x y 0.03 8
+                {:fill (p-color 255 0 0) :stroke-weight 0})))
+      }
+     {:stroke (p-color 0 155 50)})) )
+
 (defn finals [ps]
-  (doseq [[n p] ps]
+  (doseq [[n qp] ps]
+    (println "-----------------------------------------------------------------------")
     (println n)
-    (spit (str "outs/" n ".patdat") p)
-    (s/explain ::sshapes/Pattern p)
-    (spit (str "outs/" n ".svg") (make-svg 800 800 p) ))
+    (let [p (binding [*ns* (find-ns 'patterning.core) ] (eval qp))]
+      (spit (str "outs/" n ".patdat") p)
+      (s/explain ::sshapes/Pattern p)
+      (spit (str "outs/" n ".svg") (make-svg 800 800 p) )))
   )
 
 (defn -main [& args]
   (finals
-   [["p1" (framedplant/framed-plant)]
+   [["p1" '(framedplant/framed-plant)]
     ["p2" p2]
-    ["p3" (groups/scale 0.8 (symbols/ringed-flower-of-life {:fill (p-color 160 120 180 20)
+    ["p3" '(groups/scale 0.8 (symbols/ringed-flower-of-life {:fill (p-color 160 120 180 20)
                                                             :stroke-weight 3
                                                             :stroke (p-color 0 100 255)}))]
     ["p4" p4]
     ["p5" p5]
-    ["p6" p6]])  )
+    ["p6" p6]
+    ["p7" p7]])  )
