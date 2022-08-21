@@ -19,7 +19,11 @@
 (def poly (optional-styled-primitive [cx cy radius no-sides]
              (let [ make-point (fn [a] (maths/add-points [cx cy] (maths/pol-to-rec [radius a])))]
                 (close-shape (into [] (map make-point (maths/clock-angles no-sides))))  )
-           ))
+             ))
+
+
+
+(def multiline (optional-styled-primitive [ps] ps))
 
 (def star (optional-styled-primitive
            [cx cy rads n]
@@ -77,6 +81,9 @@
 (def spiral (optional-styled-primitive [n a da r dr]
                                        (take n (spiral-points a da r dr))))
 
+
+
+
 ;; Complex patterns made as patterns (these have several disjoint sshapes)
 
 (defn cross "A cross, can only be made as a pattern (because sshapes are continuous lines) which is why we only define it now"
@@ -102,3 +109,21 @@
 ;; Others
 (defn background [color pattern]
   (stack (square {:fill color}) pattern))
+
+
+(comment
+  (defn clock-now
+    ([style]
+     (let [hours #?(:clj (-> (new java.time.LocalTime) .getHour (mod 12))
+                    :cljs (-> (js/Date.) .getHours))
+           mins #?(:clj (-> (new java.time.LocalTime) .getMinute)
+                   :cljs (-> (js/Date.) .getMinutes))
+           hour-angle (nth (maths/clock-angles 12) hour)
+           min-angle (nth (maths/clock-angles 60) mins)]
+       (stack
+        (poly 0 0 0.65 50 style)
+        (clock-rotate 12 [(->SShape style [[0.5 0] [0.6 0]])])
+
+        [(->SShape style [[0 0.35] [0 0] [0.3 -0.3]])]
+        )
+       ))))
