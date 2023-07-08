@@ -135,3 +135,46 @@
   (if (not= (count pattern1) (count pattern2)) false
       (let [ssmol= (fn [[ss1 ss2]] (sshapes/mol= ss1 ss2))]
         (every? ssmol= (map vector pattern1 pattern2) )))  )
+
+
+
+
+;; Centering
+
+
+(defn box [x y w h] {:x x :y y :width w :height h})
+(defn box-flip [{:keys [x y width height]}] {:x x :y y :width height :height width})
+(defn box->rect [{:keys [x y width height]} style]  (rect x y width height style) )
+
+
+(defn horizontal-centre-box [inner outer]
+   (let [h-off (+ (:x outer) (-> (- (:width outer) (:width inner)) (/ 2)))]
+       (box h-off (:y inner) (:width inner) (:height inner))
+   )
+)
+
+(defn vertical-centre-box [inner outer]
+  (let [v-off (+ (:y outer) (-> (- (:height outer) (:height inner)) (/ 2)))]
+     (box (:x inner) v-off (:width inner) (:height inner))
+  )
+)
+
+(defn pattern->box [pattern]
+  (box (leftmost pattern) (top pattern) (width pattern) (height pattern) ))
+
+
+
+
+(defn centre-pattern-in-pattern [inner-pattern outer-pattern]
+  (let [inner-box (pattern->box inner-pattern)
+        outer-box (pattern->box outer-pattern)
+        new-inner-box (-> inner-box
+                          (horizontal-centre-box outer-box)
+                          (vertical-centre-box outer-box))
+        dx (- (:x new-inner-box) (leftmost inner-pattern) )
+        dy (- (:y new-inner-box) (top inner-pattern ))
+        ]
+
+    (translate dx dy inner-pattern)
+    )
+  )

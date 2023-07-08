@@ -48,7 +48,7 @@
                     "fill='none' ") )
         ]
 
-    (str (strings/gen-format "\n<path style='-webkit-tap-highlight-color: rgba(0, 0, 0, 0);' %s %s %s " stroke-width stroke fill )
+    (str (strings/gen-format "\n<path  %s %s %s " stroke-width stroke fill )
          " d='"
          (apply str strung)
          "'></path>"
