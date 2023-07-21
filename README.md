@@ -14,19 +14,21 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 (See below for an example of how to do this.)
 
-
-### Patterning in Cardigan Bay
-
-[Cardigan Bay](https://github.com/interstar/cardigan-bay), a wiki / note-taking / digital gardening engine written in Clojure, also has Patterning built in. That means you can add patterns to your wiki in the form of short embedded scripts. See [this page](http://thoughtstorms.info/view/PatterningInCardiganBay) for an example.
-
-In fact, the easiest way, today, to just play around with Patterning to see what you can do with it, is to download a Cardigan Bay release (it's distributed as a Java app that will run on any desktop OS) and try embedding some simple patterning scripts in pages.
-
-The latest tutorial site for Patterning is also now made with Cardigan Bay and can be seen here : [http://alchemyislands.com/tutorials/HelloWorld.html](http://alchemyislands.com/tutorials/HelloWorld.html)
+## How (and Where) to Use It
 
 ### Patterning works in ClojureScript
 
-You can also play directly with Patterning in your browser by visiting [http://alchemyislands.com/rose-engine/](http://alchemyislands.com/rose-engine/)
+The easiest way, today, to just play around with Patterning to see what you can do with it is to try it in Project RoseEngine. An experimental / work-in-progress Clojure creative environment you can access through your browser by visiting [http://alchemyislands.com/rose-engine/](http://alchemyislands.com/rose-engine/)
 
+This is a purely ClojureScript, in-browser environment in which you write ClojureScript code, and which can export SVG and PostScript.
+
+### Patterning in Cardigan Bay
+
+[Cardigan Bay](https://github.com/interstar/cardigan-bay), a wiki / note-taking / digital gardening engine written in Clojure, also has Patterning built in. That means you can add patterns to your wiki in the form of short embedded scripts.
+
+Cardigan Bay is another easy way to play with Patterning without writing your own application. It's distributed as a Java app that will run on any desktop OS. You don't need a Clojure environment installed. 
+
+The latest tutorial site for Patterning is also now made with Cardigan Bay and can be seen here : [http://alchemyislands.com/tutorials/HelloWorld.html](http://alchemyislands.com/tutorials/HelloWorld.html)
 
 ### Patterning Quil 
 
