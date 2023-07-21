@@ -1,11 +1,12 @@
 (ns patterning.groups
   (:require [patterning.maths :as maths]
-            [patterning.sshapes :as sshapes]
+            [patterning.sshapes :refer [->SShape] :as sshapes]
             [patterning.color :refer [p-color]]
             [clojure.spec.alpha :as s]
+            [clojure.set :refer [union]]
 
-
-            [clojure.set :refer [union]]))
+            [patterning.macros :refer [optional-styled-primitive]]
+            ))
 
 
 ;; A Pattern is nothing but a sequence of SShapes
@@ -141,6 +142,9 @@
 
 ;; Centering
 
+(def rect (optional-styled-primitive [x y w h]
+                                     (let [x2 (+ x w) y2 (+ y h)]
+                                       [[x y] [x2 y] [x2 y2] [x y2] [x y]] ) ))
 
 (defn box [x y w h] {:x x :y y :width w :height h})
 (defn box-flip [{:keys [x y width height]}] {:x x :y y :width height :height width})
@@ -163,18 +167,23 @@
   (box (leftmost pattern) (top pattern) (width pattern) (height pattern) ))
 
 
+(defn horizontal-centre-pattern-in-pattern [inner-pattern outer-pattern]
+  (let [inner-box (pattern->box inner-pattern)
+        outer-box (pattern->box outer-pattern)
+        new-inner-box (-> inner-box (horizontal-centre-box outer-box))
+        dx (- (:x new-inner-box) (leftmost inner-pattern))]
+    (translate dx 0 inner-pattern)))
+
+(defn vertical-centre-pattern-in-pattern [inner-pattern outer-pattern]
+  (let [inner-box (pattern->box inner-pattern)
+        outer-box (pattern->box outer-pattern)
+        new-inner-box (-> inner-box (vertical-centre-box outer-box))
+        dy (- (:y new-inner-box) (top inner-pattern))]
+    (translate 0 dy inner-pattern)))
 
 
 (defn centre-pattern-in-pattern [inner-pattern outer-pattern]
-  (let [inner-box (pattern->box inner-pattern)
-        outer-box (pattern->box outer-pattern)
-        new-inner-box (-> inner-box
-                          (horizontal-centre-box outer-box)
-                          (vertical-centre-box outer-box))
-        dx (- (:x new-inner-box) (leftmost inner-pattern) )
-        dy (- (:y new-inner-box) (top inner-pattern ))
-        ]
-
-    (translate dx dy inner-pattern)
-    )
+  (-> inner-pattern
+      (horizontal-centre-pattern-in-pattern outer-pattern)
+      (vertical-centre-pattern-in-pattern outer-pattern))
   )
