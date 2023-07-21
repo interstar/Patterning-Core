@@ -1,38 +1,35 @@
 (ns patterning.core
-  (:require [patterning.maths :as maths :refer [PI]])
-  (:require [patterning.sshapes
+  (:require [patterning.maths :as maths :refer [PI]]
+
+            [patterning.sshapes
              :refer [->SShape to-triangles ]
-             :as sshapes])
-  (:require [patterning.strings :as strings])
-  (:require [patterning.groups :as groups])
-  (:require [patterning.layouts :refer [framed clock-rotate stack grid-layout diamond-layout
-                                        four-mirror four-round nested-stack checked-layout
-                                        half-drop-grid-layout random-turn-groups h-mirror ring
-                                        sshape-as-layout]])
+             :as sshapes]
 
-  (:require [patterning.library.std :refer [poly star nangle spiral diamond
-                                            horizontal-line square drunk-line]])
-  (:require [patterning.library.turtle :refer [basic-turtle]])
-  (:require [patterning.library.l_systems :refer [l-system]])
-  (:require [patterning.library.complex_elements :refer [vase zig-zag]])
-  (:require [patterning.view :refer [make-txpt make-svg]])
-  (:require [patterning.color :refer [p-color remove-transparency] ])
+            [patterning.strings :as strings]
+            [patterning.groups :as groups]
+            [patterning.layouts
+             :refer [framed clock-rotate stack grid-layout diamond-layout
+                     four-mirror four-round nested-stack checked-layout
+                     half-drop-grid-layout random-turn-groups h-mirror ring
+                     sshape-as-layout]]
 
+            [patterning.library.std
+             :refer [poly star nangle spiral diamond
+                     horizontal-line square drunk-line]]
+            [patterning.library.turtle :refer [basic-turtle]]
+            [patterning.library.l_systems :refer [l-system]]
+            [patterning.library.complex_elements :refer [vase zig-zag]]
+            [patterning.view :refer [make-txpt make-svg]]
+            [patterning.color :refer [p-color remove-transparency] ]
+            [patterning.examples.framedplant :as framedplant]
+            [patterning.examples.design_language1 :as design-language]
+            [patterning.library.symbols :as symbols]
+            [patterning.library.complex_elements :refer [petal-pair-group petal-group]]
+            [patterning.api :refer :all]
 
-  (:require [patterning.examples.framedplant :as framedplant])
-  (:require [patterning.examples.design_language1 :as design-language])
+            [clojure.spec.alpha :as s]
 
-  (:require [patterning.library.symbols :as symbols])
-
-
-  (:require [patterning.api :refer :all])
-
-  (:require [clojure.spec.alpha :as s])
-
-  (:require [patterning.library.complex_elements :refer [petal-pair-group petal-group]])
-
-
-)
+            ))
 
 
 ;; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
