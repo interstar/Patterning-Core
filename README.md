@@ -30,6 +30,10 @@ Cardigan Bay is another easy way to play with Patterning without writing your ow
 
 The latest tutorial site for Patterning is also now made with Cardigan Bay and can be seen here : [http://alchemyislands.com/tutorials/HelloWorld.html](http://alchemyislands.com/tutorials/HelloWorld.html)
 
+### Other Documentation
+
+As of writing, https://github.com/nataliefreed also has some nice documentation of the different functions in Patterning at : https://docs.google.com/document/d/1kKsBw3C4jrPGtr7BRYbmcbid4FgWn0_CzdNy1bQ60b8/edit?pli=1
+
 ### Patterning Quil 
 
 [A separate project](https://github.com/interstar/Patterning-Quil) now shows how to use Patterning Core in a Quil / Processing project. See the example on that page.
