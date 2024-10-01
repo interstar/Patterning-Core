@@ -3,4 +3,4 @@
       org.clojure/clojurescript {:mvn/version "1.7.28"}
       orchestra/orchestra {:mvn/version "2018.08.19-1"}
       }
-     :paths ["src" ]}
+     :paths ["src" "src/cljc" ]}
