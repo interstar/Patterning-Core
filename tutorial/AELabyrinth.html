@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/scittle@0.1.2/dist/scittle.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic"> 
+    <link href="./main.css" rel="stylesheet" type="text/css" />
+
+  </head>
+
+  <body>
+    
+    <div class="page-header">
+      <div class="page-title-div">
+        <h2>Patterning Tutorial</h2>
+      </div>
+      <div class="navbar">
+        <a href="./HelloWorld.html">Welcome</a> || <a href="http://alchemyislands.com/wp-content/rose-engine/">Rose Engine</a> (experimental live system)
+      </div>
+    </div>
+    
+    <div class="page-main-content">
+      <div><div><section class="card">
+<div class='calculated-out'><pre>
+Exception :: Divide by zero
+
+clojure.lang.ExceptionInfo: Divide by zero {:type :sci/error, :line 45, :column 4, :message "Divide by zero", :sci.impl/callstack #object[clojure.lang.Volatile 0x4e3cfac7 {:status :ready, :val ({:line 99, :column 3, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:line 99, :column 3, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:line 94, :column 3, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:ns #object[sci.impl.vars.SciNamespace 0x7f24be8f "clojure.core"], :name apply, :sci/built-in true, :arglists ([f args] [f x args] [f x y args] [f x y z args] [f a b c d & args]), :doc "Applies fn f to the argument list formed by prepending intervening arguments to args."}} {:line 88, :column 5, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:line 81, :column 5, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:line 84, :column 8, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:name project-to-panel, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :line 71, :column 1, :arglists ([x p])}} {:line 85, :column 10, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:name n-inner, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :line 62, :column 1, :arglists ([n])}} {:line 63, :column 5, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:ns #object[sci.impl.vars.SciNamespace 0x7f24be8f "clojure.core"], :name apply, :sci/built-in true, :arglists ([f args] [f x args] [f x y args] [f x y z args] [f a b c d & args]), :doc "Applies fn f to the argument list formed by prepending intervening arguments to args."}} {:line 65, :column 23, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:line 65, :column 13, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:name inner, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :line 52, :column 1, :arglists ([n])}} {:line 53, :column 3, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:line 54, :column 5, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil} {:line 55, :column 7, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:ns #object[sci.impl.vars.SciNamespace 0x7f24be8f "clojure.core"], :name iterate, :sci/built-in true, :arglists ([f x]), :doc "Returns a lazy sequence of x, (f x), (f (f x)) etc. f must be free of side-effects"}} {:line 55, :column 29, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:name one-or-other, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :line 48, :column 1, :arglists ([_])}} {:line 49, :column 4, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:ns #object[sci.impl.vars.SciNamespace 0x7f24be8f "clojure.core"], :name rand-nth, :sci/built-in true, :arglists ([coll]), :doc "Return a random element of the (sequential) collection. Will have\n  the same performance characteristics as nth for the given\n  collection."}} {:line 49, :column 16, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta {:name rpol, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :line 44, :column 1, :arglists ([])}} {:line 45, :column 4, :ns #object[sci.impl.vars.SciNamespace 0x40c61f15 "user"], :file nil, :sci.impl/f-meta nil})}], :file nil}
+	at sci.impl.utils$rethrow_with_location_of_node.invokeStatic(utils.cljc:127)
+	at sci.impl.utils$rethrow_with_location_of_node.invoke(utils.cljc:86)
+	at sci.impl.analyzer$return_call$reify__19512.eval(analyzer.cljc:1149)
+	at sci.impl.fns$fun$arity_0__17815.invoke(fns.cljc:105)
+	at sci.impl.vars.SciVar.invoke(vars.cljc:323)
+	at sci.impl.analyzer$return_call$reify__19492.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19500.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19496.eval(analyzer.cljc:1149)
+	at sci.impl.fns$fun$arity_1__17820.invoke(fns.cljc:106)
+	at sci.impl.vars.SciVar.invoke(vars.cljc:325)
+	at sci.impl.analyzer$return_call$reify__19496.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19500.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19504.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19496.eval(analyzer.cljc:1149)
+	at sci.impl.fns$fun$arity_1__17820.invoke(fns.cljc:106)
+	at sci.impl.vars.SciVar.invoke(vars.cljc:325)
+	at sci.impl.analyzer$return_call$reify__19496.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19504.eval(analyzer.cljc:1149)
+	at sci.impl.fns$fun$arity_1__17820.invoke(fns.cljc:106)
+	at clojure.core$map$fn__5935.invoke(core.clj:2770)
+	at clojure.lang.LazySeq.sval(LazySeq.java:42)
+	at clojure.lang.LazySeq.seq(LazySeq.java:51)
+	at clojure.lang.RT.seq(RT.java:535)
+	at clojure.core$seq__5467.invokeStatic(core.clj:139)
+	at clojure.core$apply.invokeStatic(core.clj:662)
+	at clojure.core$apply.invoke(core.clj:662)
+	at sci.impl.vars.SciVar.invoke(vars.cljc:327)
+	at sci.impl.analyzer$return_call$reify__19500.eval(analyzer.cljc:1149)
+	at sci.impl.fns$fun$arity_1__17820.invoke(fns.cljc:106)
+	at sci.impl.vars.SciVar.invoke(vars.cljc:325)
+	at sci.impl.analyzer$return_call$reify__19496.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19500.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19504.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19504.eval(analyzer.cljc:1149)
+	at sci.impl.fns$fun$arity_1__17820.invoke(fns.cljc:106)
+	at clojure.core$map$fn__5935.invoke(core.clj:2772)
+	at clojure.lang.LazySeq.sval(LazySeq.java:42)
+	at clojure.lang.LazySeq.seq(LazySeq.java:51)
+	at clojure.lang.RT.seq(RT.java:535)
+	at clojure.core$seq__5467.invokeStatic(core.clj:139)
+	at clojure.core$take$fn__5978.invoke(core.clj:2901)
+	at clojure.lang.LazySeq.sval(LazySeq.java:42)
+	at clojure.lang.LazySeq.seq(LazySeq.java:51)
+	at clojure.lang.RT.seq(RT.java:535)
+	at clojure.core$seq__5467.invokeStatic(core.clj:139)
+	at clojure.core$apply.invokeStatic(core.clj:662)
+	at clojure.core$apply.invoke(core.clj:662)
+	at sci.impl.vars.SciVar.invoke(vars.cljc:327)
+	at sci.impl.analyzer$return_call$reify__19500.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19496.eval(analyzer.cljc:1149)
+	at sci.impl.analyzer$return_call$reify__19500.eval(analyzer.cljc:1149)
+	at sci.impl.interpreter$eval_form.invokeStatic(interpreter.cljc:39)
+	at sci.impl.interpreter$eval_form.invoke(interpreter.cljc:15)
+	at sci.impl.interpreter$eval_string_STAR_.invokeStatic(interpreter.cljc:63)
+	at sci.impl.interpreter$eval_string_STAR_.invoke(interpreter.cljc:56)
+	at sci.impl.interpreter$eval_string.invokeStatic(interpreter.cljc:74)
+	at sci.impl.interpreter$eval_string.invoke(interpreter.cljc:70)
+	at sci.core$eval_string.invokeStatic(core.cljc:213)
+	at sci.core$eval_string.invoke(core.cljc:188)
+	at clj_ts.patterns$one_pattern.invokeStatic(patterns.cljc:115)
+	at clj_ts.patterns$one_pattern.invoke(patterns.cljc:109)
+	at clj_ts.card_server$process_card_map.invokeStatic(card_server.clj:493)
+	at clj_ts.card_server$process_card_map.invoke(card_server.clj:446)
+	at clojure.core$map$fn__5942.invoke(core.clj:2783)
+	at clojure.lang.LazySeq.sval(LazySeq.java:42)
+	at clojure.lang.LazySeq.seq(LazySeq.java:51)
+	at clojure.lang.RT.seq(RT.java:535)
+	at clojure.core$seq__5467.invokeStatic(core.clj:139)
+	at clojure.core$apply.invokeStatic(core.clj:662)
+	at clojure.core$mapcat.invokeStatic(core.clj:2800)
+	at clojure.core$mapcat.doInvoke(core.clj:2800)
+	at clojure.lang.RestFn.invoke(RestFn.java:460)
+	at clj_ts.card_server$card_maps__GT_processed.invokeStatic(card_server.clj:516)
+	at clj_ts.card_server$card_maps__GT_processed.invoke(card_server.clj:515)
+	at clj_ts.card_server$raw__GT_cards.invokeStatic(card_server.clj:520)
+	at clj_ts.card_server$raw__GT_cards.invoke(card_server.clj:518)
+	at clj_ts.card_server$load__GT_cards_for_export.invokeStatic(card_server.clj:533)
+	at clj_ts.card_server$load__GT_cards_for_export.invoke(card_server.clj:530)
+	at clj_ts.static_export$export_page.invokeStatic(static_export.clj:253)
+	at clj_ts.static_export$export_page.invoke(static_export.clj:249)
+	at clj_ts.static_export$export_list_of_pages$fn__28875.invoke(static_export.clj:291)
+	at clj_ts.static_export$export_list_of_pages.invokeStatic(static_export.clj:290)
+	at clj_ts.static_export$export_list_of_pages.invoke(static_export.clj:285)
+	at clj_ts.static_export$export_all_pages.invokeStatic(static_export.clj:311)
+	at clj_ts.static_export$export_all_pages.invoke(static_export.clj:295)
+	at clj_ts.server$export_all_pages_handler$fn__31342.invoke(server.clj:231)
+	at clojure.core$binding_conveyor_fn$fn__5823.invoke(core.clj:2047)
+	at clojure.lang.AFn.call(AFn.java:18)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ArithmeticException: Divide by zero
+	at clojure.lang.Numbers.divide(Numbers.java:190)
+	at patterning.maths$clock_angles.invokeStatic(maths.cljc:22)
+	at patterning.maths$clock_angles.invoke(maths.cljc:21)
+	at patterning.library.std$poly.invokeStatic(std.cljc:21)
+	at patterning.library.std$poly.invoke(std.cljc:19)
+	... 90 more
+</pre></div></section>
+</div><div class="system"><section class="card">
+<p><em>Backlinks</em> <em>(1 items)</em></p><ul><li><a class="exported-internal-link" href="./AEPanels.html">AEPanels</a></li></ul></section>
+</div></div>
+    </div>
+ 
+    <div class="footer">
+      <span>Page Last Modified : Mon Aug 29 12:54:59 BST 2022</span>
+      <span>
+        <a href="https://github.com/interstar/cardigan-bay/">Exported from CardiganBay</a> Tue Oct 08 12:23:05 BST 2024
+        </span>
+      </div>
+  
+  </body>
+</html>
