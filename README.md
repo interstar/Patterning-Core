@@ -18,7 +18,7 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 ### Patterning works in ClojureScript
 
-The easiest way, today, to just play around with Patterning to see what you can do with it is to try it in Project RoseEngine. An experimental / work-in-progress Clojure creative environment you can access through your browser by visiting [http://alchemyislands.com/rose-engine/](http://alchemyislands.com/rose-engine/)
+The easiest way, today, to just play around with Patterning to see what you can do with it is to try it in Project RoseEngine. An experimental / work-in-progress Clojure creative environment you can access through your browser by visiting [http://alchemyislands.com/wp-content/rose-engine/](http://alchemyislands.com/wp-content/rose-engine/)
 
 This is a purely ClojureScript, in-browser environment in which you write ClojureScript code, and which can export SVG and PostScript.
 
@@ -28,7 +28,7 @@ This is a purely ClojureScript, in-browser environment in which you write Clojur
 
 Cardigan Bay is another easy way to play with Patterning without writing your own application. It's distributed as a Java app that will run on any desktop OS. You don't need a Clojure environment installed. 
 
-The latest tutorial site for Patterning is also now made with Cardigan Bay and can be seen here : [http://alchemyislands.com/tutorials/HelloWorld.html](http://alchemyislands.com/tutorials/HelloWorld.html)
+The latest tutorial site for Patterning is also now made with Cardigan Bay and can be seen here : [http://alchemyislands.com/wp-content/tutorials/HelloWorld.html](http://alchemyislands.com/wp-content/tutorials/HelloWorld.html)
 
 ### Other Documentation
 
