@@ -23,11 +23,17 @@
             [patterning.color :refer [p-color remove-transparency] ]
             [patterning.examples.framedplant :as framedplant]
             [patterning.examples.design_language1 :as design-language]
+            [patterning.examples.city :as city]
             [patterning.library.symbols :as symbols]
-            [patterning.library.complex_elements :refer [petal-pair-group petal-group]]
+            [patterning.library.complex_elements
+             :refer [petal-pair-group petal-group]]
+            [patterning.library.machines :refer [make-cog spaced-engaged cog->pattern ]]
+            
+            
             [patterning.api :refer :all]
 
             [clojure.spec.alpha :as s]
+            [clojure.pprint :as pp]
 
             ))
 
@@ -169,24 +175,102 @@
       }
      {:stroke (p-color 0 155 50)})) )
 
+
+(def p8
+  '(let [A (make-cog 0 0 10 0.8 0.15 0.15 0.04 0.4 0.15 :round 0.08 8 0.5 )
+         B (spaced-engaged A 2/1)   ]
+     (stack
+      (groups/rect -1 -1 2 2 {:fill (p-color 255)})
+      (groups/reframe
+       (stack       
+        (cog->pattern A false)
+        (cog->pattern B true)
+        )))))
+
+(defn rcol []
+  {:stroke 
+   (rand-nth
+    [
+     (p-color 127 255 127)
+     (p-color 255 )
+     (p-color 200 100 200)
+     (p-color 200 200 100)
+     
+     (p-color 102 255 178)
+     (p-color  255 51 255)     ; pink
+     (p-color 0 204 204)
+     (p-color  255 51 51)
+     (p-color   255 255 204   )
+     
+     ])
+   :stroke-weight 2})
+
+(defn t1
+  ([p] (t1 p (rcol))) 
+  ([p s]
+   (->>
+    p
+    (stack
+     (drunk-line 10 0.2 s)
+     )
+    four-round
+    (groups/rotate (/ (rand-int 10) 10))
+    )))
+
+(def p9
+  '(let [dark-fill
+         (fn [style]
+           (conj style {:fill (darker-color (:stroke style))})
+           )
+         ]
+
+     (stack
+      (groups/rect -1 -1 2 2 {:fill (p-color 0)})
+      
+      (grid-layout
+       5 
+       (repeat (t1 []  {:stroke (p-color 250 180 200)
+                        :stroke-weight 2}))
+       ) 
+
+      (->>
+       (apply stack 
+              (take 3
+                    (iterate t1 (drunk-line 10 0.1 (rcol)))
+                    ))
+       four-mirror
+       )
+      )
+     ))
+
 (defn finals [ps]
+  (println "Producing Example Outputs in outs/")
   (doseq [[n qp] ps]
     (println "-----------------------------------------------------------------------")
     (println n)
     (let [p (binding [*ns* (find-ns 'patterning.core) ] (eval qp))]
-      (spit (str "outs/" n ".patdat") p)
+      (pp/pprint p (clojure.java.io/writer (str "outs/" n ".patdat")) )
       (s/explain ::sshapes/Pattern p)
       (spit (str "outs/" n ".svg") (make-svg 800 800 p) )))
   )
 
 (defn -main [& args]
   (finals
-   [["p1" '(framedplant/framed-plant)]
-    ["p2" p2]
-    ["p3" '(groups/scale 0.8 (symbols/ringed-flower-of-life {:fill (p-color 160 120 180 20)
-                                                            :stroke-weight 3
-                                                            :stroke (p-color 0 100 255)}))]
-    ["p4" p4]
-    ["p5" p5]
+   [
+    ["p1 Framed Plant" '(framedplant/framed-plant)]
+    ["p2 Chita" p2]
+    ["p3 Ringed Flower of Life"
+     '(stack
+       (groups/rect -1 -1 2 2 {:fill (p-color 255)})
+       (groups/scale 0.8 (symbols/ringed-flower-of-life
+                          {:fill (p-color 160 120 180 10)
+                           :stroke-weight 3
+                           :stroke (p-color 0 100 255)})))]
+    ["p4 Ring of n-angles" p4]
+    ["p5 n-angles following clock-rotated drunklines" p5]
     ["p6" p6]
-    ["p7" p7]])  )
+    ["p7 L-System" p7]
+    ["p8 cog pair" p8]
+    ["p9 Black Square" p9]
+    ["p10 The City We Invent" '(city/city 11)]    
+    ])  )

@@ -2,7 +2,9 @@
   (:require [patterning.maths :as maths]
             [patterning.sshapes :refer [->SShape  ]]
             [patterning.groups :refer [APattern clip rotate scale]]
-            [patterning.layouts :refer [clock-rotate stack flower-of-life-positions place-groups-at-positions framed]]
+            [patterning.layouts :refer
+             [clock-rotate stack flower-of-life-positions
+              place-groups-at-positions framed]]
             [patterning.library.std :refer [poly]]
             [patterning.library.turtle :refer [basic-turtle]]
 

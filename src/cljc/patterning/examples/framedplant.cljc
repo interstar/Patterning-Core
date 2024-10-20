@@ -1,7 +1,8 @@
 (ns patterning.examples.framedplant
   (:require [patterning.maths :as maths]
             [patterning.sshapes :refer [->SShape ]]
-            [patterning.groups :refer [ translate h-reflect reframe scale rotate over-style]]
+            [patterning.groups :refer [ translate h-reflect reframe scale
+                                       rotate over-style rect]]
             [patterning.layouts :refer [stack alt-rows-grid-layout checked-layout framed]]
             [patterning.library.std :refer [poly square]]
             [patterning.library.turtle :refer [basic-turtle]]
@@ -48,4 +49,7 @@
                              (cycle [(square2) (scale 0.8 (square2))])
                              (stack [(square {:fill (p-color 200 200 255)} )] (reframe (sys-g1))) ))
 
-(defn framed-plant [] (framed 9 (repeat design-language/flower) (repeat  (square2)) (sprey) ))
+(defn framed-plant []
+  (stack
+   (rect -1 -1 2 2 {:fill (p-color 255)})
+   (framed 9 (repeat design-language/flower) (repeat  (square2)) (sprey) )))
