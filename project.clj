@@ -1,12 +1,11 @@
-(defproject com.alchemyislands/patterning "0.5.4-SNAPSHOT"
+(defproject com.alchemyislands/patterning "0.5.6-SNAPSHOT"
   :description "Generating Patterns with Clojure"
   :url "http://alchemyislands.com/"
   :license {:name "Gnu Lesser Public License"
             :url "https://www.gnu.org/licenses/lgpl.html"}
 
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.7.28"]
-                 [orchestra "2018.08.19-1"]
+                 [org.clojure/clojurescript "1.7.28"]                
                 ]
 
   :plugins [[lein-cljsbuild "1.0.6"]
