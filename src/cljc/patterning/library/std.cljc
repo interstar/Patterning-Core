@@ -14,6 +14,13 @@
                                      (let [x2 (+ x w) y2 (+ y h)]
                                        [[x y] [x2 y] [x2 y2] [x y2] [x y]] ) ))
 
+(defn centered-rect
+  [cx cy w h style]
+  (let [w2 (/ w 2)
+        h2 (/ h 2)]
+    (rect (- cx w2) (- cy h2) w h style))
+  )
+
 (def square (optional-styled-primitive [] [[-1 -1] [-1 1] [1 1] [1 -1] [-1 -1]]  ))
 
 (def poly (optional-styled-primitive [cx cy radius no-sides]

@@ -177,7 +177,7 @@
 
 
 (def p8
-  '(let [A (make-cog 0 0 10 0.8 0.15 0.15 0.04 0.4 0.15 :round 0.08 8 0.5 )
+  '(let [A (make-cog 0 0 10 0.8 0.15 0.15 0.04 0.4 0.15 :square 0.08 8 0.5 )
          B (spaced-engaged A 2/1)   ]
      (stack
       (groups/rect -1 -1 2 2 {:fill (p-color 255)})
@@ -257,6 +257,7 @@
 (defn -main [& args]
   (finals
    [
+
     ["p1 Framed Plant" '(framedplant/framed-plant)]
     ["p2 Chita" p2]
     ["p3 Ringed Flower of Life"
@@ -270,7 +271,7 @@
     ["p5 n-angles following clock-rotated drunklines" p5]
     ["p6" p6]
     ["p7 L-System" p7]
-    ["p8 cog pair" p8]
+    ["p8 Cog Pair" p8]    
     ["p9 Black Square" p9]
     ["p10 The City We Invent" '(city/city 11)]    
     ])  )

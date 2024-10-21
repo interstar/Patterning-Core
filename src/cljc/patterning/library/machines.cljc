@@ -1,7 +1,7 @@
 (ns patterning.library.machines
   (:require
    [patterning.maths :refer [PI sin cos distance] ]
-   [patterning.library.std :refer [poly rect]]
+   [patterning.library.std :refer [poly rect centered-rect]]
    [patterning.layouts :refer [stack]]
    [patterning.groups :refer [APattern]]
    [patterning.color :refer [p-color]]
@@ -73,7 +73,7 @@
 
 (defprotocol ICrashable
   "Two things that collide"
-  (crash? [this other] "Do this and the other intersect"))
+  (crash? [this other] "Do this and the other intersect?"))
 
 
 
@@ -284,9 +284,7 @@ a-ratio should be a Clojure ratio"
        [])
      (if (= :round hole-type)
        (crude-circle cx cy hole-radius spindle-style)
-       (let [l2 (/ hole-radius 2)]
-         (translate cx cy (rect (- l2) (- l2)
-                                hole-radius hole-radius spindle-style)))
+       (centered-rect cx cy (* hole-radius 2) (* hole-radius 2) spindle-style)
        )
 
      ;; teeth
