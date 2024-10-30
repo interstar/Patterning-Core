@@ -46,13 +46,13 @@ The source for that library and examples are on [Patterning for Processing](http
 
 ## What Patterning looks like 
 
-![Patterning Image](http://alchemyislands.com/bs/assets/patterning/p1.png)
+<img src="https://blog.alchemyislands.com/wp-content/uploads/2024/07/p3.png" width="40%"/>
 
-![Patterning Image2](http://alchemyislands.com/bs/assets/patterning/p3.png)
+<img src="https://blog.alchemyislands.com/wp-content/uploads/2024/07/a26.png" width="40%"/>
 
-![Patterning Image3](http://alchemyislands.com/bs/assets/patterning/p4.png)
-
-See more examples in the [Patterning Tutorial](http://alchemyislands.com/tutorials/HelloWorld.html)
+<img src="https://blog.alchemyislands.com/wp-content/uploads/2024/07/lsys.png" width="40%"/>
+ 
+See more examples in the [Patterning Tutorial](http://alchemyislands.com/wp-content/tutorials/More%20Examples.html)
 
 ## Quick Start
 
@@ -73,7 +73,7 @@ Check the src/clj/core.clj for code that made these patterns.
 
 ## License
 
-Copyright © 2014-2018 Phil Jones
+Copyright © 2014-2024 Phil Jones
 
 Distributed under the [Gnu Lesser General Public License](https://www.gnu.org/licenses/lgpl.html) 
 either version 3.0 or (at your option) any later version.
