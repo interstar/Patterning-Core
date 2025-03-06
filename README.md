@@ -18,17 +18,15 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 ### Patterning works in ClojureScript
 
-The easiest way, today, to just play around with Patterning to see what you can do with it is to try it in Project RoseEngine. An experimental / work-in-progress Clojure creative environment you can access through your browser by visiting [http://alchemyislands.com/wp-content/rose-engine/](http://alchemyislands.com/wp-content/rose-engine/)
+The easiest way, today, to just play around with Patterning to see what you can do with it is to look at the [tutorial](https://alchemyislands.com/assets/patterning-tutorial/HelloWorld.html). The tutorial is now fully editable and dynamic. So you can change and edit the patterns directly in the web page.
 
-This is a purely ClojureScript, in-browser environment in which you write ClojureScript code, and which can export SVG and PostScript.
+This is a purely ClojureScript, in-browser environment in which you write ClojureScript code, and which can export SVG and PostScript renderings of the patterns.
 
 ### Patterning in Cardigan Bay
 
 [Cardigan Bay](https://github.com/interstar/cardigan-bay), a wiki / note-taking / digital gardening engine written in Clojure, also has Patterning built in. That means you can add patterns to your wiki in the form of short embedded scripts.
 
 Cardigan Bay is another easy way to play with Patterning without writing your own application. It's distributed as a Java app that will run on any desktop OS. You don't need a Clojure environment installed. 
-
-The latest tutorial site for Patterning is also now made with Cardigan Bay and can be seen here : [http://alchemyislands.com/wp-content/tutorials/HelloWorld.html](http://alchemyislands.com/wp-content/tutorials/HelloWorld.html)
 
 ### Other Documentation
 
@@ -46,11 +44,11 @@ The source for that library and examples are on [Patterning for Processing](http
 
 ## What Patterning looks like 
 
-<img src="https://blog.alchemyislands.com/wp-content/uploads/2024/07/p3.png" width="40%"/>
+<img src="https://alchemyislands.com/media/p4.png" width="40%"/>
 
-<img src="https://blog.alchemyislands.com/wp-content/uploads/2024/07/a26.png" width="40%"/>
+<img src="https://alchemyislands.com/media/a26.png" width="40%"/>
 
-<img src="https://blog.alchemyislands.com/wp-content/uploads/2024/07/lsys.png" width="40%"/>
+<img src="https://alchemyislands.com/media/lsys.png" width="40%"/>
  
 See more examples in the [Patterning Tutorial](http://alchemyislands.com/wp-content/tutorials/More%20Examples.html)
 
