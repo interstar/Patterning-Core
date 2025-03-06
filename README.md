@@ -50,7 +50,7 @@ The source for that library and examples are on [Patterning for Processing](http
 
 <img src="https://alchemyislands.com/media/lsys.png" width="40%"/>
  
-See more examples in the [Patterning Tutorial](http://alchemyislands.com/wp-content/tutorials/More%20Examples.html)
+See more examples in the [Patterning Tutorial](https://alchemyislands.com/assets/patterning-tutorial/HelloWorld.html)
 
 ## Quick Start
 
@@ -71,7 +71,7 @@ Check the src/clj/core.clj for code that made these patterns.
 
 ## License
 
-Copyright © 2014-2024 Phil Jones
+Copyright © 2014-2025 Phil Jones
 
 Distributed under the [Gnu Lesser General Public License](https://www.gnu.org/licenses/lgpl.html) 
 either version 3.0 or (at your option) any later version.
