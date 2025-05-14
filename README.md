@@ -18,18 +18,14 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 ### Patterning works in ClojureScript
 
-The easiest way, today, to just play around with Patterning to see what you can do with it is to try it in Project RoseEngine. An experimental / work-in-progress Clojure creative environment you can access through your browser by visiting [http://alchemyislands.com/wp-content/rose-engine/](http://alchemyislands.com/wp-content/rose-engine/)
-
-This is a purely ClojureScript, in-browser environment in which you write ClojureScript code, and which can export SVG and PostScript.
+The easiest way, today, to just play around with Patterning to see what you can do with it is to try it in the online tutorial. Previously "Project RoseEngine" was a browser-based Patterning editor. This has now been replaced by the ability to edit and update Patterning patterns on many sites. Eg. in the tutorial at [https://alchemyislands.com/assets/patterning-tutorial/Getting%20Started%20with%20Patterning.html](https://alchemyislands.com/assets/patterning-tutorial/Getting%20Started%20with%20Patterning.html)
 
 ### Patterning in Cardigan Bay
 
 [Cardigan Bay](https://github.com/interstar/cardigan-bay), a wiki / note-taking / digital gardening engine written in Clojure, also has Patterning built in. That means you can add patterns to your wiki in the form of short embedded scripts.
 
 Cardigan Bay is another easy way to play with Patterning without writing your own application. It's distributed as a Java app that will run on any desktop OS. You don't need a Clojure environment installed. 
-
-The latest tutorial site for Patterning is also now made with Cardigan Bay and can be seen here : [http://alchemyislands.com/wp-content/tutorials/HelloWorld.html](http://alchemyislands.com/wp-content/tutorials/HelloWorld.html)
-
+ 
 ### Other Documentation
 
 As of writing, https://github.com/nataliefreed also has some nice documentation of the different functions in Patterning at : https://docs.google.com/document/d/1kKsBw3C4jrPGtr7BRYbmcbid4FgWn0_CzdNy1bQ60b8/edit?pli=1
