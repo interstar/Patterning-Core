@@ -69,7 +69,7 @@ Check the src/clj/core.clj for code that made these patterns.
 
 ## License
 
-Copyright © 2014-2018 Phil Jones
+Copyright © 2014-2025 Phil Jones
 
 Distributed under the [Gnu Lesser General Public License](https://www.gnu.org/licenses/lgpl.html) 
 either version 3.0 or (at your option) any later version.
