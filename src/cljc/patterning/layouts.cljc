@@ -1,5 +1,6 @@
 (ns patterning.layouts
-  (:require [patterning.maths :as maths]
+  (:require [patterning.maths :as maths
+             :refer [default-random]]
             [patterning.groups :as groups])  )
 
 
@@ -106,9 +107,9 @@
 (defn q3-rot-group [group] (groups/rotate (-  (float (/ maths/PI 2))) group))
 
 
-(defn random-turn-groups [groups]
+(defn random-turn-groups [groups & {:keys [random] :or {random default-random}}]
   (let [random-turn (fn [group]
-                      (case (rand-int 4)
+                      (case (maths/random-int random 4)
                         0 group
                         1 (q1-rot-group group)
                         2 (q2-rot-group group)
@@ -118,7 +119,8 @@
 
 
 (defn random-grid-layout  "Takes a group and returns a grid with random quarter rotations"
-  [n groups] (grid-layout n (random-turn-groups groups)))
+  [n groups & {:keys [random] :or {random default-random}}] 
+  (grid-layout n (random-turn-groups groups :random random)))
 
 
 (defn drop-every [n xs] (lazy-seq (if (seq xs) (concat (take (dec n) xs) (drop-every n (drop n xs))))))

@@ -1,6 +1,7 @@
 (ns patterning.color
   (:require [patterning.strings :as strings]
-            [patterning.maths :as maths]))
+            [patterning.maths :as maths
+             :refer [default-random]]))
 
 ;; Now we'll use a custom vector as a color
 (defn p-color
@@ -31,7 +32,11 @@
 
 (defn remove-transparency [c] (conj (take 3 c) 255))
 
-(defn rand-col [] (p-color (rand-int 255) (rand-int 255) (rand-int 255) ))
+(defn rand-col [& {:keys [random] :or {random default-random}}] 
+  (p-color (maths/random-int random 255) 
+           (maths/random-int random 255) 
+           (maths/random-int random 255)))
+
 (defn darker-color [c] (apply p-color (map (partial * 0.7) c)))
 
 

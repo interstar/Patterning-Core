@@ -1,12 +1,11 @@
 (ns patterning.library.std
-  (:require [patterning.maths :as maths]
+  (:require [patterning.maths :as maths
+             :refer [default-random]]
             [patterning.sshapes :refer [rotate-shape close-shape ->SShape set-color tie-together ]]
             [patterning.sshapes :as sshapes]
             [patterning.groups :refer [APattern]]
             [patterning.layouts :refer [stack four-mirror]]
-            [patterning.macros :refer [optional-styled-primitive]]
-
-            ))
+            [patterning.macros :refer [optional-styled-primitive]]))
 
 ;;; Some basic sshapes
 
@@ -45,27 +44,26 @@
                (close-shape (sshapes/translate-shape
                              cx cy finite)))))
 
-(defn random-rect [style]
-  (let [ rr (fn [l] (rand l))
+(defn random-rect [style & {:keys [random] :or {random default-random}}]
+  (let [rr (fn [l] (maths/random-float random))
         m1 (fn [x] (- x 1))]
-    (rect (m1 (rr 1)) (m1 (rr 1)) (rr 1) (rr 1) style ) ))
+    (rect (m1 (rr 1)) (m1 (rr 1)) (rr 1) (rr 1) style)))
 
 (def horizontal-line (optional-styled-primitive [y] [[-1 y] [1 y] [-1 y] [1 y]] ))
 (def vertical-line (optional-styled-primitive [x] [[x -1] [x 1] [x -1] [x 1]]))
 
+(defn drunk-line-internal [steps stepsize random]
+  (let [offs (map (fn [a] [stepsize a]) 
+                (take steps (maths/random-angle random 0))) ]
+    (loop [pps offs current [0 0] acc []]
+      (if (empty? pps) acc
+          (let [p (maths/add-points current (maths/pol-to-rec (first pps))) ]
+            (recur (rest pps) p (conj acc p))  )) )  ))
 
-(defn rand-angle [seed]  (lazy-seq (cons seed (rand-angle (+ seed (- (rand (/ maths/PI 2))) (/ maths/PI 4) )))))
-
-(def drunk-line
-  (optional-styled-primitive [steps stepsize]
-                             (let [ offs (map (fn [a] [stepsize a]) (take steps (rand-angle 0))) ]
-                               (loop [pps offs current [0 0] acc []]
-                                 (if (empty? pps) acc
-                                     (let [p (maths/add-points current (maths/pol-to-rec (first pps))) ]
-                                       (recur (rest pps) p (conj acc p))  )) )  )  ))
-
-
-
+(defn drunk-line [steps stepsize & args]
+  (let [[style & rest-args] args
+        {:keys [random] :or {random default-random}} (apply hash-map rest-args)]
+    (APattern (->SShape (or style {}) (drunk-line-internal steps stepsize random)))))
 
 (def h-sin (optional-styled-primitive [] (into [] (map (fn [a] [a (maths/sin (* maths/PI a))]  ) (range (- 1) 1 0.05)) ) ))
 

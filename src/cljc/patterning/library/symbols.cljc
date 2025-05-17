@@ -1,5 +1,6 @@
 (ns patterning.library.symbols
-  (:require [patterning.maths :as maths]
+  (:require [patterning.maths :as maths
+            :refer [default-random]]
             [patterning.sshapes :refer [->SShape  ]]
             [patterning.groups :refer [APattern clip rotate scale]]
             [patterning.layouts :refer
@@ -20,22 +21,25 @@
 
 (defn flower-of-life
   ([sides style]
-      (let [r 0.4
-            r3 (* r 3)
-            pos (flower-of-life-positions r 3 [0 0])]
-        (clip (fn [[x y]] (> (* r3 r3) (+ (* x x) (* y y))))
-              (place-groups-at-positions (repeat  (poly 0 0 r sides style)) pos ))))
-  ([style] (flower-of-life 80 style)))
+   (let [r 0.4
+         r3 (* r 3)
+         pos (flower-of-life-positions r 3 [0 0])]
+     (clip (fn [[x y]] (> (* r3 r3) (+ (* x x) (* y y))))
+           (place-groups-at-positions (repeat  (poly 0 0 r sides style)) pos ))))
+  ([style] 
+   (flower-of-life 80 style)))
 
 (defn ringed-flower-of-life
-  ([sides style] (stack (poly 0 0 1.2 sides style) (flower-of-life sides style)  ))
-      ([style] (ringed-flower-of-life 80 style ) ))
+  ([sides style] 
+   (stack (poly 0 0 1.2 sides style) (flower-of-life sides style)))
+  ([style] 
+   (ringed-flower-of-life 80 style)))
 
 (defn god-pattern []
   (let [s {:stroke (p-color 0 0 0) :stroke-weight 2}
-        for-x (fn [x a d] (+ x (* d (maths/cos a))) )
-        for-y (fn [y a d] (+ y (* d (maths/sin a))) )
-        sq (* 0.1 (Math/sqrt 5))
+        for-x (fn [x a d] (+ x (* d (maths/cos a))))
+        for-y (fn [y a d] (+ y (* d (maths/sin a))))
+        sq (* 0.1 (maths/sqrt 5))
         diag (fn [x y a] (APattern (->SShape s [[x y] [(for-x x a sq) (for-y y a sq)] ] )))
         part1 (basic-turtle [0 0] 0.1 0 (/ maths/PI 4)
                            "F++F++F++F++FFF++F++F++FF++FF++FFF+FFF+++FF"
