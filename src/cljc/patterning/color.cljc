@@ -33,9 +33,9 @@
 (defn remove-transparency [c] (conj (take 3 c) 255))
 
 (defn rand-col [& {:keys [random] :or {random default-random}}] 
-  (p-color (maths/random-int random 255) 
-           (maths/random-int random 255) 
-           (maths/random-int random 255)))
+  (p-color (.randomInt random 255) 
+           (.randomInt random 255) 
+           (.randomInt random 255)))
 
 (defn darker-color [c] (apply p-color (map (partial * 0.7) c)))
 
