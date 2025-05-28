@@ -16,19 +16,19 @@
                        {:id "main"
                         :source-paths ["src/cljc"]
                         :compiler {:output-to "browser-based/js/main.js"
-                                   :optimizations :whitespace
+                                   :optimizations :simple
                                    :pretty-print true}}
                        ;; Pattern compilation build
                        {:id "pattern"
-                        :source-paths ["src/cljc" "patterns"]
-                        :compiler {:output-to ~(str "dist/patterns/" (or (System/getenv "PATTERN_NAME") "default") ".js")
-                                   :optimizations :advanced
-                                   :pretty-print false
-                                   :output-dir "target/pattern-build"
+                        :source-paths ["src/cljc" "NFTmaker/patterns"]
+                        :compiler {:output-to ~(str "NFTmaker/dist/patterns/" (or (System/getenv "PATTERN_NAME") "default") "/" (or (System/getenv "PATTERN_NAME") "default") ".js")
+                                   :optimizations :simple
+                                   :output-dir ~(str "NFTmaker/dist/patterns/" (or (System/getenv "PATTERN_NAME") "default") "/build")
                                    :main ~(or (System/getenv "PATTERN_NAME") "default")
-                                   :externs ["externs.js"]
-                                   :closure-defines {"triangles.PATTERN_NAME" "triangles"}
-                                   :target :nodejs}}]}
+                                   :externs ["NFTmaker/scripts/externs.js"]
+                                   :source-map false
+                                   :closure-defines {"goog.DEBUG" false}
+                                   :elide-asserts true}}]}
 
   :aot [patterning.core]
   :main patterning.core)

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+        }
+        #pattern-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 1;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="pattern-container">
+        <canvas id="pattern-canvas"></canvas>
+    </div>
+    <script>
+        // Polyfill for global object
+        window.global = window;
+    </script>
+    <!-- Include FX(hash) library -->
+    <script src="fxhash.min.js"></script>
+    <script>
+        // Ensure FX(hash) is initialized
+        if (typeof $fx === 'undefined') {
+            $fx = {
+                rand: Math.random
+            };
+        }
+        // Create fxrand function if it doesn't exist
+        if (typeof fxrand === 'undefined') {
+            fxrand = function() {
+                return $fx.rand();
+            };
+        }
+    </script>
+    <script src="fxhash_random_generator.js"></script>
+    <script src="pattern_renderer.js"></script>
+    <script src="{{pattern_name}}.js"></script>
+    <script>
+        // Wait for everything to be loaded
+        window.addEventListener('load', function() {
+            // Ensure the random generator is properly initialized
+            if (!window.fxhashRandom) {
+                window.fxhashRandom = new FXHashRandomGenerator();
+            }
+            
+            // Get the pattern data from the pattern's main function
+            const pattern = window["{{pattern_name}}"].main({
+                random: window.fxhashRandom
+            });
+            const canvas = document.getElementById('pattern-canvas');
+            setupResponsiveCanvas(canvas, pattern);
+        });
+    </script>
+</body>
+</html> 
