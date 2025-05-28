@@ -7,7 +7,7 @@
             [patterning.layouts :refer
              [stack h-mirror clock-rotate
               grid-layout checked-layout framed]]
-            [patterning.library.std :refer [poly square]]
+            [patterning.library.std :refer [poly square clock]]
             [patterning.library.turtle :refer [basic-turtle]]
             [patterning.library.l_systems :refer [l-system]]
 
@@ -41,17 +41,13 @@
    )]
 )
 
-(def roof1  
-   (fn [] 
-      (let [r (rand-nth [roof-a roof-b roof-c ])]
-         (rand-nth [r (h-reflect r)])
-      )
-   )
-)
+(defn roof1 [random]
+   (let [r (.randomNth random [roof-a roof-b roof-c])]
+      (.randomNth random [r (h-reflect r)])))
 
-(def roof2 
+(defn roof2 [random]
    (stack 
-      (roof1)
+      (roof1 random)
       [(->SShape engrave [[-0.9 -1] [-0.9 0.4 ]])]
       [(->SShape engrave [[0.9 -1] [0.9 0.4 ]])]  
    )
@@ -72,14 +68,13 @@
   )
 )
 
-(defn block [p]
-  #((rand-nth [block_ block_ block_ narrow_ narrow_]) p)
-)
+(defn block [p random]
+  #((.randomNth random [block_ block_ block_ narrow_ narrow_]) p))
 
 (def blank [])
 
-(defn person []
-   (let [x (rand-nth [-0.5 -0.1 0 0.2 0.6])
+(defn person [random]
+   (let [x (.randomNth random [-0.5 -0.1 0 0.2 0.6])
           p (stack
                (poly x -0.3 0.1 10 engrave)
                [
@@ -89,15 +84,13 @@
               ]
             )
          ]
-       (rand-nth [p (h-reflect p)])
+       (.randomNth random [p (h-reflect p)])
    )
 )
 
-(defn street []
+(defn street [random]
   (fn [] 
-    (rand-nth [blank blank (person )])
-  )
-) 
+    (.randomNth random [blank blank (person random)])))
 
 (def bottom
     (stack
@@ -143,14 +136,6 @@
    ))))
 )
 
-(def clock
- (stack
-      (poly 0 0 0.65 50 engrave)
-      (clock-rotate 12 [(->SShape engrave [[0.5 0] [0.6 0]])])
-      [(->SShape engrave [[0 0.35] [0 0] [0.3 -0.3]])]
-   )
-)
-
 (def segmented-window
     (stack
       (poly 0 0 0.65 50 engrave)
@@ -183,91 +168,88 @@
 )
 
 
-(def tiles
- {
-  :street (street)
-  :roof1  roof1
-  :roof2 roof2
-  :bottom bottom
-  :round-window (block round-window )
-  :clock  (block clock) 
- :segmented-window (block segmented-window)
- :three-windows (block three-windows)
- :grid-windows (block grid-windows )
- :bars (block bars)
- :arched-window (block arched-window)
- :thin-arched (block thin-arched)
- :four-arched (block_ four-arched)
-}
-)
+(defn tiles [random time-map]
+  (let [tiles-map {
+    :street (street random)
+    :roof1  #(roof1 random)
+    :roof2 (roof2 random)
+    :bottom bottom
+    :round-window (block round-window random)
+    :clock  (block (clock time-map {}) random) 
+    :segmented-window (block segmented-window random)
+    :three-windows (block three-windows random)
+    :grid-windows (block grid-windows random)
+    :bars (block bars random)
+    :arched-window (block arched-window random)
+    :thin-arched (block thin-arched random)
+    :four-arched (block_ four-arched)
+  }]
+    tiles-map))
 
+(defn ok-tops [random time-map]
+  (let [tiles-map (tiles random time-map)
+        keys (keys tiles-map)
+        filtered (into [] 
+          (remove #(condp = % :street true :roof1 :roof2 true true false)) 
+          keys)]
+    filtered))
 
+(defn ok-bottoms [random time-map]
+  (let [tiles-map (tiles random time-map)
+        keys (keys tiles-map)
+        filtered (into [] 
+          (remove #(condp = % :street true :bottom true false)) 
+          keys)]
+    filtered))
 
-(def ok-tops (into [] 
-      (remove #(condp = % :street true :roof1 :roof2 true true false)) (keys tiles )))
+(defn random-key [previous random time-map]
+  (let [valid-keys (filter #(and (not= % previous)
+                                (not= % :roof1)
+                                (not= % :street))
+                          (keys (tiles random time-map)))]
+    (if (empty? valid-keys)
+      :bottom
+      (.randomNth random valid-keys))))
 
-(def ok-bottoms (into [] 
-     (remove #(condp = % :street true :bottom true false)) (keys tiles)))
-
-
-(defn random-key [previous] 
-    (let [rk (rand-nth (filter #(not (some #{%} [:roof1 :street])) (keys tiles)) )]
-       (cond 
-         (= previous rk) (random-key previous) 
-         :else rk)
-    )
-)
-
-(defn good-random-key [previous]
+(defn good-random-key [previous random time-map]
    (condp = previous
       :bottom  :street
-      :street (rand-nth [:roof1 :roof1 :street])
+      :street (.randomNth random [:roof1 :roof1 :street])
       ; otherwise
-      (random-key previous)
-   )
-)
+      (random-key previous random time-map)))
 
+(defn process-key [k random time-map]
+   (let [v (get (tiles random time-map) k)]
+     (if (fn? v) 
+       (let [result (v)]
+         result)
+       v)))
 
-(defn process-key [k]
-   (let [v (get tiles k)]
-     (if (fn? v) (v) v)
-   )
-)
-
-
-
-(defn make-batch [size dummy]
+(defn make-batch [size dummy random time-map]
    (let [r2 (- size 2)
-          primo (rand-nth ok-tops )
-
-          mid (loop [count r2 previous primo build []]
+         tiles-map (tiles random time-map)
+         tops (ok-tops random time-map)
+         bottoms (ok-bottoms random time-map)
+         primo (.randomNth random tops)
+         mid (loop [count r2 previous primo build []]
               (if (= 0 count) build
-                 (let [rk (good-random-key previous)]
- 
-                     (recur (- count 1) rk (conj build rk ))
-                 )
-              )
-          )
-   
-          fin (if (= (last mid) :street) :roof1
-                  (rand-nth ok-bottoms))
-        ]
-       (concat [primo] mid [fin])
-   )
-)
+                 (let [rk (good-random-key previous random time-map)]
+                     (recur (- count 1) rk (conj build rk)))))
+         fin (if (= (last mid) :street) 
+               :roof1
+               (.randomNth random bottoms))]
+       (concat [primo] mid [fin])))
 
-(defn tile-stream [rows]
-   (map process-key
-      (apply concat
-         (iterate #(make-batch rows %) []) 
-      )
-   )
-)
+(defn tile-stream [rows random time-map]
+   (let [tiles-map (tiles random time-map)]
+     (map #(process-key % random time-map)
+          (apply concat
+                 (iterate #(make-batch rows % random time-map) [])))))
 
-(defn city [size]
+(defn city [size & {:keys [random time-map] :or {random maths/default-random time-map (maths/get-time)}}]
   (stack
    (rect -1 -1 2 2 {:fill (p-color 255)})
    (grid-layout size
-                (tile-stream size)
+                (tile-stream size random time-map)
                 )
    ))
