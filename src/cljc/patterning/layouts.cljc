@@ -109,7 +109,7 @@
 
 (defn random-turn-groups [groups & {:keys [random] :or {random default-random}}]
   (let [random-turn (fn [group]
-                      (case (maths/random-int random 4)
+                      (case (.randomInt random 4)
                         0 group
                         1 (q1-rot-group group)
                         2 (q2-rot-group group)

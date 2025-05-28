@@ -1,34 +1,38 @@
 (ns patterning.maths
   (:require [clojure.spec.alpha :as s]
-            [clojure.core]
-            ))
+            [clojure.core]))
 
+;; Define the interface for random number generation
 (defprotocol RandomGenerator
-  "Protocol for random number generation, allowing different implementations
-   for different contexts (e.g. system random vs FX(hash) seeded random)"
-  (random-float [this] "Generate a random number between 0 and 1")
-  (random-int [this n] "Generate a random integer between 0 and n-1")
-  (random-nth [this coll] "Return a random element from coll")
-  (random-angle [this seed] "Generate a lazy sequence of random angles starting from seed"))
+  (randomFloat [this])
+  (randomInt [this n])
+  (randomNth [this coll])
+  (randomAngle [this seed]))
 
-;; Default implementation using system random
-(def default-random
-  (reify RandomGenerator
-    (random-float [this] 
-      #?(:clj (clojure.core/rand)
-         :cljs (js/Math.random)))
-    (random-int [this n] 
-      #?(:clj (clojure.core/rand-int n)
-         :cljs (js/Math.floor (* (js/Math.random) n))))
-    (random-nth [this coll] 
-      #?(:clj (clojure.core/rand-nth coll)
-         :cljs (nth coll (js/Math.floor (* (js/Math.random) (count coll))))))
-    (random-angle [this seed]
-      (lazy-seq 
-        (cons seed 
-          (random-angle this 
-            (+ seed (- (random-float this) (/ #?(:clj Math/PI :cljs js/Math.PI) 2)) 
-               (/ #?(:clj Math/PI :cljs js/Math.PI) 4))))))))
+;; Default random implementation as a proper object in both Clojure and ClojureScript
+#?(:cljs
+   (def default-random
+     (let [obj #js {}]
+       (set! (.-randomFloat obj) (fn [] (js/Math.random)))
+       (set! (.-randomInt obj) (fn [n] (js/Math.floor (* (js/Math.random) n))))
+       (set! (.-randomNth obj) (fn [coll] 
+                                (let [idx (js/Math.floor (* (js/Math.random) (count coll)))]
+                                  (nth coll idx))))
+       (set! (.-randomAngle obj) (fn [seed]
+                                  (+ seed 
+                                     (- (js/Math.random) (/ js/Math.PI 2))
+                                     (/ js/Math.PI 4))))
+       obj))
+   :clj
+   (def default-random
+     (reify RandomGenerator
+       (randomFloat [this] (rand))
+       (randomInt [this n] (rand-int n))
+       (randomNth [this coll] (rand-nth coll))
+       (randomAngle [this seed]
+         (+ seed 
+            (- (rand) (/ Math/PI 2))
+            (/ Math/PI 4))))))
 
 ;; My maths library (to factor out all the maths functions that will
 ;; need to be different in Clojure / ClojureScript cljx
@@ -99,8 +103,8 @@
 
 (defn wobble-point "add some noise to a point, qx and qy are the x and y ranges of noise"
   [[qx qy] [x y] & {:keys [random] :or {random default-random}}]
-  (let [wob (fn [n qn] (+ n (- (random-float random) (/ qn 2))))]
-     [(wob x qx) (wob y qy)]  ) )
+  (let [wob (fn [n qn] (+ n (- (.randomFloat random) (/ qn 2))))]
+    [(wob x qx) (wob y qy)]))
 
 (defn x-in-list [x my= xs]
   (if (empty? xs) false

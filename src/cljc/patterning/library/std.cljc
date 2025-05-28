@@ -45,7 +45,7 @@
                              cx cy finite)))))
 
 (defn random-rect [style & {:keys [random] :or {random default-random}}]
-  (let [rr (fn [l] (maths/random-float random))
+  (let [rr (fn [l] (.randomFloat random))
         m1 (fn [x] (- x 1))]
     (rect (m1 (rr 1)) (m1 (rr 1)) (rr 1) (rr 1) style)))
 
@@ -54,7 +54,7 @@
 
 (defn drunk-line-internal [steps stepsize random]
   (let [offs (map (fn [a] [stepsize a]) 
-                (take steps (maths/random-angle random 0))) ]
+                (take steps (iterate #(.randomAngle random %) 0))) ]
     (loop [pps offs current [0 0] acc []]
       (if (empty? pps) acc
           (let [p (maths/add-points current (maths/pol-to-rec (first pps))) ]
@@ -63,7 +63,8 @@
 (defn drunk-line [steps stepsize & args]
   (let [[style & rest-args] args
         {:keys [random] :or {random default-random}} (apply hash-map rest-args)]
-    (APattern (->SShape (or style {}) (drunk-line-internal steps stepsize random)))))
+    (APattern (->SShape (or style {}) 
+                        (drunk-line-internal steps stepsize random)))))
 
 (def h-sin (optional-styled-primitive [] (into [] (map (fn [a] [a (maths/sin (* maths/PI a))]  ) (range (- 1) 1 0.05)) ) ))
 
