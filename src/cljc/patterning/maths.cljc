@@ -34,6 +34,20 @@
             (- (rand) (/ Math/PI 2))
             (/ Math/PI 4))))))
 
+;; Time-related functions
+#?(:clj
+   (defn get-time []
+     (let [now (java.time.LocalTime/now)]
+       {:hours (.getHour now)
+        :minutes (.getMinute now)
+        :seconds (.getSecond now)}))
+   :cljs
+   (defn get-time []
+     (let [now (js/Date.)]
+       {:hours (.getHours now)
+        :minutes (.getMinutes now)
+        :seconds (.getSeconds now)})))
+
 ;; My maths library (to factor out all the maths functions that will
 ;; need to be different in Clojure / ClojureScript cljx
 

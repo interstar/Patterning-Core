@@ -1,10 +1,10 @@
 (ns patterning.library.std
   (:require [patterning.maths :as maths
-             :refer [default-random]]
+             :refer [default-random get-time]]
             [patterning.sshapes :refer [rotate-shape close-shape ->SShape set-color tie-together ]]
             [patterning.sshapes :as sshapes]
             [patterning.groups :refer [APattern]]
-            [patterning.layouts :refer [stack four-mirror]]
+            [patterning.layouts :refer [stack four-mirror clock-rotate]]
             [patterning.macros :refer [optional-styled-primitive]]))
 
 ;;; Some basic sshapes
@@ -117,19 +117,27 @@
   (stack (square {:fill color}) pattern))
 
 
-(comment
-  (defn clock-now
-    ([style]
-     (let [hours #?(:clj (-> (new java.time.LocalTime) .getHour (mod 12))
-                    :cljs (-> (js/Date.) .getHours))
-           mins #?(:clj (-> (new java.time.LocalTime) .getMinute)
-                   :cljs (-> (js/Date.) .getMinutes))
-           hour-angle (nth (maths/clock-angles 12) hour)
-           min-angle (nth (maths/clock-angles 60) mins)]
-       (stack
-        (poly 0 0 0.65 50 style)
-        (clock-rotate 12 [(->SShape style [[0.5 0] [0.6 0]])])
 
-        [(->SShape style [[0 0.35] [0 0] [0.3 -0.3]])]
-        )
-       ))))
+;; Clock-related functions
+(defn clock-hands [time-map]
+  (let [{:keys [hours minutes]} time-map
+        ;; Convert to 12-hour format and get decimal hours for smoother movement
+        hour-angle (* (/ (+ (mod hours 12) (/ minutes 60)) 12) maths/TwoPI)
+        minute-angle (* (/ minutes 60) maths/TwoPI)
+        ;; Hour hand is shorter (0.35) than minute hand (0.4)
+        hour-hand [(+ (* 0.35 (maths/sin hour-angle)))
+                  (- (* 0.35 (maths/cos hour-angle)))]
+        minute-hand [(+ (* 0.4 (maths/sin minute-angle)))
+                    (- (* 0.4 (maths/cos minute-angle)))]]
+    [(->SShape {} [hour-hand [0 0] minute-hand])]))
+
+(defn clock-face [style]
+  (stack
+   (poly 0 0 0.65 50 style)  ; Circular face
+   (clock-rotate 12 [(->SShape style [[0.5 0] [0.6 0]])])  ; 12 hour markers
+   ))
+
+(defn clock [time-map style]
+  (stack
+   (clock-face style)
+   (clock-hands time-map)))
