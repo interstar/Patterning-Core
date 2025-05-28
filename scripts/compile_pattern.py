@@ -14,6 +14,36 @@ def ensure_dirs():
     os.makedirs("dist/patterns", exist_ok=True)
     os.makedirs("target/pattern-build", exist_ok=True)
 
+def ensure_dir(directory):
+    """Ensure a directory exists, creating it if necessary."""
+    Path(directory).mkdir(parents=True, exist_ok=True)
+
+def copy_js_files():
+    """Copy FX(hash) library and random generator to dist directory."""
+    dist_dir = Path("dist/patterns")
+    ensure_dir(dist_dir)
+    
+    # Copy FX(hash) library
+    fxhash_src = Path("scripts/fxhash.min.js")
+    if not fxhash_src.exists():
+        print(f"Error: fxhash.min.js not found at {fxhash_src}")
+        return False
+    
+    # Copy random generator
+    random_gen_src = Path("scripts/fxhash_random_generator.js")
+    if not random_gen_src.exists():
+        print(f"Error: fxhash_random_generator.js not found at {random_gen_src}")
+        return False
+    
+    try:
+        shutil.copy2(fxhash_src, dist_dir / "fxhash.min.js")
+        shutil.copy2(random_gen_src, dist_dir / "fxhash_random_generator.js")
+        print("Successfully copied FX(hash) files")
+        return True
+    except Exception as e:
+        print(f"Error copying FX(hash) files: {str(e)}")
+        return False
+
 def compile_pattern(pattern_file, pattern_name):
     """Compile a pattern file into a standalone JS bundle"""
     # Ensure directories exist
@@ -106,9 +136,13 @@ def compile_pattern(pattern_file, pattern_name):
                     print(f"Error writing HTML file: {str(e)}")
                     return False
                 
+                # Copy FX(hash) files
+                if not copy_js_files():
+                    return False
+                
                 print(f"\nPattern compiled successfully!")
                 print(f"Output files created in: dist/patterns/")
-                print(f"Open dist/patterns/{pattern_name}.html in your browser to view the pattern.")
+                print(f"To view the pattern, run: cd dist/patterns && python3 -m http.server")
                 return True
             else:
                 print(f"Error: Compiled JS file not found at {js_file}")
