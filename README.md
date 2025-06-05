@@ -40,6 +40,19 @@ Patterning was originally written to be used in all-Clojure projects. But for th
 
 The source for that library and examples are on [Patterning for Processing](https://github.com/interstar/Patterning-for-Processing). They are based on the standard Processing Library template.
 
+### Patterning in FX(hash)
+
+Patterning supports creating generative NFTs for the FX(hash) NFT market. The distinctive feature of FX(hash) is that it enables (and requires) works that contain randomness, to use its own deterministic pseudorandom library which seeds the random number generator with an ID based on the NFT token. The practical upshot is that each minted edition of the NFT will look different (due to being based on a different sequence of random numbers), but every time you look at the same minted edition of the work it will look (or evolve) the same way.
+
+This gives each minted edition a unique identity.
+
+To support this usage, all Patterning functions that use random numbers now take an optional argument of a "RandomGenerator". RandomGenerator is a Clojure Protocol defined maths.cljc that declares a number of methods for returning random integers, floats, angles and items from collections.
+
+In the directory NFTmaker/ in this repository, there is an example of a simple system for making Patterning based NFTs. This includes fxhash_random_generator.js, a Javascript implementation of an object that corresponds to the RandomGenerator protocol, but uses the FX(hash) library. 
+
+There's more information in the README in that directory.
+
+
 ## What Patterning looks like 
 
 ![Patterning Image](http://alchemyislands.com/bs/assets/patterning/p1.png)

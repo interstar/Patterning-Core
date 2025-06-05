@@ -37,7 +37,6 @@ def copy_js_files(pattern_dir):
     try:
         shutil.copy2(fxhash_src, pattern_dir / "fxhash.min.js")
         shutil.copy2(random_gen_src, pattern_dir / "fxhash_random_generator.js")
-        print("Successfully copied FX(hash) files")
         return True
     except Exception as e:
         print(f"Error copying FX(hash) files: {str(e)}")
@@ -63,11 +62,6 @@ def compile_pattern(pattern_file, pattern_name):
     
     dest_path = pattern_dir / f"{pattern_name}.cljs"
     
-    print(f"Source path: {source_path.absolute()}")
-    print(f"Destination path: {dest_path.absolute()}")
-    print(f"Source exists: {source_path.exists()}")
-    print(f"Destination exists: {dest_path.exists()}")
-    
     # Only copy if the file is not already in the patterns directory
     if source_path.parent != pattern_dir:
         shutil.copy2(source_path, dest_path)
@@ -80,42 +74,24 @@ def compile_pattern(pattern_file, pattern_name):
         env = os.environ.copy()
         env["PATTERN_NAME"] = pattern_name
         
-        print(f"Environment PATTERN_NAME: {env['PATTERN_NAME']}")
-        
         # Run lein cljsbuild
         try:
             # First clean any previous builds
             subprocess.run(["lein", "clean"], check=True, env=env)
             
             # Run the pattern build
-            print("Building pattern...")
             pattern_result = subprocess.run(["lein", "cljsbuild", "once", "pattern"], 
                                   check=True,
                                   capture_output=True,
                                   text=True,
                                   env=env)
-            print("Pattern build output:")
-            print(pattern_result.stdout)
-            if pattern_result.stderr:
-                print("Pattern build warnings/errors:")
-                print(pattern_result.stderr)
-            
-            print(f"Successfully compiled pattern to {pattern_output_dir}/{pattern_name}.js")
             
             # If compilation succeeded, copy the JS file to pattern-specific directory
             js_file = pattern_output_dir / f"{pattern_name}.js"
-            print(f"Looking for JS file at: {js_file}")
-            print(f"JS file absolute path: {js_file.absolute()}")
-            print(f"JS file exists: {js_file.exists()}")
-            print(f"Pattern output directory contents:")
-            for item in pattern_output_dir.iterdir():
-                print(f"  {item.name} ({'file' if item.is_file() else 'directory'})")
             
             if js_file.exists():
                 # Read the HTML template
                 template_path = Path(os.path.dirname(os.path.abspath(__file__))) / "pattern_template.html"
-                print(f"Looking for HTML template at: {template_path}")
-                print(f"Template exists: {template_path.exists()}")
                 
                 if not template_path.exists():
                     print(f"Error: HTML template not found at {template_path}")
@@ -132,12 +108,10 @@ def compile_pattern(pattern_file, pattern_name):
                 
                 # Write the HTML file to pattern-specific directory
                 html_file = pattern_output_dir / "index.html"
-                print(f"Writing HTML file to: {html_file}")
                 
                 try:
                     with open(html_file, 'w') as f:
                         f.write(html_content)
-                    print(f"Successfully wrote HTML file to {html_file}")
                 except Exception as e:
                     print(f"Error writing HTML file: {str(e)}")
                     return False
@@ -149,7 +123,6 @@ def compile_pattern(pattern_file, pattern_name):
                 # Clean up build directory
                 build_dir = pattern_output_dir / "build"
                 if build_dir.exists():
-                    print(f"Cleaning up build directory: {build_dir}")
                     shutil.rmtree(build_dir)
                 
                 print(f"\nPattern compiled successfully!")
