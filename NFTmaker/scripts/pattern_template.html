@@ -56,7 +56,6 @@
         }
     </script>
     <script src="fxhash_random_generator.js"></script>
-    <script src="pattern_renderer.js"></script>
     <script src="{{pattern_name}}.js"></script>
     <script>
         // Wait for everything to be loaded
@@ -66,13 +65,13 @@
                 window.fxhashRandom = new FXHashRandomGenerator();
             }
             
-            // Get the pattern data from the pattern's main function
-            const pattern = window["{{pattern_name}}"].main({
-                random: window.fxhashRandom
-            });
             const canvas = document.getElementById('pattern-canvas');
-            setupResponsiveCanvas(canvas, pattern);
+            // Pass canvas to main function
+            window["{{pattern_name}}"].main({
+                random: window.fxhashRandom,
+                canvas: canvas
+            });
         });
     </script>
 </body>
-</html> 
+</html>     

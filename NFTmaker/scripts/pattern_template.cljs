@@ -1,9 +1,10 @@
-;; Replace "your-pattern-name" with your actual pattern name
-(ns your-pattern-name
+;; Template for creating a new pattern
+(ns pattern-template
   (:require [patterning.color :refer [p-color]]
             [patterning.groups :refer [rect]]
             [patterning.library.std :refer [square]]
-            [patterning.maths :as maths]))
+            [patterning.maths :as maths]
+            [patterning.canvasview :as canvasview]))
 
 ;; Import the FX(hash) random generator
 (def fxhash-random (js/require "./fxhash_random_generator.js"))
@@ -18,9 +19,18 @@
 ;; Main pattern generation function
 (defn ^:export main [params]
   (let [merged-params (merge default-params (js->clj params :keywordize-keys true))
-        random (.-fxhashRandom fxhash-random)]
-    ;; Your pattern generation code here
-    (clj->js (square {:fill (p-color 255 0 0)}))))
+        canvas (:canvas merged-params)
+        random (:random merged-params)
+        
+        ;; Your pattern generation code here
+        pattern (square {:fill (p-color 255 0 0)})]
+    
+    ;; Set up the canvas if provided
+    (when canvas
+      (canvasview/setupResponsiveCanvas canvas pattern))
+    
+    ;; Return the pattern
+    pattern))
 
 ;; Export the default parameters for reference
 (defn ^:export get-default-params []

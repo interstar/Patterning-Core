@@ -87,28 +87,31 @@ def compile_pattern(pattern_file, pattern_name):
             # First clean any previous builds
             subprocess.run(["lein", "clean"], check=True, env=env)
             
-            # Then run the build
-            result = subprocess.run(["lein", "cljsbuild", "once", "pattern"], 
+            # Run the pattern build
+            print("Building pattern...")
+            pattern_result = subprocess.run(["lein", "cljsbuild", "once", "pattern"], 
                                   check=True,
                                   capture_output=True,
                                   text=True,
                                   env=env)
+            print("Pattern build output:")
+            print(pattern_result.stdout)
+            if pattern_result.stderr:
+                print("Pattern build warnings/errors:")
+                print(pattern_result.stderr)
             
             print(f"Successfully compiled pattern to {pattern_output_dir}/{pattern_name}.js")
             
             # If compilation succeeded, copy the JS file to pattern-specific directory
             js_file = pattern_output_dir / f"{pattern_name}.js"
             print(f"Looking for JS file at: {js_file}")
+            print(f"JS file absolute path: {js_file.absolute()}")
             print(f"JS file exists: {js_file.exists()}")
+            print(f"Pattern output directory contents:")
+            for item in pattern_output_dir.iterdir():
+                print(f"  {item.name} ({'file' if item.is_file() else 'directory'})")
             
             if js_file.exists():
-                # Copy the pattern renderer
-                renderer_path = Path(os.path.dirname(os.path.abspath(__file__))) / "pattern_renderer.js"
-                if renderer_path.exists():
-                    shutil.copy2(renderer_path, pattern_output_dir / "pattern_renderer.js")
-                else:
-                    print(f"Warning: pattern_renderer.js not found at {renderer_path}")
-                
                 # Read the HTML template
                 template_path = Path(os.path.dirname(os.path.abspath(__file__))) / "pattern_template.html"
                 print(f"Looking for HTML template at: {template_path}")
