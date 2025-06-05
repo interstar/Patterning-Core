@@ -14,18 +14,18 @@
 
   :cljsbuild {:builds [;; Main library build
                        {:id "main"
-                        :source-paths ["src/cljc"]
+                        :source-paths ["src/cljc" "src/cljs"]
                         :compiler {:output-to "browser-based/js/main.js"
                                    :optimizations :simple
                                    :pretty-print true}}
                        ;; Pattern compilation build
                        {:id "pattern"
-                        :source-paths ["src/cljc" "NFTmaker/patterns"]
+                        :source-paths ["src/cljc" "src/cljs" "NFTmaker/patterns"]
                         :compiler {:output-to ~(str "NFTmaker/dist/patterns/" (or (System/getenv "PATTERN_NAME") "default") "/" (or (System/getenv "PATTERN_NAME") "default") ".js")
                                    :optimizations :simple
                                    :output-dir ~(str "NFTmaker/dist/patterns/" (or (System/getenv "PATTERN_NAME") "default") "/build")
                                    :main ~(or (System/getenv "PATTERN_NAME") "default")
-                                   :externs ["NFTmaker/scripts/externs.js"]
+                                   :preloads ['patterning.canvasview]
                                    :source-map false
                                    :closure-defines {"goog.DEBUG" false}
                                    :elide-asserts true}}]}
