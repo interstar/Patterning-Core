@@ -4,8 +4,9 @@
             [patterning.maths :refer [mol= molp=]]
             [patterning.sshapes :as sshapes]
             [patterning.groups :as groups]
-            [clojure.spec.alpha :as s]
- ))
+
+            [patterning.color :refer [p-color]]
+            [malli.core :as m]))
 
 (deftest more-or-less-equal-groups
   (let [g1 (groups/APattern (sshapes/->SShape {} [[0 0] [1 1]] ))
@@ -92,3 +93,25 @@
       )
 
     ))
+
+(deftest group-validation-test
+  (testing "valid group validation"
+    (let [valid-group (groups/APattern (sshapes/->SShape {} [[0 0] [1 0] [0 1]]))]
+      (is (m/validate groups/Group valid-group))
+      (is (nil? (groups/explain-group valid-group)))))
+
+  (testing "invalid group validation"
+    (let [invalid-group (groups/APattern (sshapes/->SShape {} nil))]
+      (is (not (m/validate groups/Group invalid-group)))
+      (is (contains? (groups/explain-group invalid-group) :points)))))
+
+(deftest sshape-validation-test
+  (testing "valid sshape validation"
+    (let [valid-sshape (sshapes/->SShape {} [[0 0] [1 0] [0 1]])]
+      (is (m/validate groups/SShape valid-sshape))
+      (is (nil? (groups/explain-sshape valid-sshape)))))
+
+  (testing "invalid sshape validation"
+    (let [invalid-sshape (sshapes/->SShape {} nil)]
+      (is (not (m/validate groups/SShape invalid-sshape)))
+      (is (contains? (groups/explain-sshape invalid-sshape) :points)))))

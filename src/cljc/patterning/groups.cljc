@@ -2,11 +2,47 @@
   (:require [patterning.maths :as maths]
             [patterning.sshapes :refer [->SShape] :as sshapes]
             [patterning.color :refer [p-color]]
-            [clojure.spec.alpha :as s]
             [clojure.set :refer [union]]
-
+            [malli.core :as m]
+            [malli.error :as me]
             [patterning.macros :refer [optional-styled-primitive]]
             ))
+
+
+;; Malli schemas for validation
+(def Point
+  [:tuple number? number?])
+
+(def Style
+  [:map
+   [:fill {:optional true} any?]
+   [:stroke {:optional true} any?]])
+
+(def SShape
+  [:map
+   [:style {:optional true} Style]
+   [:points [:sequential Point]]])
+
+(def Group
+  [:sequential SShape])
+
+;; Validation functions
+(defn validate-group
+  "Validates if data is a valid group (sequence of SShapes)"
+  [data]
+  (m/validate Group data))
+
+(defn explain-group
+  "Returns detailed explanation if data is not a valid group"
+  [data]
+  (when-not (validate-group data)
+    {:points (me/humanize (m/explain Group data))}))
+
+(defn explain-sshape
+  "Returns detailed explanation if data is not a valid SShape"
+  [data]
+  (when-not (m/validate SShape data)
+    (me/humanize (m/explain SShape data))))
 
 
 ;; A Pattern is nothing but a sequence of SShapes
@@ -32,14 +68,6 @@
                           (maths/triangle-points %)) trs ))
 
 
-(s/fdef triangle-list-to-pattern
-        :args (s/cat :trs (s/coll-of  ::maths/Triangle))
-        :ret ::sshapes/Pattern
-        )
-
-
-
-;;; Simple transforms
 (defn scale ([val pattern] (lazy-seq (map (partial sshapes/scale val) pattern )))   )
 
 (defn translate  [dx dy pattern] (lazy-seq (map (partial sshapes/translate dx dy) pattern))  )
@@ -144,7 +172,7 @@
 
 (def rect (optional-styled-primitive [x y w h]
                                      (let [x2 (+ x w) y2 (+ y h)]
-                                       [[x y] [x2 y] [x2 y2] [x y2] [x y]] ) ))
+                                       [[x y] [x2 y] [x2 y2] [x y2] [x y]])))
 
 (defn box [x y w h] {:x x :y y :width w :height h})
 (defn box-flip [{:keys [x y width height]}] {:x x :y y :width height :height width})

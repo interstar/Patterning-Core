@@ -32,8 +32,9 @@
             
             [patterning.api :refer :all]
 
-            [clojure.spec.alpha :as s]
             [clojure.pprint :as pp]
+
+            [malli.core :as m]
 
             ))
 
@@ -250,10 +251,10 @@
     (println n)
     (let [p (binding [*ns* (find-ns 'patterning.core) ] (eval qp))]
       (pp/pprint p (clojure.java.io/writer (str "outs/" n ".patdat")) )
-      (s/explain ::sshapes/Pattern p)
+      (when-not (m/validate groups/Group p)
+        (println "Invalid pattern:" (m/explain groups/Group p)))
       (spit (str "outs/" n ".svg") (make-svg 800 800 p) )))
   )
-
 (defn -main [& args]
   (finals
    [
@@ -275,3 +276,4 @@
     ["p9 Black Square" p9]
     ["p10 The City We Invent" '(city/city 11)]    
     ])  )
+

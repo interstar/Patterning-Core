@@ -5,7 +5,8 @@
             :url "https://www.gnu.org/licenses/lgpl.html"}
 
   :dependencies [[org.clojure/clojure "1.11.0"]
-                 [org.clojure/clojurescript "1.11.132"]]
+                 [org.clojure/clojurescript "1.11.132"]
+                 [metosin/malli "0.14.0"]]
 
   :plugins [[lein-cljsbuild "1.1.8"]
             [lein-localrepo "0.4.0"]]

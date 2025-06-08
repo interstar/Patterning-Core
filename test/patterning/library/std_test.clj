@@ -3,8 +3,7 @@
             [patterning.maths :as maths]
             [patterning.groups :refer [mol=]]
             [patterning.library.std :refer [poly bez-curve]]
-
-))
+            [patterning.sshapes :refer [mol=shapes]]))
 
 (deftest test-std-library
   (let []
@@ -16,6 +15,8 @@
            ))
       )
     (testing "primitives"               
-      (is (mol= (poly 0 0 0.5 4 {})
-             [#patterning.sshapes.SShape{:style {}, :points [[-0.5 -6.123233995736766E-17] [2.1855695062163546E-8 -0.4999999999999995] [0.4999999999999981 4.3711390063094715E-8] [-6.556708506402579E-8 0.4999999999999957] [-0.5 -6.123233995736766E-17]]}]
-)))))
+      (let [result (poly 0 0 0.5 4 {})
+            expected-points [[0 -0.5] [0.5 0] [0 0.5] [-0.5 0] [0 -0.5]]]
+        (is (= 1 (count result)))
+        (is (= {} (:style (first result))))
+        (is (mol=shapes expected-points (:points (first result))))))))

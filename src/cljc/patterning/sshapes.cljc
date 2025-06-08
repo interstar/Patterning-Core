@@ -1,10 +1,6 @@
 (ns patterning.sshapes
   (:require [patterning.maths :as maths]
-            [clojure.data :refer [diff]]
-            [clojure.spec.alpha :as s]
-
-            )
-
+            [clojure.data :refer [diff]])
   #?(:clj (:require [patterning.macros :refer [optional-styled-primitive]])
      :cljs (:require-macros [patterning.macros :refer [optional-styled-primitive]] )
      ))
@@ -74,21 +70,6 @@
 
 ;; Specs
 
-(s/def ::style (s/keys :opt-un [::stroke ::stroke-weight ::fill ::hidden ::bezier]))
-
-;; Styles (dictionaries of style info)
-(defn add-property [style prop val] (conj style {prop val} ))
-
-
-;; SShape (styled shape)
-;; SShape, is a shape with a style attached ({:points points :style style}
-;; style is a dictionary of style hints eg. stroke, fill and stroke-weight
-
-
-(s/def ::points (s/* ::maths/point))
-(s/def ::SShape (s/keys :req-un [::points ::style]))
-(s/def ::Pattern (s/coll-of ::SShape))
-
 (defrecord SShape [style points])
 (defn empty-sshape [] (->SShape {} []))
 
@@ -102,17 +83,13 @@
 (defn unhide "Remove the hidden label from a sshape, so it's shown" [sshape] (dissoc sshape :hidden))
 (defn hidden? "Test if a sshape is hidden" [{:keys [style points]}] (contains? style :hidden) )
 
-(s/fdef add-style :args (s/cat :new-style ::style :sshape ::SShape) :ret ::SShape )
-
 
 (defn bez-curve [style points] (add-style {:bezier true} (->SShape style points )))
 
 ;; SShape Transforms
 (defn scale [val sshape] (->SShape (get sshape :style) (scale-shape val (get sshape :points)))  )
-(s/fdef scale :args (s/cat :val number? :sshape ::SShape) :ret ::SShape)
 
 (defn translate [dx dy {:keys [style points]}] (->SShape style (translate-shape dx dy points)))
-(s/fdef translate :args (s/cat :dx number? :dy number? :sshape ::SShape)   :ret ::SShape)
 
 (defn h-reflect [{:keys [style points]}] (->SShape style (h-reflect-shape points)))
 
@@ -121,7 +98,6 @@
 (defn stretch [sx sy sshape] (->SShape (get sshape :style) (stretch-shape sx sy (get sshape :points))))
 
 (defn rotate [da sshape] (->SShape (get sshape :style) (rotate-shape da (get sshape :points))) )
-(s/fdef rotate :args (s/cat :da number? :sshape ::SShape) :ret ::SShape)
 
 (defn wobble [noise {:keys [style points]}] (->SShape style (wobble-shape noise points)) )
 
@@ -149,10 +125,6 @@
   [sshape1 sshape2] (and (= (get sshape1 :style) (get sshape2 :style) )
                          (mol=shapes (get sshape1 :points) (get sshape2 :points))) )
 
-(s/def ::triangle-points (s/coll-of ::maths/point :kind vector? :count 3))
-
-
-
 (defn triple-list [points] (partition 3 1 (cycle points))  )
 (defn triangles-list [points] (map (fn [pts3] (apply maths/triangle (flatten pts3))) (triple-list points ) ))
 (defn triangles-in-sshape [{:keys [style points]}] (triangles-list points))
@@ -164,30 +136,45 @@
         ]
     (not-any? (partial maths/contains-point t) other)    )  )
 
-(s/fdef is-ear :args (s/cat :sshape ::SShape :t ::maths/Triangle ))
-
 
 
 
 (defn to-triangles [{:keys [style points] :as original-shape}]
-
-  (loop [shape original-shape saved-ears []]
+  (loop [shape original-shape saved-ears [] depth 0]
+    (println "to-triangles: depth" depth "points" (count (:points shape)) "saved-ears" (count saved-ears))
+    (println "Current points:" (:points shape))
     (let [pts (:points shape)
           count-pts (count pts)]
       (if (= count-pts 3)
-        (conj saved-ears (apply maths/triangle pts))
+        (let [triangle (apply maths/triangle pts)]
+          (when-not (maths/validate-triangle triangle)
+            (throw (ex-info "Invalid triangle generated"
+                            {:triangle triangle
+                             :explanation (maths/explain-triangle triangle)})))
+          (println "Base case returning:" (conj saved-ears triangle))
+          (conj saved-ears triangle))
         (let [tl (take count-pts (triangles-list pts))
               ears (filter (partial is-ear shape) tl)
-              no-ears (count ears)
-              ]
+              no-ears (count ears)]
+          (println "Potential triangles:" (count tl))
+          (println "Found ears:" no-ears)
+          (when (pos? no-ears)
+            (println "First ear:" (first ears)))
+          (if (< no-ears 1)
+            (do
+              (println "No ears found, returning saved-ears")
+              saved-ears)
+            (let [ear (first ears)
+                  new-list (remove (fn [p] (maths/molp= p (:B ear))) (:points shape))]
+              (println "Removing ear:" ear)
+              (println "New point list:" new-list)
+              (if (< (count new-list) 3)
+                (do
+                  (println "New list too small, returning saved-ears")
+                  saved-ears)
+                (let [pruned (->SShape style new-list)]
+                  (println "Recursing with pruned shape")
+                  (recur pruned (conj saved-ears ear) (inc depth)))))))))))
 
-          (if (< no-ears 1) saved-ears
-              (let [ear (first ears)
-                    new-list (remove (fn [p] (maths/molp= p (:B ear))) (:points shape))
-                   ]
-                (if (< (count new-list) 3)
-                  saved-ears
-                  (let [pruned (->SShape style new-list)]
-                    (s/valid? ::SShape pruned)
-                    (recur pruned (conj saved-ears ear))))))
-          )))))
+;; Styles (dictionaries of style info)
+(defn add-property [style prop val] (conj style {prop val}))

@@ -5,8 +5,8 @@
             [patterning.color :refer [p-color]]
             [patterning.sshapes :as sshapes]
             [patterning.sshapes :refer [mol=shapes ->SShape]]
-            [clojure.spec.alpha :as s]
-            [orchestra.spec.test :as stest]
+            [malli.core :as m]
+            [patterning.groups :as groups]
             ))
 
 (deftest mol-equal-shapes
@@ -26,10 +26,6 @@
     (is (true? (sshapes/mol= (->SShape {:key 1} [[0 0]]) (->SShape {:key 1} [[0 0]]))))
    )  )
 
-(stest/instrument `sshapes/scale)
-(stest/instrument `sshapes/translate)
-(stest/instrument `sshapes/rotate)
-
 (deftest sshape-transforms
   (testing "Sshape transforms"
     (let [nulls (sshapes/->SShape {} [])
@@ -41,8 +37,8 @@
                                        [[1 1] [2 2] [1 1]] )
           ss1rotated (sshapes/->SShape {:fill (p-color 10 10 40)}
                                        [[0 0] [-1 1] [0 0]])]
-      (is (s/valid? ::sshapes/SShape nulls))
-      (is (s/valid? ::sshapes/SShape ss1))
+      (is (m/validate groups/SShape nulls))
+      (is (m/validate groups/SShape ss1))
       (is (sshapes/mol= (sshapes/scale 0.5 ss1) ss1scaled))
       (is (sshapes/mol= (sshapes/translate 1 1 ss1) ss1shifted))
       (is (sshapes/mol= (sshapes/rotate maths/half-PI ss1) ss1rotated))
@@ -78,9 +74,8 @@
     (is (maths/p-eq (maths/unit [10 0]) [1 0] ))
     ))
 
-(stest/instrument `sshapes/is-ear)
-
 (deftest as-triangles
+  (println "Starting as-triangles test")
   (let [s1 (sshapes/->SShape {} [[0 0] [0 1] [1 1] [1 0]])
         tl (sshapes/triple-list (:points s1))
         tls (sshapes/triangles-in-sshape s1)
@@ -111,10 +106,44 @@
             t2 (maths/triangle 0 0 1 1 1 0)
             s1ts (sshapes/to-triangles s1)
             ]
-        (is (s/valid? ::sshapes/triangle-points tp1))
-        (is (s/valid? ::sshapes/triangle-points (maths/triangle-points t2)))
-
+        (is (maths/validate-triangle (maths/triangle 0 0 0 1 1 1)))
+        (is (maths/validate-triangle t2))
         (is (= tp1
                (maths/triangle-points (first s1ts))))
         (is (maths/tri= t2 (second s1ts)))
-        ) )    ))
+        ) )    )
+  (println "Finished as-triangles test"))
+
+(deftest triangle-functions-test
+  (println "Starting triangle-functions-test")
+  (testing "triple-list creates valid point triples"
+    (let [points [[0 0] [1 0] [0 1] [1 1]]
+          triples (take 4 (sshapes/triple-list points))]
+      (println "Triples list is " triples)
+      (is (= (nth triples 0) [[0 0] [1 0] [0 1]]))
+      (is (= (nth triples 1) [[1 0] [0 1] [1 1]]))
+      (is (= (nth triples 2) [[0 1] [1 1] [0 0]]))
+      (is (= (nth triples 3) [[1 1] [0 0] [1 0]]))
+      (is (every? #(= (count %) 3) triples))
+      (is (every? #(every? vector? %) triples))
+      (is (every? #(every? (fn [[x y]] (and (number? x) (number? y))) %) triples))))
+   (println "testing triangles-list")
+  (testing "triangles-list creates valid triangles"
+    (let [points [[0 0] [1 0] [0 1] [1 1]]
+          triangles (take 4 (sshapes/triangles-list points))]
+      (is (every? maths/validate-triangle triangles))))
+   (println "testing triangles-in-sshape")
+  (testing "triangles-in-sshape creates valid triangles"
+    (let [shape (sshapes/->SShape {} [[0 0] [1 0] [0 1] [1 1]])
+          triangles (take 4 (sshapes/triangles-in-sshape shape))]
+      (is (every? maths/validate-triangle triangles))))
+   (println "testing to-triangles")
+  (testing "to-triangles creates valid triangles"
+    (let [shape (sshapes/->SShape {} [[0 0] [1 0] [0 1] [1 1]])
+          triangles (sshapes/to-triangles shape)]
+      (println "triangles returned:" triangles)
+      (is (every? maths/validate-triangle triangles))
+      (println "after validate-triangle")
+      (is (<= (count triangles) 2))
+      (is (every? #(maths/contains-point % [0.5 0.5]) triangles))))
+  (println "Finished triangle-functions-test"))

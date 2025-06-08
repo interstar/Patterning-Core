@@ -1,6 +1,7 @@
 (ns patterning.maths
-  (:require [clojure.spec.alpha :as s]
-            [clojure.core]))
+  (:require [clojure.core]
+            [malli.core :as m]
+            [malli.error :as me]))
 
 ;; Define the interface for random number generation
 (defprotocol RandomGenerator
@@ -133,24 +134,12 @@
 
 ;; Triangle geometry
 
-(s/def ::point (s/coll-of number? :kind vector? :count 2))
-(s/def ::Triangle (s/keys :req-un [::A ::B ::C ::a ::b ::c ::ax ::ay ::bx ::by ::cx ::cy]))
-
 (defn triangle
   ([[ax ay] [bx by] [cx cy]] (triangle ax ay bx by cx cy))
   ([ax ay bx by cx cy]
    {:A [ax ay] :B [bx by] :C [cx cy]
     :a [[bx by] [cx cy]] :b [[ax ay] [cx cy]] :c [[ax ay] [bx by]]
     :ax ax :ay ay :bx bx :by by :cx cx :cy cy}))
-
-(s/fdef triangle
-        :args (s/alt :pairs (s/cat :A ::point :B ::point :C ::point)
-                     :scalars (s/cat :ax number? :ay number?
-                                     :bx number? :by number?
-                                     :cx number? :cy number?))
-        :ret ::Triangle)
-
-
 
 (defn perimeter [t] (+ (apply distance (:a t)) (apply distance (:b t)) (apply distance (:c t))))
 
@@ -165,9 +154,6 @@
         pac (triangle x y (:ax t) (:ay t) (:cx t) (:cy t))        ]
     (mol= (+ (area pab) (area pbc) (area pac)) (area t))
     ))
-
-(s/fdef contains-point :args (s/cat :t ::Triangle :p ::point) :ret boolean?)
-
 
 (defn triangle-points [t] [(:A t) (:B t) (:C t)])
 
@@ -188,3 +174,34 @@
         (let [fx (f (first xs))]
           (if (x-in-list fx eq-test build) build
               (recur (rest xs) (conj build fx)))))))
+
+;; Malli schemas
+(def Point
+  [:tuple number? number?])
+
+(def Triangle
+  [:map
+   [:A Point]
+   [:B Point]
+   [:C Point]
+   [:a [:tuple Point Point]]
+   [:b [:tuple Point Point]]
+   [:c [:tuple Point Point]]
+   [:ax number?]
+   [:ay number?]
+   [:bx number?]
+   [:by number?]
+   [:cx number?]
+   [:cy number?]])
+
+;; Validation functions
+(defn validate-triangle
+  "Validates if data is a valid triangle"
+  [data]
+  (m/validate Triangle data))
+
+(defn explain-triangle
+  "Returns detailed explanation if data is not a valid triangle"
+  [data]
+  (when-not (validate-triangle data)
+    (me/humanize (m/explain Triangle data))))
