@@ -18,14 +18,17 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 ### Patterning works in ClojureScript
 
-The easiest way, today, to just play around with Patterning to see what you can do with it is to try it in the online tutorial. Previously "Project RoseEngine" was a browser-based Patterning editor. This has now been replaced by the ability to edit and update Patterning patterns on many sites. Eg. in the tutorial at [https://alchemyislands.com/assets/patterning-tutorial/Getting%20Started%20with%20Patterning.html](https://alchemyislands.com/assets/patterning-tutorial/Getting%20Started%20with%20Patterning.html)
+The easiest way, today, to just play around with Patterning is to try it in the online tutorial. Previously "Project RoseEngine" was a browser-based Patterning editor. This has now been replaced by the ability to edit and update Patterning patterns on many sites. Including in the [tutorial itself](https://alchemyislands.com/assets/patterning-tutorial/HelloWorld.html).
+
+This is a purely ClojureScript, in-browser environment in which you write ClojureScript code, and which can export SVG and PostScript renderings of the patterns.
 
 ### Patterning in Cardigan Bay
 
 [Cardigan Bay](https://github.com/interstar/cardigan-bay), a wiki / note-taking / digital gardening engine written in Clojure, also has Patterning built in. That means you can add patterns to your wiki in the form of short embedded scripts.
 
 Cardigan Bay is another easy way to play with Patterning without writing your own application. It's distributed as a Java app that will run on any desktop OS. You don't need a Clojure environment installed. 
- 
+
+
 ### Other Documentation
 
 As of writing, https://github.com/nataliefreed also has some nice documentation of the different functions in Patterning at : https://docs.google.com/document/d/1kKsBw3C4jrPGtr7BRYbmcbid4FgWn0_CzdNy1bQ60b8/edit?pli=1
@@ -55,13 +58,13 @@ There's more information in the README in that directory.
 
 ## What Patterning looks like 
 
-![Patterning Image](http://alchemyislands.com/bs/assets/patterning/p1.png)
+<img src="https://alchemyislands.com/media/p4.png" width="40%"/>
 
-![Patterning Image2](http://alchemyislands.com/bs/assets/patterning/p3.png)
+<img src="https://alchemyislands.com/media/a26.png" width="40%"/>
 
-![Patterning Image3](http://alchemyislands.com/bs/assets/patterning/p4.png)
-
-See more examples in the [Patterning Tutorial](http://alchemyislands.com/tutorials/HelloWorld.html)
+<img src="https://alchemyislands.com/media/lsys.png" width="40%"/>
+ 
+See more examples in the [Patterning Tutorial](https://alchemyislands.com/assets/patterning-tutorial/HelloWorld.html)
 
 ## Quick Start
 
