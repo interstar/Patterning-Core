@@ -29,7 +29,18 @@
                                    :preloads ['patterning.canvasview]
                                    :source-map false
                                    :closure-defines {"goog.DEBUG" false}
-                                   :elide-asserts true}}]}
+                                   :elide-asserts true}}
+                       ;; Presentation pattern build
+                       {:id "presentation-pattern"
+                        :source-paths ["src/cljc" "src/cljs" "presentation/patterns"]
+                        :compiler {:output-to "presentation/slides/{{pattern_name}}.js"
+                                   :output-dir "presentation/slides/build"
+                                   :main ~(symbol (System/getenv "PATTERN_NAME"))
+                                   :optimizations :simple
+                                   :pretty-print true
+                                   :output-wrapper false
+                                   :preloads ['patterning.canvasview]
+                                   :source-map "presentation/slides/{{pattern_name}}.js.map"}}]}
 
   :aot [patterning.core]
   :main patterning.core)

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/default.min.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: #fafbfc;
+        }
+        .reveal, .slides {
+            width: 100vw;
+            min-height: 100vh;
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+        .slides section {
+            width: 100vw;
+            max-width: none;
+            padding: 0;
+        }
+        .slide-main-content {
+            display: flex;
+            flex-direction: row;
+            gap: 2vw;
+            width: 100vw;
+            max-width: none;
+            margin: 0;
+            background: #f5f6f7;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 0.5vw 0vw 0.5vw 0vw;
+            min-height: 60vh;
+            height: 65vh;
+        }
+        .slide-code-col {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            max-width: 50vw;
+            width: 50vw;
+            height: 100%;
+        }
+        .slide-code-box {
+            flex: 1 1 0;
+            background: #f8f8fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 0.5vw 0.5vw 0.5vw 0.5vw;
+            font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+            font-size: 1.5vw;
+            line-height: 1.6;
+            color: #222;
+            overflow: auto;
+            min-height: 0;
+            max-height: none;
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .slide-code-box pre {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            box-sizing: border-box;
+            background: transparent;
+            overflow: visible;
+            border: none;
+            display: block;
+        }
+        .slide-code-box code {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            background: transparent;
+            font-size: inherit;
+            border: none;
+            display: block;
+        }
+        .slide-pattern-col {
+            flex: 1 1 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            max-width: 50vw;
+            width: 50vw;
+            height: 100%;
+        }
+        .pattern-container {
+            width: 90%;
+            max-width: 480px;
+            max-height: 480px;
+            aspect-ratio: 1;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pattern-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 8px;
+        }
+        h1 {
+            font-size: 1.2vw;
+            margin: 0.3vw 0 0.2vw 0;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        h2 {
+            font-size: 1vw;
+            margin: 0.2vw 0 0.7vw 0;
+            font-weight: 400;
+            color: #444;
+        }
+        .pattern-info {
+            margin-top: 1vw;
+            background: #f3f3f6;
+            border-radius: 8px;
+            padding: 0.7vw 1.5vw;
+            font-size: 0.95vw;
+        }
+        .pattern-info label {
+            font-weight: 600;
+            margin-right: 0.5vw;
+        }
+        .pattern-tags {
+            display: inline-block;
+            margin-left: 1vw;
+        }
+        .pattern-tag {
+            display: inline-block;
+            background: #e0e7ef;
+            color: #3a4a5d;
+            border-radius: 4px;
+            padding: 0.2vw 0.7vw;
+            font-size: 0.9vw;
+            margin-right: 0.5vw;
+            margin-bottom: 0.2vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>{{title}}</h1>
+                <p>{{description}}</p>
+                
+                <div class="slide-main-content">
+                    <div class="slide-code-col">
+                        <div class="slide-code-box">
+                            <pre><code class="language-clojure">{{source_code}}</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="slide-pattern-col">
+                        <div class="pattern-container">
+                            <canvas id="pattern-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Polyfill for global object -->
+    <script>
+        window.global = window;
+    </script>
+
+    <!-- Load the pattern -->
+    <script src="{{pattern_name}}.js"></script>
+
+    <!-- Initialize the pattern -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create a constructor for the random generator
+            function RandomGenerator() {
+                this.randomFloat = function() {
+                    return Math.random();
+                };
+                
+                this.randomInt = function(n) {
+                    return Math.floor(Math.random() * n);
+                };
+                
+                this.randomNth = function(coll) {
+                    // Convert ClojureScript sequence to array if needed
+                    const arr = Array.isArray(coll) ? coll : Array.from(coll);
+                    const idx = this.randomInt(arr.length);
+                    return arr[idx];
+                };
+                
+                this.randomAngle = function(seed) {
+                    return Math.random() * Math.PI * 2;
+                };
+            }
+
+            // Create an instance of the random generator
+            const random = new RandomGenerator();
+
+            // Get the canvas element
+            const canvas = document.getElementById('pattern-canvas');
+            
+            // Call the pattern's main function through window[pattern_name]
+            if (window["{{pattern_name}}"] && window["{{pattern_name}}"].main) {
+                window["{{pattern_name}}"].main({
+                    canvas: canvas,
+                    random: random
+                });
+            } else {
+                console.error('Pattern main function not found');
+            }
+        });
+    </script>
+
+    <!-- Initialize Reveal.js -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            center: false,
+            hash: true,
+            transition: 'slide',
+            width: '100%',
+            margin: 0
+        });
+    </script>
+
+    <!-- Highlight.js -->
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.11.1/languages/clojure.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+</body>
+</html> 
