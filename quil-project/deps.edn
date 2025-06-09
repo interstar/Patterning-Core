@@ -1,0 +1,24 @@
+{
+ :paths ["src"] 
+  
+ :deps
+ {
+  org.clojure/clojure {:mvn/version "1.11.0"}
+  quil/quil {:mvn/version "4.3.1563"}
+  com.alchemyislands/patterning {:mvn/version "0.5.6-SNAPSHOT"}
+  org.clojure/math.numeric-tower {:mvn/version "0.0.4"}
+  }
+
+ :aliases
+ {
+  :dev
+  {
+   :extra-deps
+   {
+    org.clojure/tools.namespace {:mvn/version "1.4.4"}
+    cider/cider-nrepl {:mvn/version "0.43.1"}
+    }
+   :extra-paths ["dev"]
+   }
+  }
+}
