@@ -20,7 +20,7 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 The easiest way, today, to just play around with Patterning is to try it in the online tutorial. Previously "Project RoseEngine" was a browser-based Patterning editor. This has now been replaced by the ability to edit and update Patterning patterns on many sites. Including in the [tutorial itself](https://alchemyislands.com/assets/patterning-tutorial/HelloWorld.html).
 
-This is a purely ClojureScript, in-browser environment in which you write ClojureScript code, and which can export SVG and PostScript renderings of the patterns.
+This is a purely ClojureScript, in-browser environment in which you can write and render patterns, and export them as SVG or PostScript.
 
 ### Patterning in Cardigan Bay
 
