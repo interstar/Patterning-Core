@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+print(">>> compile_slide.py started", flush=True)
+
 import os
 import sys
 import shutil
@@ -8,19 +10,22 @@ import argparse
 from pathlib import Path
 import re
 
+# Determine the project root (one directory up from this script)
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
 def ensure_dirs():
     """Ensure required directories exist"""
-    os.makedirs("presentation/patterns", exist_ok=True)
-    os.makedirs("presentation/slides", exist_ok=True)
+    os.makedirs("patterns", exist_ok=True)
+    os.makedirs("slides", exist_ok=True)
 
 def copy_main_js():
     """Copy the main Patterning library JS file"""
-    main_js = Path("browser-based/js/main.js")
+    main_js = Path(os.path.join(PROJECT_ROOT, "browser-based/js/main.js"))
     if not main_js.exists():
         print(f"Error: main.js not found at {main_js}")
         return False
     
-    target_dir = Path("presentation/slides")
+    target_dir = Path("slides")
     
     try:
         shutil.copy2(main_js, target_dir / "main.js")
@@ -73,7 +78,7 @@ def compile_pattern(pattern_file, pattern_name):
     ensure_dirs()
     
     # Create pattern directory if it doesn't exist
-    pattern_dir = Path("presentation/patterns")
+    pattern_dir = Path("patterns")
     pattern_dir.mkdir(exist_ok=True)
     
     # Get the source and destination paths
@@ -98,28 +103,31 @@ def compile_pattern(pattern_file, pattern_name):
         # Run lein cljsbuild
         try:
             # First clean any previous builds
-            subprocess.run(["lein", "clean"], check=True, env=env)
+            subprocess.run(["lein", "clean"], check=True, env=env, cwd=PROJECT_ROOT)
             
             # Create a temporary project.clj with pattern name substituted
-            with open("project.clj", "r") as f:
+            with open(os.path.join(PROJECT_ROOT, "project.clj"), "r") as f:
                 project_content = f.read()
             
             # Substitute pattern name in project.clj
             project_content = project_content.replace("{{pattern_name}}", pattern_name)
             
-            with open("project.clj.tmp", "w") as f:
+            with open(os.path.join(PROJECT_ROOT, "project.clj.tmp"), "w") as f:
                 f.write(project_content)
             
             try:
                 # Run the pattern build with the temporary project.clj
-                pattern_result = subprocess.run(["lein", "with-profile", "+dev", "cljsbuild", "once", "presentation-pattern"], 
-                                      check=True,
-                                      capture_output=True,
-                                      text=True,
-                                      env=env)
+                pattern_result = subprocess.run([
+                    "lein", "with-profile", "+dev", "cljsbuild", "once", "presentation-pattern"
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=env,
+                cwd=PROJECT_ROOT)
                 
                 # Move the generated files to their correct locations
-                slides_dir = Path("presentation/slides")
+                slides_dir = Path("slides")
                 temp_js = slides_dir / "{{pattern_name}}.js"
                 temp_map = slides_dir / "{{pattern_name}}.js.map"
                 
@@ -150,7 +158,7 @@ def compile_pattern(pattern_file, pattern_name):
                     metadata, source_code = extract_metadata(dest_path)
                     
                     # Read the slide template
-                    template_path = Path(os.path.dirname(os.path.abspath(__file__))) / "slide_template.html"
+                    template_path = Path(__file__).parent / "slide_template.html"
                     
                     if not template_path.exists():
                         print(f"Error: Slide template not found at {template_path}")
@@ -176,7 +184,7 @@ def compile_pattern(pattern_file, pattern_name):
                         return False
                     
                     print(f"\nSlide compiled successfully!")
-                    print(f"Output files created in: presentation/slides/")
+                    print(f"Output files created in: slides/")
                     return True
                 else:
                     print(f"Error: Compiled JS file not found at {js_file}")
@@ -184,8 +192,8 @@ def compile_pattern(pattern_file, pattern_name):
                 
             finally:
                 # Clean up temporary project.clj
-                if os.path.exists("project.clj.tmp"):
-                    os.remove("project.clj.tmp")
+                if os.path.exists(os.path.join(PROJECT_ROOT, "project.clj.tmp")):
+                    os.remove(os.path.join(PROJECT_ROOT, "project.clj.tmp"))
                 
         except subprocess.CalledProcessError as e:
             print(f"Error compiling pattern:")
@@ -218,11 +226,11 @@ def main():
             return 1
     else:
         # Still generate the HTML slide using the latest JS and pattern source
-        slides_dir = Path("presentation/slides")
-        dest_path = Path("presentation/patterns") / f"{pattern_name}.cljs"
+        slides_dir = Path("slides")
+        dest_path = Path("patterns") / f"{pattern_name}.cljs"
         if not dest_path.exists():
             dest_path = Path(args.pattern_file)
-        template_path = Path(os.path.dirname(os.path.abspath(__file__))) / "slide_template.html"
+        template_path = Path(__file__).parent / "slide_template.html"
         if not template_path.exists():
             print(f"Error: Slide template not found at {template_path}")
             return 1

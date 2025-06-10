@@ -7,46 +7,58 @@ from pathlib import Path
 import markdown
 import re
 from bs4 import BeautifulSoup
-
-def ensure_dirs():
-    """Ensure required directories exist"""
-    os.makedirs("presentation/slides", exist_ok=True)
+import argparse
 
 def convert_markdown_to_reveal(markdown_content):
     """Convert markdown content to Reveal.js HTML"""
     html = markdown.markdown(markdown_content)
     return f'<section>{html}</section>'
 
-def generate_pattern_slide(pattern_name):
+def generate_pattern_slide(pattern_name, no_compile=False):
     """Generate a pattern slide using compile_slide.py"""
-    pattern_file = f"patterns/{pattern_name}"
+    # Always use patterns/ subdir for pattern files
+    print("In generate_pattern_slide")
+    if not pattern_name.startswith("patterns/"):
+        pattern_file = f"patterns/{pattern_name}"
+    else:
+        pattern_file = pattern_name
     if not os.path.exists(pattern_file):
         print(f"Error: Pattern file not found: {pattern_file}")
         return None
+    print("About to run compile_slide on %s" % pattern_file)
+    cmd = [sys.executable, "compile_slide.py", pattern_file]
+    if no_compile:
+        cmd.append("--no-compile")
     result = subprocess.run(
-        ["python", "compile_slide.py", pattern_file],
+        cmd,
         capture_output=True,
         text=True
     )
+    print(result.stdout)
+    print(result.stderr)
     if result.returncode != 0:
         print(f"Error compiling pattern {pattern_name}:")
         print(result.stderr)
         return None
-    return Path(pattern_name).stem
+    return Path(pattern_file).stem
 
-def process_markdown_presentation(md_file):
-    ensure_dirs()
+def process_markdown_presentation(md_file, no_compile=False):
+    print("In process_markdown_presentation")
+    # No need to create extra directories, just ensure slides/ exists
+    os.makedirs("slides", exist_ok=True)
     with open(md_file, 'r') as f:
         content = f.read()
     sections = content.split('----')
     slides = []
     for section in sections:
         section = section.strip()
+        print(f"Processing section: {section[:40]}")
         if not section:
             continue
         if ':PATTERN' in section:
+            print("Found a PATTERN section!")
             pattern_name = section.strip().split(':PATTERN')[1].strip()
-            pattern_slide = generate_pattern_slide(pattern_name)
+            pattern_slide = generate_pattern_slide(pattern_name, no_compile=no_compile)
             if pattern_slide:
                 iframe_slide = f'<section data-background-iframe="{pattern_slide}.html" data-background-interactive></section>'
                 slides.append(iframe_slide)
@@ -56,6 +68,7 @@ def process_markdown_presentation(md_file):
     generate_final_presentation(slides)
 
 def generate_final_presentation(slides):
+    """Generate the final presentation HTML"""
     template_path = Path("slide_template.html")
     with open(template_path, 'r') as f:
         template = f.read()
@@ -71,14 +84,15 @@ def generate_final_presentation(slides):
     print(f"Presentation generated: {output_file}")
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python compile_presentation.py <markdown_file>")
+    """Main function"""
+    parser = argparse.ArgumentParser(description="Compile a Patterning markdown presentation into Reveal.js slides")
+    parser.add_argument("markdown_file", help="Path to the markdown file")
+    parser.add_argument("--no-compile", action="store_true", help="Skip ClojureScript compilation step for all patterns")
+    args = parser.parse_args()
+    if not os.path.exists(args.markdown_file):
+        print(f"Error: Markdown file not found: {args.markdown_file}")
         sys.exit(1)
-    md_file = sys.argv[1]
-    if not os.path.exists(md_file):
-        print(f"Error: Markdown file not found: {md_file}")
-        sys.exit(1)
-    process_markdown_presentation(md_file)
+    process_markdown_presentation(args.markdown_file, no_compile=args.no_compile)
 
 if __name__ == "__main__":
     main() 
