@@ -60,7 +60,12 @@ def process_markdown_presentation(md_file, no_compile=False):
             pattern_name = section.strip().split(':PATTERN')[1].strip()
             pattern_slide = generate_pattern_slide(pattern_name, no_compile=no_compile)
             if pattern_slide:
-                iframe_slide = f'<section data-background-iframe="{pattern_slide}.html" data-background-interactive></section>'
+                iframe_slide = (
+                    f'<section data-background-iframe="{pattern_slide}.html" data-background-interactive>'
+                    f'<a href="{pattern_slide}.html" target="_blank" '
+                    f'style="position:absolute;top:10px;right:20px;z-index:10;font-size:1.2em;">➡️</a>'
+                    f'</section>'
+                )
                 slides.append(iframe_slide)
         else:
             slide = convert_markdown_to_reveal(section)
@@ -68,7 +73,6 @@ def process_markdown_presentation(md_file, no_compile=False):
     generate_final_presentation(slides)
 
 def generate_final_presentation(slides):
-    """Generate the final presentation HTML"""
     template_path = Path("slide_template.html")
     with open(template_path, 'r') as f:
         template = f.read()

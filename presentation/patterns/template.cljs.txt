@@ -1,0 +1,43 @@
+;; Title: $1
+;; Description: $2
+
+(ns $3
+  (:require [patterning.layouts :refer :all]
+            [patterning.groups :as p]
+            [patterning.library.std :refer :all]
+            
+            [patterning.library.complex_elements :as complex]
+            [patterning.color :refer [p-color]]
+            [patterning.color :as color]            
+            [patterning.maths :refer [PI]]
+            [patterning.maths :as maths]
+
+            [patterning.canvasview :as canvasview]))
+
+;; Define your pattern parameters here
+(def default-params
+  {:width 600
+   :height 600
+   ;; Add your pattern-specific parameters here
+   })
+
+;; PATTERN START
+
+(defn the-pattern [params]
+
+$4
+)
+
+;; PATTERN END
+
+;; Define your pattern generation function
+(defn ^:export main [params]
+  (let [merged-params (merge default-params (js->clj params :keywordize-keys true))
+        canvas (:canvas merged-params)
+        pattern (the-pattern merged-params)]
+    
+    (when canvas
+      (js/console.log "Setting up responsive canvas...")
+      (canvasview/setupResponsiveCanvas canvas pattern))
+    
+    pattern)) 
