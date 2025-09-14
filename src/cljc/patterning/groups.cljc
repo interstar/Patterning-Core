@@ -16,7 +16,10 @@
 (def Style
   [:map
    [:fill {:optional true} any?]
-   [:stroke {:optional true} any?]])
+   [:stroke {:optional true} any?]
+   [:stroke-weight {:optional true} any?]
+   [:bezier {:optional true} any?]
+   [:hidden {:optional true} any?]])
 
 (def SShape
   [:map
