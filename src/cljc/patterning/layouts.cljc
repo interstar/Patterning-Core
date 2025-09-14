@@ -1,7 +1,8 @@
 (ns patterning.layouts
   (:require [patterning.maths :as maths
              :refer [default-random]]
-            [patterning.groups :as groups])  )
+            [patterning.groups :as groups]
+            [patterning.sshapes :as sshapes]))
 
 
 ;; Layouts
@@ -246,6 +247,146 @@
             (frame grid-size corners edges) ) ))
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Human aspect ratio
+
+(defn calc-dims [cols rows]
+  (let [maxdim (if (< rows cols) cols rows)
+        cols2 (/ cols 2)
+        rows2 (/ rows 2)
+        scalar (/ 2 maxdim)
+        size (* 2 scalar)
+        cols-2 (- cols 2)
+        rows-2 (- rows 2)
+        
+        ]
+    {:maxdim maxdim
+     :scalar scalar
+     :size size
+     :topleft [(- 0 (* size cols2)) (- 0 (* size rows2))]
+     :topright [(* size cols2) (- 0 (* size rows2))]
+     :bottomleft [(- 0 (* size cols2)) (* size rows2)]
+     :bottomright [(* size cols2) (* size rows2)]
+     :cols-2 cols-2
+     :rows-2 rows-2
+     :cols-1 (- cols 1)
+     :rows-1 (- rows 1)
+     }))
+
+(defn corners [cols rows corner-pattern]
+  (let [dims (calc-dims cols rows)
+        corners
+        [corner-pattern
+         (groups/h-reflect corner-pattern)
+         (-> corner-pattern (groups/h-reflect) (groups/v-reflect))
+         (groups/v-reflect corner-pattern)]
+        ]
+    (place-groups-at-positions
+     (map #(groups/scale (:scalar dims) %) corners)
+     [(:topleft dims)
+      (:topright dims)
+      (:bottomright dims)
+      (:bottomleft dims)])))
+
+
+(defn edges [cols rows edge-pattern]
+  (let
+    [dims (calc-dims cols rows)
+     tx (fn [pat da]
+          (->> pat (groups/rotate da)
+               (groups/scale (:scalar dims))))
+     itersize
+     (fn [start len]
+       (take len 
+             (drop 1
+                   (iterate (fn [x] (+ x (:size dims))) start )
+                   )))
+
+     top-positions
+     (map vector
+           (itersize (first (:topleft dims)) (:cols-1 dims))
+           (repeat (second (:topleft dims))))
+
+     right-positions
+     (map vector
+           (repeat (first (:topright dims)))
+           (itersize (second (:topright dims)) (:rows-1 dims)))
+
+     bottom-positions
+     (map vector
+           (itersize (first (:bottomleft dims)) (:cols-1 dims))
+           (repeat (second (:bottomleft dims))))
+
+     left-positions
+     (map vector
+           (repeat (first (:topleft dims)))
+           (itersize (second (:topleft dims)) (:rows-1 dims)))
+
+     tops (place-groups-at-positions
+           (repeat (tx edge-pattern 0))
+           top-positions)
+
+     rights (place-groups-at-positions
+             (repeat (tx edge-pattern (/ maths/PI 2)))
+             right-positions)
+
+     bottoms (place-groups-at-positions
+              (repeat (tx edge-pattern maths/PI))
+              bottom-positions)
+
+     lefts (place-groups-at-positions
+            (repeat (tx edge-pattern (* 3 (/ maths/PI 2))))
+            left-positions)
+     ]
+    (concat tops rights bottoms lefts)
+    )
+  )
+
+(defn aspect-ratio-frame [cols rows corner-pattern edge-pattern]
+  (stack
+   (corners cols rows corner-pattern)
+   (edges cols rows edge-pattern))
+  )
+
+
+
+;;; Aspect-ratio-aware framing functions
+
+(defn inner-stretch
+  "Stretches content to exactly fill the inner rectangle"
+  [inner-cols inner-rows inner-content]
+  (let [shrink-x (float (/ inner-cols 2)) ; Assuming content spans from -1 to 1 (width of 2)
+        shrink-y (float (/ inner-rows 2))] ; Assuming content spans from -1 to 1 (height of 2)
+    (groups/stretch shrink-x shrink-y inner-content)))
+
+(defn inner-min
+  "Shrinks content to fit within inner rectangle (letterbox/pillarbox)"
+  [inner-cols inner-rows inner-content]
+  (let [shrink (min (float (/ inner-cols 2))  ; Assuming content spans from -1 to 1
+                    (float (/ inner-rows 2)))]
+    (groups/scale shrink inner-content)))
+
+(defn inner-max
+  "Fills inner rectangle and clips excess (crop to fit)"
+  [inner-cols inner-rows inner-content]
+  (let [shrink (max (float (/ inner-cols 2))  ; Assuming content spans from -1 to 1
+                    (float (/ inner-rows 2)))]
+    (groups/scale shrink inner-content)))
+
+
+(defn aspect-ratio-framed
+  ([cols rows corner-pattern edge-pattern inner-pattern fit-fn]
+   (stack
+    (fit-fn (- cols 2) (- rows 2) inner-pattern)
+    (aspect-ratio-frame cols rows corner-pattern edge-pattern)
+    ))
+  ([cols rows corner-pattern edge-pattern inner-pattern]
+   (aspect-ratio-framed cols rows corner-pattern edge-pattern inner-pattern inner-min))
+  )
+
+
 ;; Flower of Life layout ... these are recursive developments of circles
 (defn flower-of-life-positions [r depth [cx cy]]
   (if (= depth 0) [[cx cy]]
@@ -258,3 +399,4 @@
 
 (defn sshape-as-layout [sshape group-stream scalar]
   (place-groups-at-positions (map #(groups/scale scalar %) group-stream) (sshape-to-positions sshape )  ))
+
