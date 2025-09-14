@@ -17,7 +17,6 @@
 ;; WITH YOUR OWN "DESIGN LANGUAGE" YOU CAN KILL ALL THESE
 
 
-
 ;; The palette
 
 (def my-green (p-color 100 250 130 ))
@@ -147,20 +146,20 @@
         final-pattern4 (groups/scale 1  (superimpose-layout
                                          (half-drop-grid-layout 7 (repeat square))
                                         (half-drop-grid-layout 7
-                                                               (random-turn-groups (repeat test-shape) )))
-                                    )
+                                                               (random-turn-groups (repeat test-shape) ))))
 
 
-
-
-
-        final-pattern2  (four-round
-                         (alt-rows-grid-layout
-                          2 (repeat  test-shape)
-                          (repeat (checked-layout 3 (cycle [flake
-                                                            (polyflower-group 3 5 0.7 {:stroke my-pink}) face ])
-                                                  (random-turn-groups (cycle  [(four-mirror  blue-cross) clock] ))
-                                                  ))))
-
-
-                  ] ())  )
+        final-pattern2
+        (four-round
+         (alt-rows-grid-layout
+          2 (repeat  test-shape)
+          (repeat
+           (checked-layout
+            3 (cycle
+               [flake
+                (polyflower-group
+                 3 5 0.7
+                 {:stroke my-pink}) face ])
+            (random-turn-groups
+             (cycle  [(four-mirror  blue-cross) clock] ))
+                           ))))]))
