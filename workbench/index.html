@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patterning Workbench</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- CodeMirror 5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/theme/material-darker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/clojure/clojure.min.js"></script>
+
+</head>
+<body>
+    <div class="header">
+        <h1>Patterning : Project RoseEngine</h1>
+        <div class="download-buttons">
+            <button id="download-edn" class="download-btn">Download EDN</button>
+            <button id="download-svg" class="download-btn">Download SVG</button>
+        </div>
+    </div>
+    
+    <div class="workbench-container">
+        <div class="code-pane">
+            <div id="editor-container" class="code-editor">
+                <!-- CodeMirror will be attached here -->
+            </div>
+            <div id="error-display" class="error-display"></div>
+        </div>
+        <div class="canvas-pane">
+            <div class="pattern-container">
+                <div id="canvas-container">
+                    <!-- p5.js canvas will be attached here -->
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    
+    <!-- Load the compiled workbench directly -->
+    <script src="workbench.js"></script>
+    <script>
+        // Wait for the workbench namespace to be available
+        function startWorkbench() {
+            if (typeof workbench !== 'undefined' && workbench["-main"]) {
+                console.log("Starting workbench...");
+                workbench["-main"]();
+            } else {
+                console.log("Workbench not ready, retrying...");
+                setTimeout(startWorkbench, 100);
+            }
+        }
+        startWorkbench();
+    </script>
+
+</body>
+</html>
