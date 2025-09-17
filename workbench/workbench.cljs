@@ -19,6 +19,7 @@
 (defonce editor-status-atom (atom :ok))
 (defonce debounce-timer (atom nil))
 (defonce error-message-atom (atom nil))
+(defonce data-visible-atom (atom false))
 
 (defn- render-pattern [p5 pattern]
   (. p5 background 50)
@@ -35,10 +36,22 @@
             (. p5 noStroke))
           (when-let [stroke-weight (:stroke-weight style)]
             (. p5 strokeWeight stroke-weight))
-          (. p5 beginShape)
-          (doseq [[px py] points]
-            (. p5 vertex px py))
-          (. p5 endShape (if (:closed style) js/CLOSE nil)))))))
+          
+          (if (:bezier style)
+            ;; Handle bezier curves
+            (do
+              (. p5 beginShape)
+              (let [[start-x start-y] (first points)]
+                (. p5 vertex start-x start-y))
+              (doseq [[p1 p2 p3] (partition 3 (rest points))]
+                (. p5 bezierVertex (first p1) (second p1) (first p2) (second p2) (first p3) (second p3)))
+              (. p5 endShape (if (:closed style) js/CLOSE nil)))
+            ;; Handle regular shapes
+            (do
+              (. p5 beginShape)
+              (doseq [[px py] points]
+                (. p5 vertex px py))
+              (. p5 endShape (if (:closed style) js/CLOSE nil)))))))))
 
 (defn- sketch [p5]
   (set! (.-setup p5)
@@ -343,14 +356,32 @@
       (. js/console log "window.testDownloadEdn exists?" (boolean js/window.testDownloadEdn))
       (. js/console log "window.testDownloadSvg exists?" (boolean js/window.testDownloadSvg)))
     
-    (.setValue editor ";; Test the full aspect-ratio-framed function
-  (let [corner-pattern (APattern (->SShape {:fill (p-color 200 100 100) :stroke (p-color 100 50 50) :stroke-weight 2}
-                                           [[0 0] [0.3 0] [0.2 0.1] [0.2 0.2] [0 0.2] [0 0]]))
-        edge-pattern (APattern (->SShape {:fill (p-color 100 200 100) :stroke (p-color 50 100 50) :stroke-weight 2}
-                                         [[-0.2 0] [0.2 0] [0.1 0.05] [0.1 -0.05] [-0.2 0]]))
-        inner-content (APattern (->SShape {:fill (p-color 100 100 200) :stroke (p-color 50 50 100) :stroke-weight 2}
-                                          [[0 0] [0.4 0] [0.4 0.4] [0 0.4] [0 0]]))]
-    (aspect-ratio-framed 4 4 corner-pattern edge-pattern inner-content inner-min))")
+    ;; Set default code - triangle and hexagon pattern
+    (let [default-code "(let 
+  [tri
+   (poly 0 0.3 1.05 3
+     {:fill (p-color 200 0 100)
+      :stroke (p-color 250 50 150)})
+    hex
+   (poly 0 0 0.8 6 
+     {:fill (p-color 100 150 100) 
+      :stroke (p-color 200 255 50) 
+      :stroke-weight 2})]
+  (stack 
+   (square {:fill (p-color 0)})
+   (grid-layout 5 (cycle [hex tri]))))"
+          ;; Check for code parameter in URL
+          url-params (js/URLSearchParams. (.-search js/window.location))
+          code-param (.get url-params "code")
+          initial-code (if code-param 
+                        (try 
+                          (js/decodeURIComponent code-param)
+                          (catch js/Error e
+                            (. js/console error "Error decoding URL parameter:" e)
+                            (. js/console error "Raw code parameter:" code-param)
+                            default-code))
+                        default-code)]
+      (.setValue editor initial-code))
     (evaluate-code editor sci-ctx)
     ))
 
