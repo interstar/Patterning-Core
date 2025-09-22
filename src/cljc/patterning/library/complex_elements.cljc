@@ -1,4 +1,4 @@
-(ns patterning.library.complex_elements
+(ns patterning.library.complex-elements
   (:require [patterning.maths :as maths
             :refer [default-random]]
             [patterning.sshapes :as sshapes]
