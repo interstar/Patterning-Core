@@ -254,21 +254,31 @@
 
 (defn calc-dims [cols rows]
   (let [maxdim (if (< rows cols) cols rows)
-        cols2 (/ cols 2)
-        rows2 (/ rows 2)
-        scalar (/ 2 maxdim)
+        
+        ;; The scaling factor for a pattern that is 2 units wide 
+        ;; to fit in a cell that is (2/maxdim) wide.
+        scalar (/ 1 maxdim)
+        
+        ;; The size of a single cell.
         size (* 2 scalar)
+        half-size scalar
+
+        ;; dimensions of the whole frame
+        width (* size cols)
+        height (* size rows)
+        half-width (/ width 2)
+        half-height (/ height 2)
+
         cols-2 (- cols 2)
         rows-2 (- rows 2)
-        
         ]
     {:maxdim maxdim
      :scalar scalar
      :size size
-     :topleft [(- 0 (* size cols2)) (- 0 (* size rows2))]
-     :topright [(* size cols2) (- 0 (* size rows2))]
-     :bottomleft [(- 0 (* size cols2)) (* size rows2)]
-     :bottomright [(* size cols2) (* size rows2)]
+     :topleft    [(- half-size half-width) (- half-size half-height)]
+     :topright   [(- half-width half-size) (- half-size half-height)]
+     :bottomleft [(- half-size half-width) (- half-height half-size)]
+     :bottomright [(- half-width half-size) (- half-height half-size)]
      :cols-2 cols-2
      :rows-2 rows-2
      :cols-1 (- cols 1)
@@ -306,23 +316,23 @@
 
      top-positions
      (map vector
-           (itersize (first (:topleft dims)) (:cols-1 dims))
+           (itersize (first (:topleft dims)) (:cols-2 dims))
            (repeat (second (:topleft dims))))
 
      right-positions
      (map vector
            (repeat (first (:topright dims)))
-           (itersize (second (:topright dims)) (:rows-1 dims)))
+           (itersize (second (:topright dims)) (:rows-2 dims)))
 
      bottom-positions
      (map vector
-           (itersize (first (:bottomleft dims)) (:cols-1 dims))
+           (itersize (first (:bottomleft dims)) (:cols-2 dims))
            (repeat (second (:bottomleft dims))))
 
      left-positions
      (map vector
            (repeat (first (:topleft dims)))
-           (itersize (second (:topleft dims)) (:rows-1 dims)))
+           (itersize (second (:topleft dims)) (:rows-2 dims)))
 
      tops (place-groups-at-positions
            (repeat (tx edge-pattern 0))
@@ -356,32 +366,39 @@
 
 (defn inner-stretch
   "Stretches content to exactly fill the inner rectangle"
-  [inner-cols inner-rows inner-content]
-  (let [shrink-x (float (/ inner-cols 2)) ; Assuming content spans from -1 to 1 (width of 2)
-        shrink-y (float (/ inner-rows 2))] ; Assuming content spans from -1 to 1 (height of 2)
+  [inner-w inner-h inner-content]
+  (let [shrink-x (/ inner-w 2.0)
+        shrink-y (/ inner-h 2.0)]
     (groups/stretch shrink-x shrink-y inner-content)))
 
 (defn inner-min
   "Shrinks content to fit within inner rectangle (letterbox/pillarbox)"
-  [inner-cols inner-rows inner-content]
-  (let [shrink (min (float (/ inner-cols 2))  ; Assuming content spans from -1 to 1
-                    (float (/ inner-rows 2)))]
+  [inner-w inner-h inner-content]
+  (let [shrink (min (/ inner-w 2.0) (/ inner-h 2.0))]
     (groups/scale shrink inner-content)))
 
 (defn inner-max
   "Fills inner rectangle and clips excess (crop to fit)"
-  [inner-cols inner-rows inner-content]
-  (let [shrink (max (float (/ inner-cols 2))  ; Assuming content spans from -1 to 1
-                    (float (/ inner-rows 2)))]
-    (groups/scale shrink inner-content)))
+  [inner-w inner-h inner-content]
+  (let [shrink (max (/ inner-w 2.0) (/ inner-h 2.0))
+        scaled-content (groups/scale shrink inner-content)
+        half-w (/ inner-w 2.0)
+        half-h (/ inner-h 2.0)
+        clip-predicate (fn [[x y]]
+                         (and (<= (- half-w) x half-w)
+                              (<= (- half-h) y half-h)))]
+    (groups/clip clip-predicate scaled-content)))
 
 
 (defn aspect-ratio-framed
   ([cols rows corner-pattern edge-pattern inner-pattern fit-fn]
-   (stack
-    (fit-fn (- cols 2) (- rows 2) inner-pattern)
-    (aspect-ratio-frame cols rows corner-pattern edge-pattern)
-    ))
+   (let [dims (calc-dims cols rows)
+         inner-w (* (:cols-2 dims) (:size dims))
+         inner-h (* (:rows-2 dims) (:size dims))
+         scaled-inner (fit-fn inner-w inner-h inner-pattern)]
+     (stack
+      scaled-inner
+      (aspect-ratio-frame cols rows corner-pattern edge-pattern))))
   ([cols rows corner-pattern edge-pattern inner-pattern]
    (aspect-ratio-framed cols rows corner-pattern edge-pattern inner-pattern inner-min))
   )
