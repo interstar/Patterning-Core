@@ -18,14 +18,14 @@
                      horizontal-line square drunk-line]]
             [patterning.library.turtle :refer [basic-turtle]]
             [patterning.library.l_systems :refer [l-system]]
-            [patterning.library.complex_elements :refer [vase zig-zag]]
+            [patterning.library.complex-elements :refer [vase zig-zag]]
             [patterning.view :refer [make-txpt make-svg]]
             [patterning.color :refer [p-color remove-transparency] ]
             [patterning.examples.framedplant :as framedplant]
             [patterning.examples.design_language1 :as design-language]
             [patterning.examples.city :as city]
             [patterning.library.symbols :as symbols]
-            [patterning.library.complex_elements
+            [patterning.library.complex-elements
              :refer [petal-pair-group petal-group]]
             [patterning.library.machines :refer [make-cog spaced-engaged cog->pattern ]]
             

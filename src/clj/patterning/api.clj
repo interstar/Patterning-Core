@@ -10,7 +10,7 @@
 
   (:require [patterning.library.std :refer [poly spiral horizontal-line]])
   (:require [patterning.library.turtle :refer [basic-turtle]])
-  (:require [patterning.library.complex_elements :refer [vase zig-zag]])
+  (:require [patterning.library.complex-elements :refer [vase zig-zag]])
   (:require [patterning.library.l_systems :refer [l-system]])
 
   (:require [patterning.view :refer [make-txpt make-svg transformed-sshape ]])

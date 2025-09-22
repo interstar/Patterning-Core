@@ -7,7 +7,7 @@
             [patterning.layouts :refer [clock-rotate nested-stack stack diamond-layout v-mirror random-turn-groups
                                         superimpose-layout half-drop-grid-layout framed random-grid-layout four-round
                                         alt-rows-grid-layout checked-layout four-mirror grid-layout ]]
-            [patterning.library.complex_elements :refer [petal-pair-group  spoke-flake-group
+            [patterning.library.complex-elements :refer [petal-pair-group  spoke-flake-group
                                                          face-group polyflower-group]]
 
             [patterning.color :refer [p-color setup-colors mod-styles color-to-fill color-seq]])
