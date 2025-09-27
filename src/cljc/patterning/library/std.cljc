@@ -108,7 +108,7 @@
 
 
 (defn bez-curve
-  ([points style] (APattern (sshapes/bez-curve style points))  )
+  ([points style] (APattern (sshapes/s-bez-curve style points))  )
   ([points] (bez-curve points {})) )
 
 

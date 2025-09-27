@@ -53,7 +53,7 @@
 
 
 (defn petal-group "Using bezier curves" [style dx dy]
-  (let [ep [0 0]] [ (sshapes/bez-curve style [ ep [(- dx) (- dy)] [(- (*  -2 dx) dx) (- dy)] ep])]  ))
+  (let [ep [0 0]] [ (sshapes/s-bez-curve style [ ep [(- dx) (- dy)] [(- (*  -2 dx) dx) (- dy)] ep])]  ))
 
 (defn petal-pair-group "reflected petals" [style dx dy]
   (let [petal (petal-group style dx dy)] (layouts/stack petal (groups/h-reflect petal))))

@@ -84,7 +84,7 @@
 (defn hidden? "Test if a sshape is hidden" [{:keys [style points]}] (contains? style :hidden) )
 
 
-(defn bez-curve [style points] (add-style {:bezier true} (->SShape style points )))
+(defn s-bez-curve [style points] (add-style {:bezier true} (->SShape style points )))
 
 ;; SShape Transforms
 (defn scale [val sshape] (->SShape (get sshape :style) (scale-shape val (get sshape :points)))  )
