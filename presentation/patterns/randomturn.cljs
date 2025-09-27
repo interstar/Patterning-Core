@@ -3,7 +3,7 @@
 
 (ns randomturn
   (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
-            [patterning.groups :as p]
+            [patterning.groups :as p :refer [rotate]] 
             [patterning.sshapes :refer [->SShape]]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]
@@ -21,17 +21,17 @@
 ;; PATTERN START
 
 (defn q1-rot-group [group] 
-  (p/rotate (float (/ maths/PI 2)) group))
+  (rotate (float (/ maths/PI 2)) group))
 (defn q2-rot-group [group] 
-  (p/rotate maths/PI group))
+  (rotate maths/PI group))
 (defn q3-rot-group [group] 
-  (p/rotate (-  (float (/ maths/PI 2))) group))
+  (rotate (-  (float (/ maths/PI 2))) group))
 
 (defn random-turn-groups 
-  [groups & {:keys [random] :or {random default-random}}]
+  [groups]
   (let [random-turn
         (fn [group]
-          (case (.randomInt random 4)
+          (case (rand-int 4)
             0 group
             1 (q1-rot-group group)
             2 (q2-rot-group group)
@@ -45,14 +45,15 @@
     (stack
      (std/square 
       {:fill (p-color 50 80 100)})
-     (grid-layout
-      10
+     (grid-layout 10
       (random-turn-groups
        (repeat
         [(->SShape
           {:fill (p-color 230 180 90)
            :stroke orange}
-          [[-1 -1] [1 -1] [-1 1]])]))))))
+          [[-1 -1] [1 -1] [-1 1]])]) 
+       
+       )))))
 
 ;; PATTERN END
 

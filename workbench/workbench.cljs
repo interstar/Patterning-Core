@@ -21,8 +21,9 @@
 (defonce error-message-atom (atom nil))
 (defonce data-visible-atom (atom false))
 
+
 (defn- render-pattern [p5 pattern]
-  (. p5 background 50)
+  (. p5 background 255)
   (let [tx (p-view/make-txpt [-1 -1 1 1] [0 0 (. p5 -width) (. p5 -height)])]
     (doseq [sshape pattern]
       (when-not (or (empty? (:points sshape)) (:hidden (:style sshape)))
@@ -122,7 +123,46 @@
                :allow (set (concat (keys all-bindings)
                                   ['let 'let* 'def 'defn 'fn 'fn* 'if 'when 'cond 'case 'do '-> '->>
                                    'loop 'recur 'throw 'try 'catch 'finally
-                                   'quote 'syntax-quote 'unquote 'unquote-splicing]))})))
+                                   'quote 'syntax-quote 'unquote 'unquote-splicing
+                                   'cycle
+                                   'clojure.core/seq-to-map-for-destructuring
+                                   'take
+                                   'repeat
+                                   'rand-nth
+                                   'rand-int
+                                   '/
+                                   'condp
+                                   'clojure.core/get
+                                   '-
+                                   'map
+                                   'conj
+                                   '=
+                                   '*'
+                                   '+
+                                   'apply
+                                   'range
+                                   'new
+                                   'mod
+                                   'dissoc
+                                   'into
+                                   'iterate
+                                   'clojure.core/str
+                                   'list
+                                   'shuffle
+                                   'partial
+                                   'remove
+                                   'nth
+                                   'keys
+                                   'drop
+                                   'filter
+                                   'not
+                                   'some
+                                   'fn?
+                                   'last
+                                   'concat
+                                   'or
+                                   'loop*
+                                   'clojure.core/loop*]))})))
 
 (defn- update-editor-status-display [editor new-status]
   (. js/console log (str "Updating editor status to: " new-status))
@@ -142,7 +182,6 @@
 
 (defn download-edn []
   (. js/console log "=== DOWNLOAD EDN FUNCTION CALLED ===")
-  (. js/console log "Pattern atom value:" @pattern-atom)
   (. js/console log "Pattern atom type:" (type @pattern-atom))
   (if @pattern-atom
     (do
@@ -174,7 +213,6 @@
 
 (defn download-svg []
   (. js/console log "=== DOWNLOAD SVG FUNCTION CALLED ===")
-  (. js/console log "Pattern atom value:" @pattern-atom)
   (. js/console log "Pattern atom type:" (type @pattern-atom))
   (if @pattern-atom
     (do
@@ -213,18 +251,10 @@
       (sci/parse-next sci-ctx (sci/reader code))
       (try
         (let [result (sci/eval-string code sci-ctx)]
-          (. js/console log "SCI evaluation result:" result)
-          (. js/console log "Result type:" (type result))
-          (. js/console log "Result count:" (if (sequential? result) (count result) "not sequential"))
-          (when (sequential? result)
-            (. js/console log "First item:" (first result))
-            (. js/console log "First item type:" (type (first result)))
-            (when (first result)
-              (. js/console log "First item keys:" (keys (first result)))
-              (. js/console log "First item points:" (:points (first result)))
-              (. js/console log "First item style:" (:style (first result)))))
+          (. js/console log "SCI evaluation result type:" (type result))
+          (. js/console log "Result is sequential:" (sequential? result))
           (reset! pattern-atom result)
-          (. js/console log "Pattern atom updated, new value:" @pattern-atom)
+          (. js/console log "Pattern atom updated successfully")
           (reset! editor-status-atom :ok)
           (reset! error-message-atom nil)
           (update-error-display nil)
@@ -370,17 +400,26 @@
   (stack 
    (square {:fill (p-color 0)})
    (grid-layout 5 (cycle [hex tri]))))"
-          ;; Check for code parameter in URL
+          ;; Check for code parameter in URL or localStorage
           url-params (js/URLSearchParams. (.-search js/window.location))
           code-param (.get url-params "code")
-          initial-code (if code-param 
+          storage-key (.get url-params "storageKey")
+          initial-code (cond
+                        ;; Use localStorage if storageKey is provided
+                        storage-key
+                        (or (.getItem js/localStorage storage-key) default-code)
+                        
+                        ;; Use URL parameter if code is provided
+                        code-param 
                         (try 
                           (js/decodeURIComponent code-param)
                           (catch js/Error e
                             (. js/console error "Error decoding URL parameter:" e)
                             (. js/console error "Raw code parameter:" code-param)
                             default-code))
-                        default-code)]
+                        
+                        ;; Default code
+                        :else default-code)]
       (.setValue editor initial-code))
     (evaluate-code editor sci-ctx)
     ))

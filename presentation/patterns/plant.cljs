@@ -33,9 +33,9 @@
    
    (let
     [grow 
-     (l-system [["F" "F[+F]F[-F]Y[F]"] ["Y" "Z"]])]
+     (l-system [["F" "FF[--F]F[+FZ]Y[FF]"] ["Y" "Z"]])]
      (basic-turtle
-      [0.5 1] 0.1
+      [0.6 1] 0.08
       (/ PI -2) (/ PI 9)
       (grow 4 "F")
       {Z

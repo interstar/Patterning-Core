@@ -3,7 +3,7 @@
 
 (ns mapmany
   (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
-            [patterning.groups :as p]
+            [patterning.groups :as p :refer [over-style rotate scale ]]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]
             [patterning.color :as color :refer [p-color]]
@@ -26,7 +26,7 @@
       [p]
       (let
        [c (color/rand-col)]
-        (p/over-style
+        (over-style
          {:fill c, :stroke-weight 2
           :stroke (color/darker-color c)}
          p)))

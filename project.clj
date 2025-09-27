@@ -4,9 +4,13 @@
   :license {:name "Gnu Lesser Public License"
             :url "https://www.gnu.org/licenses/lgpl.html"}
 
-  :dependencies [[org.clojure/clojure "1.11.0"]
+  :test-selectors {:default (constantly true)
+                   :namespace :namespace}
+
+  :dependencies [[org.clojure/clojure "1.11.3"]
                  [org.clojure/clojurescript "1.11.132"]
-                 [metosin/malli "0.14.0"]]
+                 [metosin/malli "0.14.0"]
+                 [org.babashka/sci "0.10.49"]]
 
   :plugins [[lein-cljsbuild "1.1.8"]
             [lein-localrepo "0.4.0"]]
@@ -35,12 +39,21 @@
                         :source-paths ["src/cljc" "src/cljs" "presentation/patterns"]
                         :compiler {:output-to "presentation/slides/{{pattern_name}}.js"
                                    :output-dir "presentation/slides/build"
-                                   :main ~(symbol (System/getenv "PATTERN_NAME"))
+                                   :main ~(symbol (or (System/getenv "PATTERN_NAME") 'default-placeholder))
                                    :optimizations :simple
                                    :pretty-print true
                                    :output-wrapper false
                                    :preloads ['patterning.canvasview]
-                                   :source-map "presentation/slides/{{pattern_name}}.js.map"}}]}
+                                   :source-map "presentation/slides/{{pattern_name}}.js.map"}}
+                       ;; Workbench build
+                       {:id "workbench"
+                        :source-paths ["src/cljc" "src/cljs" "workbench"]
+                        :compiler {:output-to "workbench/workbench.js"
+                                   :output-dir "workbench/out"
+                                   :asset-path "out"
+                                   :main workbench
+                                   :optimizations :simple
+                                   :source-map "workbench/workbench.js.map"}}]}
 
-  :aot [patterning.core]
+  :aot [patterning.core patterning.cli]
   :main patterning.core)

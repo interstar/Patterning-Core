@@ -1,10 +1,11 @@
 ;; Title: The City We Invent
 ;; Description: A Stylized City Made of Reusable Parts
 
-(ns 
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
-            [patterning.groups :as p]
-             [patterning.library.turtle :refer [basic-turtle]]
+(ns city
+  (:require [patterning.layouts :as l :refer [stack clock-rotate h-mirror grid-layout checked-layout framed h-reflect]]
+            [patterning.groups :as p :refer [reframe translate scale rotate stretch rect]]
+            [patterning.library.turtle :refer [basic-turtle]]
+            [patterning.sshapes :as sshape :refer [->SShape]]
             [patterning.library.l_systems :refer [l-system]]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]
@@ -49,10 +50,10 @@
    [(->SShape engrave [[-0.9 -1] [-0.9 0.4]])]
    [(->SShape engrave [[0.9 -1] [0.9 0.4]])]))
 
-(defn narrow_ [p]
+(defn narrow_ [pat]
   (stack
    (h-mirror [(->SShape engrave [[-0.8 -1] [-0.4 -0.8] [-0.4 0.8] [-0.8 1]])])
-   (scale 0.8 p)))
+   (scale 0.8 pat)))
 
 (defn block_ [p]
   (stack
@@ -90,11 +91,12 @@
 
 (def arched-window
   (let [half
-        [(->SShape engrave
-                   [[0 0.4]
-                    [-0.6 0.4] [-0.6 -0.2]
-                    [-0.5 -0.27] [-0.4 -0.34] [-0.3 -0.4]
-                    [-0.2 -0.42] [-0.1 -0.43] [0 -0.435]])]]
+        [(->SShape
+          engrave
+          [[0 0.4]
+           [-0.6 0.4] [-0.6 -0.2]
+           [-0.5 -0.27] [-0.4 -0.34] [-0.3 -0.4]
+           [-0.2 -0.42] [-0.1 -0.43] [0 -0.435]])]]
     (stack
      half
      (h-reflect half))))
@@ -102,14 +104,16 @@
 (def thin-arched   (stretch 0.4 1 arched-window))
 
 (def four-arched
-  (translate 0 0.5
-             (stretch 0.7 1.2
-                      (reframe
-                       (stack
-                        (translate -0.9 0 thin-arched)
-                        (translate -0.3 0 thin-arched)
-                        (translate  0.3 0 thin-arched)
-                        (translate  0.9 0 thin-arched))))))
+  (translate
+   0 0.5
+   (stretch
+    0.7 1.2
+    (reframe
+     (stack
+      (translate -0.9 0 thin-arched)
+      (translate -0.3 0 thin-arched)
+      (translate  0.3 0 thin-arched)
+      (translate  0.9 0 thin-arched))))))
 
 (def clock
   (stack

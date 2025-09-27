@@ -3,7 +3,7 @@
 
 (ns sshapelayout
   (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
-            [patterning.groups :as p]
+            [patterning.groups :as p :refer [scale reframe]]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]
             [patterning.color :as color :refer [p-color]]
@@ -22,21 +22,23 @@
 (defn sshape-to-positions [{:keys [style points]}] points)
 
 (defn sshape-as-layout [sshape group-stream scalar]
-  (l/place-groups-at-positions (map #(p/scale scalar %) group-stream) (sshape-to-positions sshape)))
+  (l/place-groups-at-positions 
+   (map #(scale scalar %) group-stream) 
+   (sshape-to-positions sshape)))
 
 
-(defn a-nangle [n] (std/nangle 0 0 0.6 n {:stroke (p-color 0 0 0) :stroke-weight 2}))
 (defn randomize-color [p]
   (let [c (color/rand-col)]
-    (p/over-style {:fill (color/darker-color c)
-                   :stroke c} p)))
-
+    (p/over-style
+     {:fill (color/darker-color c)
+      :stroke c} p)))
 
 (defn the-pattern [params]
-  (let [l (drunk-line 10 0.1)
-        s (map randomize-color
-               (cycle (map a-nangle [5 7 9])))]
-    (clock-rotate 8
+  (reframe 
+   (let
+    [l (drunk-line 10 0.1 {:stroke-weight 3})
+     s (map randomize-color
+            (repeat (std/square)))]
      (stack l (sshape-as-layout (first l) s 0.1)))))
 
 ;; PATTERN END
@@ -46,9 +48,9 @@
   (let [merged-params (merge default-params (js->clj params :keywordize-keys true))
         canvas (:canvas merged-params)
         pattern (the-pattern merged-params)]
-    
+
     (when canvas
       (js/console.log "Setting up responsive canvas...")
       (canvasview/setupResponsiveCanvas canvas pattern))
-    
+
     pattern)) 
