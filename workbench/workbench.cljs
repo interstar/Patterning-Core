@@ -1,18 +1,6 @@
 (ns workbench
-  (:require [sci.core :as sci]
-            [patterning.groups :as p-groups]
-            [patterning.layouts :as p-layouts]
-            [patterning.sshapes :as p-sshapes]
-            [patterning.color :as p-color]
-            [patterning.maths :as p-maths]
+  (:require [patterning.dynamic :as dynamic]
             [patterning.view :as p-view]
-            [patterning.library.std :as p-lib-std]
-            [patterning.library.turtle :as p-lib-turtle]
-            [patterning.library.l_systems :as p-lib-lsystems]
-            [patterning.library.complex-elements :as p-lib-complex]
-            [patterning.library.machines :as p-lib-machines]
-            [patterning.library.symbols :as p-lib-symbols]
-            [patterning.library.douat :as p-douat]
             ))
 
 (defonce pattern-atom (atom nil))
@@ -20,6 +8,8 @@
 (defonce debounce-timer (atom nil))
 (defonce error-message-atom (atom nil))
 (defonce data-visible-atom (atom false))
+(defonce worker-ref (atom nil))
+(defonce timeout-ref (atom nil))
 
 
 (defn- render-pattern [p5 pattern]
@@ -69,100 +59,6 @@
           (when-let [pattern @pattern-atom]
             (render-pattern p5 pattern)))))
 
-(defn- get-sci-ctx []
-  (let [;; By including cljs.core, we get most standard functions automatically.
-        ns-map {'cljs.core (ns-publics 'cljs.core)
-                'p-groups (ns-publics 'patterning.groups)
-                'p-layouts (ns-publics 'patterning.layouts)
-                'p-sshapes (ns-publics 'patterning.sshapes)
-                'p-color (ns-publics 'patterning.color)
-                'p-maths (ns-publics 'patterning.maths)
-                'p-view (ns-publics 'patterning.view)
-                'p-lib-std (ns-publics 'patterning.library.std)
-                'p-lib-turtle (ns-publics 'patterning.library.turtle)
-                'p-lib-lsystems (ns-publics 'patterning.library.l_systems)
-                'p-lib-complex (ns-publics 'patterning.library.complex-elements)
-                'p-lib-machines (ns-publics 'patterning.library.machines)
-                'p-lib-symbols (ns-publics 'patterning.library.symbols)
-                'p-lib-douat (ns-publics 'patterning.library.douat)
-                }
-        bindings (apply merge (vals ns-map))
-        ;; Add key functions that patterns expect - these are the main entry points
-        key-bindings {'basic-turtle #'p-lib-turtle/basic-turtle
-                     'l-system #'p-lib-lsystems/l-system
-                     'PI p-maths/PI
-                     'p-color #'p-color/p-color
-                     'poly #'p-lib-std/poly
-                     'stack #'p-layouts/stack
-                     'clock-rotate #'p-layouts/clock-rotate
-                     'grid-layout #'p-layouts/grid-layout
-                     'checked-layout #'p-layouts/checked-layout
-                     'framed #'p-layouts/framed
-                     'aspect-ratio-framed #'p-layouts/aspect-ratio-framed
-                     'aspect-ratio-frame #'p-layouts/aspect-ratio-frame
-                     'inner-stretch #'p-layouts/inner-stretch
-                     'inner-min #'p-layouts/inner-min
-                     'inner-max #'p-layouts/inner-max
-                     'q1-rot-group #'p-layouts/q1-rot-group
-                     'q2-rot-group #'p-layouts/q2-rot-group
-                     'q3-rot-group #'p-layouts/q3-rot-group
-                     '->SShape #'p-sshapes/->SShape
-                     'APattern #'p-groups/APattern
-                     'star #'p-lib-std/star
-                     'nangle #'p-lib-std/nangle
-                     'spiral #'p-lib-std/spiral
-                     'diamond #'p-lib-std/diamond
-                     'horizontal-line #'p-lib-std/horizontal-line
-                     'square #'p-lib-std/square
-                     'drunk-line #'p-lib-std/drunk-line}
-        all-bindings (merge bindings key-bindings)]
-    (sci/init {:namespaces ns-map
-               :bindings all-bindings
-               ;; We still need to allow the bindings themselves, plus core macros and special forms.
-               ;; Most cljs.core functions are now covered by the ns-map and all-bindings.
-               :allow (set (concat (keys all-bindings)
-                                  ['let 'let* 'def 'defn 'fn 'fn* 'if 'when 'cond 'case 'do '-> '->>
-                                   'loop 'recur 'throw 'try 'catch 'finally
-                                   'quote 'syntax-quote 'unquote 'unquote-splicing
-                                   'cycle
-                                   'clojure.core/seq-to-map-for-destructuring
-                                   'take
-                                   'repeat
-                                   'rand-nth
-                                   'rand-int
-                                   '/
-                                   'condp
-                                   'clojure.core/get
-                                   '-
-                                   'map
-                                   'conj
-                                   '=
-                                   '*'
-                                   '+
-                                   'apply
-                                   'range
-                                   'new
-                                   'mod
-                                   'dissoc
-                                   'into
-                                   'iterate
-                                   'clojure.core/str
-                                   'list
-                                   'shuffle
-                                   'partial
-                                   'remove
-                                   'nth
-                                   'keys
-                                   'drop
-                                   'filter
-                                   'not
-                                   'some
-                                   'fn?
-                                   'last
-                                   'concat
-                                   'or
-                                   'loop*
-                                   'clojure.core/loop*]))})))
 
 (defn- update-editor-status-display [editor new-status]
   (. js/console log (str "Updating editor status to: " new-status))
@@ -242,41 +138,64 @@
       (. js/console log "SVG download process completed"))
     (. js/console log "No pattern to download - pattern-atom is nil")))
 
-(defn- evaluate-code [editor sci-ctx]
+(defn- evaluate-code [editor]
   (let [code (.getValue editor)]
-    (. js/console log "=== EVALUATING CODE ===")
-    (. js/console log "Code to evaluate:" code)
-    (. js/console log "SCI context:" sci-ctx)
-    (try
-      (sci/parse-next sci-ctx (sci/reader code))
-      (try
-        (let [result (sci/eval-string code sci-ctx)]
-          (. js/console log "SCI evaluation result type:" (type result))
-          (. js/console log "Result is sequential:" (sequential? result))
-          (reset! pattern-atom result)
-          (. js/console log "Pattern atom updated successfully")
-          (reset! editor-status-atom :ok)
-          (reset! error-message-atom nil)
-          (update-error-display nil)
-          
-          (.redraw js/window.p5Instance))
-        (catch :default e
+    (. js/console log "=== EVALUATING CODE VIA WORKER ===")
+
+    ;; Terminate any previously running worker and timeout
+    (when @worker-ref
+      (.terminate @worker-ref)
+      (reset! worker-ref nil))
+    (when @timeout-ref
+      (js/clearTimeout @timeout-ref)
+      (reset! timeout-ref nil))
+
+    (let [worker (js/Worker. "worker.js")]
+      (reset! worker-ref worker)
+
+      ;; 1. Handle successful evaluation
+      (set! (.-onmessage worker)
+        (fn [event]
+          (js/clearTimeout @timeout-ref)
+          (let [data (js->clj (. event -data) :keywordize-keys true)]
+            (if (= (:status data) "ok")
+              (do
+                (let [deserialized-result (js->clj (js/JSON.parse (:result data)) :keywordize-keys true)]
+                  (reset! pattern-atom deserialized-result))
+                (reset! editor-status-atom :ok)
+                (update-error-display nil)
+                (.redraw js/window.p5Instance))
+              (do
+                (reset! editor-status-atom :runtime-error)
+                (update-error-display (str "Runtime Error: " (:error-message data)))
+                (. js/console error "Worker evaluation error:" (:error-message data)))))))
+
+      ;; 2. Handle errors within the worker script itself
+      (set! (.-onerror worker)
+        (fn [error]
+          (js/clearTimeout @timeout-ref)
           (reset! editor-status-atom :runtime-error)
-          (reset! error-message-atom (str "Runtime Error: " (.-message e)))
-          (update-error-display @error-message-atom)
-          (. js/console error "Runtime Error:" e)
-          (. js/console error "Error stack:" (.-stack e))
-          (. js/console error "Error data:" (.-data e))
-          (. js/console error "Error cause:" (.-cause e))))
-      (catch :default e
-        (reset! editor-status-atom :syntax-error)
-        (reset! error-message-atom (str "Syntax Error: " (.-message e)))
-        (update-error-display @error-message-atom)
-        (. js/console error "Syntax Error:" e)))))
+          (let [msg (str "Worker Error: " (.-message error))]
+            (update-error-display msg)
+            (. js/console error msg error))))
+
+      ;; 3. Set the timeout
+      (reset! timeout-ref
+        (js/setTimeout
+          (fn []
+            (.terminate worker)
+            (reset! worker-ref nil)
+            (reset! editor-status-atom :runtime-error)
+            (let [msg "Runtime Error: Evaluation timed out (possible infinite loop)."]
+              (update-error-display msg)
+              (. js/console error msg)))
+          5000)) ;; 5 second timeout
+
+      ;; 4. Start evaluation
+      (.postMessage worker code))))
 
 (defn -main []
   (let [editor-host (. js/document getElementById "editor-container")
-        sci-ctx (get-sci-ctx)
         editor (js/CodeMirror editor-host #js{:mode "clojure"
                                               :theme "material-darker"
                                               :lineNumbers true})]
@@ -314,7 +233,7 @@
 
     (.on editor "change" (fn []
                            (js/clearTimeout @debounce-timer)
-                           (reset! debounce-timer (js/setTimeout #(evaluate-code editor sci-ctx) 1000))))
+                           (reset! debounce-timer (js/setTimeout #(evaluate-code editor) 1000))))
     
     
     ;; Setup for the toggle data button
@@ -421,7 +340,7 @@
                         ;; Default code
                         :else default-code)]
       (.setValue editor initial-code))
-    (evaluate-code editor sci-ctx)
+    (evaluate-code editor)
     ))
 
 (goog/exportSymbol "workbench.-main" -main)
