@@ -43,7 +43,6 @@ Once you have either a an online workspace, or the library available from within
 
 Other Patterns
 
-* [[NightImprov]] - Improvisations from a gallery opening
 * [[Chita]] - Brazilian floral kitsch
 * [[Systems of Seeds]] - L-System plants in a framed labyrinth. 
 * [[Door]] - Pattern inspired by a door
