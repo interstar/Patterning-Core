@@ -5,7 +5,6 @@
             [patterning.sshapes :as p-sshapes]
             [patterning.color :as p-color]
             [patterning.maths :as p-maths]
-            [patterning.view :as p-view]
             [patterning.library.std :as p-lib-std]
             [patterning.library.turtle :as p-lib-turtle]
             [patterning.library.l_systems :as p-lib-lsystems]
@@ -114,6 +113,81 @@
   [sci-ctx pattern-code]
   (sci/eval-string pattern-code sci-ctx))
 
+(defn get-sci-context-config
+  "Shared configuration for SCI contexts across platforms.
+   Returns the common parts that both Clojure and ClojureScript can use."
+  []
+  (let [;; Create SCI namespaces for each patterning namespace
+        p-groups-ns (sci/create-ns 'p-groups nil)
+        p-layouts-ns (sci/create-ns 'p-layouts nil)
+        p-sshapes-ns (sci/create-ns 'p-sshapes nil)
+        p-color-ns (sci/create-ns 'p-color nil)
+        p-maths-ns (sci/create-ns 'p-maths nil)
+        p-view-ns (sci/create-ns 'p-view nil)
+        p-lib-std-ns (sci/create-ns 'p-lib-std nil)
+        p-lib-turtle-ns (sci/create-ns 'p-lib-turtle nil)
+        p-lib-lsystems-ns (sci/create-ns 'p-lib-lsystems nil)
+        p-lib-complex-ns (sci/create-ns 'p-lib-complex nil)
+        p-lib-machines-ns (sci/create-ns 'p-lib-machines nil)
+        p-lib-symbols-ns (sci/create-ns 'p-lib-symbols nil)
+        p-lib-douat-ns (sci/create-ns 'p-lib-douat nil)
+        
+        ;; Copy all public vars from each namespace
+        p-groups-sci (update-vals (ns-publics 'patterning.groups) #(sci/copy-var* % p-groups-ns))
+        p-layouts-sci (update-vals (ns-publics 'patterning.layouts) #(sci/copy-var* % p-layouts-ns))
+        p-sshapes-sci (update-vals (ns-publics 'patterning.sshapes) #(sci/copy-var* % p-sshapes-ns))
+        p-color-sci (update-vals (ns-publics 'patterning.color) #(sci/copy-var* % p-color-ns))
+        p-maths-sci (update-vals (ns-publics 'patterning.maths) #(sci/copy-var* % p-maths-ns))
+        p-view-sci (update-vals (ns-publics 'patterning.view) #(sci/copy-var* % p-view-ns))
+        p-lib-std-sci (update-vals (ns-publics 'patterning.library.std) #(sci/copy-var* % p-lib-std-ns))
+        p-lib-turtle-sci (update-vals (ns-publics 'patterning.library.turtle) #(sci/copy-var* % p-lib-turtle-ns))
+        p-lib-lsystems-sci (update-vals (ns-publics 'patterning.library.l_systems) #(sci/copy-var* % p-lib-lsystems-ns))
+        p-lib-complex-sci (update-vals (ns-publics 'patterning.library.complex-elements) #(sci/copy-var* % p-lib-complex-ns))
+        p-lib-machines-sci (update-vals (ns-publics 'patterning.library.machines) #(sci/copy-var* % p-lib-machines-ns))
+        p-lib-symbols-sci (update-vals (ns-publics 'patterning.library.symbols) #(sci/copy-var* % p-lib-symbols-ns))
+        p-lib-douat-sci (update-vals (ns-publics 'patterning.library.douat) #(sci/copy-var* % p-lib-douat-ns))]
+    
+    {:namespaces {'p-groups p-groups-sci
+                  'p-layouts p-layouts-sci
+                  'p-sshapes p-sshapes-sci
+                  'p-color p-color-sci
+                  'p-maths p-maths-sci
+                  'p-view p-view-sci
+                  'p-lib-std p-lib-std-sci
+                  'p-lib-turtle p-lib-turtle-sci
+                  'p-lib-lsystems p-lib-lsystems-sci
+                  'p-lib-complex p-lib-complex-sci
+                  'p-lib-machines p-lib-machines-sci
+                  'p-lib-symbols p-lib-symbols-sci
+                  'p-lib-douat p-lib-douat-sci}
+     :key-bindings {'basic-turtle (get p-lib-turtle-sci 'basic-turtle)
+                    'l-system (get p-lib-lsystems-sci 'l-system)
+                    'PI (get p-maths-sci 'PI)
+                    'p-color (get p-color-sci 'p-color)
+                    'poly (get p-lib-std-sci 'poly)
+                    'stack (get p-layouts-sci 'stack)
+                    'clock-rotate (get p-layouts-sci 'clock-rotate)
+                    'grid-layout (get p-layouts-sci 'grid-layout)
+                    'checked-layout (get p-layouts-sci 'checked-layout)
+                    'framed (get p-layouts-sci 'framed)
+                    'aspect-ratio-framed (get p-layouts-sci 'aspect-ratio-framed)
+                    'aspect-ratio-frame (get p-layouts-sci 'aspect-ratio-frame)
+                    'inner-stretch (get p-layouts-sci 'inner-stretch)
+                    'inner-min (get p-layouts-sci 'inner-min)
+                    'inner-max (get p-layouts-sci 'inner-max)
+                    'q1-rot-group (get p-layouts-sci 'q1-rot-group)
+                    'q2-rot-group (get p-layouts-sci 'q2-rot-group)
+                    'q3-rot-group (get p-layouts-sci 'q3-rot-group)
+                    '->SShape (get p-sshapes-sci '->SShape)
+                    'APattern (get p-groups-sci 'APattern)
+                    'star (get p-lib-std-sci 'star)
+                    'nangle (get p-lib-std-sci 'nangle)
+                    'spiral (get p-lib-std-sci 'spiral)
+                    'diamond (get p-lib-std-sci 'diamond)
+                    'horizontal-line (get p-lib-std-sci 'horizontal-line)
+                    'square (get p-lib-std-sci 'square)
+                    'drunk-line (get p-lib-std-sci 'drunk-line)}}))
+
 (defn evaluate-pattern-with-error-handling
   "Evaluate a pattern string with comprehensive error handling.
    Returns a map with :success, :result, and :error keys."
@@ -121,5 +195,7 @@
   (try
     (let [result (evaluate-pattern sci-ctx pattern-code)]
       {:success true :result result :error nil})
-    (catch Exception e
-      {:success false :result nil :error e})))
+    #?(:clj (catch Exception e
+              {:success false :result nil :error e})
+        :cljs (catch :default e
+                {:success false :result nil :error e}))))
