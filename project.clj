@@ -45,7 +45,7 @@
                                    :output-wrapper false
                                    :preloads ['patterning.canvasview]
                                    :source-map "presentation/slides/{{pattern_name}}.js.map"}}
-                       ;; Workbench build
+                       ;; Workbench main build
                        {:id "workbench"
                         :source-paths ["src/cljc" "src/cljs" "workbench"]
                         :compiler {:output-to "workbench/workbench.js"
@@ -53,7 +53,18 @@
                                    :asset-path "out"
                                    :main workbench
                                    :optimizations :simple
-                                   :source-map "workbench/workbench.js.map"}}]}
+                                   :source-map "workbench/workbench.js.map"}}
+                       ;; Workbench worker build
+                       {:id "workbench-worker"
+                        :source-paths ["src/cljc" "src/cljs" "workbench"]
+                        :compiler {:output-to "workbench/worker.js"
+                                   :output-dir "workbench/out-worker"
+                                   :main worker
+                                   :optimizations :simple
+                                   :source-map "workbench/worker.js.map"}}]}
 
   :aot [patterning.core patterning.cli]
-  :main patterning.core)
+  :main patterning.core
+  
+  ;; Aliases for convenient building
+  :aliases {"build-workbench" ["do" ["cljsbuild" "once" "workbench"] ["cljsbuild" "once" "workbench-worker"]]})

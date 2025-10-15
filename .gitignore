@@ -10,3 +10,8 @@ pom.xml.asc
 *~
 outs/*svg
 outs/*patdat
+workbench/out
+.clj-kondo
+MUSHROOM.*
+.lsp
+browser-based
