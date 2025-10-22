@@ -13,6 +13,232 @@
             [patterning.library.symbols :as p-lib-symbols]
             [patterning.library.douat :as p-lib-douat]))
 
+  (defn get-core-allow-list
+  "Returns the core Clojure/ClojureScript functions that need to be explicitly allowed in SCI.
+   This centralizes the :allow list to avoid duplication."
+  []
+  ['let 'let* 'def 'defn 'fn 'fn* 'if 'when 'cond 'case 'do '-> '->>
+   'loop 'loop* 'clojure.core/loop* 'recur 'throw 'try 'catch 'finally
+   'quote 'syntax-quote 'unquote 'unquote-splicing
+   'cycle
+   'clojure.core/seq-to-map-for-destructuring
+   'take
+   'repeat
+   'rand-nth
+   'rand-int
+   '/
+   'condp
+   'clojure.core/get
+   '-
+   'map
+   'conj
+   '=
+   '*
+   '+
+   'apply
+   'range
+   'new
+   'mod
+   'dissoc
+   'into
+   'iterate
+   'clojure.core/str
+   'list
+   'shuffle
+   'partial
+   'remove
+   'nth
+   'keys
+   'drop
+   'filter
+   'not
+   'some
+   'fn?
+   'last
+   'concat
+   'or
+   ;; Additional functions needed for threading macros
+   'assoc
+   'get
+   'first
+   'rest
+   'next
+   'seq
+   'cons
+   'empty?
+   'count
+   'vec
+   'set
+   'hash-map
+   'array-map
+   'vector
+   'list*
+   'seq?
+   'coll?
+   'associative?
+   'sequential?
+   'counted?
+   'reduced?
+   'reduced
+   ;; More fundamental functions for threading
+   'clojure.core/assoc
+   'clojure.core/get
+   'clojure.core/first
+   'clojure.core/rest
+   'clojure.core/next
+   'clojure.core/seq
+   'clojure.core/cons
+   'clojure.core/empty?
+   'clojure.core/count
+   'clojure.core/vec
+   'clojure.core/set
+   'clojure.core/hash-map
+   'clojure.core/array-map
+   'clojure.core/vector
+   'clojure.core/list*
+   'clojure.core/seq?
+   'clojure.core/coll?
+   'clojure.core/associative?
+   'clojure.core/sequential?
+   'clojure.core/counted?
+   'clojure.core/reduced?
+   'clojure.core/reduced
+   ;; Additional functions for threading macro expansion
+   'clojure.core/->>
+   'clojure.core/->
+   'clojure.core/let
+   'clojure.core/let*
+   'clojure.core/def
+   'clojure.core/defn
+   'clojure.core/fn
+   'clojure.core/fn*
+   'clojure.core/if
+   'clojure.core/when
+   'clojure.core/cond
+   'clojure.core/case
+   'clojure.core/do
+   'clojure.core/loop
+   'clojure.core/loop*
+   'clojure.core/recur
+   'clojure.core/throw
+   'clojure.core/try
+   'clojure.core/catch
+   'clojure.core/finally
+   'clojure.core/quote
+   'clojure.core/syntax-quote
+   'clojure.core/unquote
+   'clojure.core/unquote-splicing
+   'clojure.core/cycle
+   'clojure.core/take
+   'clojure.core/repeat
+   'clojure.core/rand-nth
+   'clojure.core/rand-int
+   'clojure.core//
+   'clojure.core/condp
+   'clojure.core/get
+   'clojure.core/-
+   'clojure.core/map
+   'clojure.core/conj
+   'clojure.core/=
+   'clojure.core/*
+   'clojure.core/+
+   'clojure.core/apply
+   'clojure.core/range
+   'clojure.core/new
+   'clojure.core/mod
+   'clojure.core/dissoc
+   'clojure.core/into
+   'clojure.core/iterate
+   'clojure.core/str
+   'clojure.core/list
+   'clojure.core/shuffle
+   'clojure.core/partial
+   'clojure.core/remove
+   'clojure.core/nth
+   'clojure.core/keys
+   'clojure.core/drop
+   'clojure.core/filter
+   'clojure.core/not
+   'clojure.core/some
+   'clojure.core/fn?
+   'clojure.core/last
+   'clojure.core/concat
+   'clojure.core/or
+   ;; Additional functions that might be needed
+   'clojure.core/identity
+   'clojure.core/constantly
+   'clojure.core/comp
+   'clojure.core/comp
+   'clojure.core/partial
+   'clojure.core/complement
+   'clojure.core/always
+   'clojure.core/never
+   'clojure.core/true?
+   'clojure.core/false?
+   'clojure.core/nil?
+   'clojure.core/zero?
+   'clojure.core/pos?
+   'clojure.core/neg?
+   'clojure.core/even?
+   'clojure.core/odd?
+   'clojure.core/inc
+   'clojure.core/dec
+   'clojure.core/max
+   'clojure.core/min
+   'clojure.core/quot
+   'clojure.core/rem
+   'clojure.core/bit-and
+   'clojure.core/bit-or
+   'clojure.core/bit-xor
+   'clojure.core/bit-not
+   'clojure.core/bit-shift-left
+   'clojure.core/bit-shift-right
+   'clojure.core/bit-shift-right-logical
+   'clojure.core/bit-and-not
+   'clojure.core/bit-clear
+   'clojure.core/bit-flip
+   'clojure.core/bit-set
+   'clojure.core/bit-test
+   'clojure.core/bit-shift-left
+   'clojure.core/bit-shift-right
+   'clojure.core/bit-shift-right-logical
+   'clojure.core/bit-and-not
+   'clojure.core/bit-clear
+   'clojure.core/bit-flip
+   'clojure.core/bit-set
+   'clojure.core/bit-test
+   ;; Additional core functions that might be needed for map construction
+   'clojure.core/merge
+   'clojure.core/merge-with
+   'clojure.core/select-keys
+   'clojure.core/update
+   'clojure.core/update-in
+   'clojure.core/assoc-in
+   'clojure.core/dissoc
+   'clojure.core/merge
+   'clojure.core/zipmap
+   'clojure.core/group-by
+   'clojure.core/partition-by
+   'clojure.core/sort
+   'clojure.core/sort-by
+   'clojure.core/compare
+   'clojure.core/compare-and-set
+   'clojure.core/reset!
+   'clojure.core/swap!
+   'clojure.core/alter-meta!
+   'clojure.core/reset-meta!
+   'clojure.core/vary-meta
+   'clojure.core/with-meta
+   'clojure.core/meta
+   'clojure.core/deref
+   'clojure.core/ref
+   'clojure.core/atom
+   'clojure.core/volatile!
+   'clojure.core/vswap!
+   'clojure.core/vreset!
+   'clojure.core/vderef])
+
+
 (defn get-sci-context
   "Create a shared SCI context for pattern evaluation.
    This function provides the same evaluation environment for both CLI and workbench."
@@ -164,6 +390,9 @@
                     'l-system (get p-lib-lsystems-sci 'l-system)
                     'PI (get p-maths-sci 'PI)
                     'p-color (get p-color-sci 'p-color)
+                    'hex-color (get p-color-sci 'hex-color)
+                    'paint (get p-color-sci 'paint)
+                    'darker-color (get p-color-sci 'darker-color)
                     'poly (get p-lib-std-sci 'poly)
                     'stack (get p-layouts-sci 'stack)
                     'clock-rotate (get p-layouts-sci 'clock-rotate)
