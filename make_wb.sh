@@ -1,1 +1,1 @@
-lein cljsbuild once workbench
+lein build-workbench
