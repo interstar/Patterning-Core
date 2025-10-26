@@ -147,7 +147,7 @@
 
 (def p4 '(ring 8 0.5 (map randomize-color (cycle (map a-nangle [5 7 9])))))
 
-(def p5 '(let [l (drunk-line 10 0.1)
+(def p5 '(let [l (drunk-line 10 0.1 :angle-range 0.4)
               s (map randomize-color (cycle (map a-nangle [5 7 9])))   ]
           (clock-rotate 12 (stack l (sshape-as-layout (first l) s 0.1)))))
 
@@ -212,7 +212,7 @@
    (->>
     p
     (stack
-     (drunk-line 10 0.2 s)
+     (drunk-line 10 0.2 :angle-range 0.3 s)
      )
     four-round
     (groups/rotate (/ (rand-int 10) 10))
@@ -237,7 +237,7 @@
       (->>
        (apply stack 
               (take 3
-                    (iterate t1 (drunk-line 10 0.1 (rcol)))
+                    (iterate t1 (drunk-line 10 0.1 :angle-range 0.5 (rcol)))
                     ))
        four-mirror
        )

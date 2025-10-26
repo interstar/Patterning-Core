@@ -88,6 +88,19 @@
     (concat (cart [h1-iterator v1-iterator]) (cart [h2-iterator v2-iterator]))))
 
 
+
+
+(defn ensure-sequence
+  "If xs is a single group/pattern (sequence of SShapes), repeat it.
+   If xs is already a sequence of groups/patterns, return as-is."
+  [xs]
+  (if (and (seq xs)
+           (sshapes/is-sshape? (first xs)))
+    ;; It's a single group/pattern (sequence of SShapes)
+    (repeat xs)
+    ;; It's already a sequence of groups/patterns
+    xs))
+
 (defn place-groups-at-positions "Takes a list of groups and a list of positions and puts one of the groups at each position"
   [groups positions]
   (concat ( mapcat (fn [[ [x y] group]] (groups/translate x y group)) (map vector positions groups) ) ))
@@ -95,13 +108,13 @@
 (defn scale-group-stream [n groups] (map (partial groups/scale (/ 1 n)) groups))
 
 (defn grid-layout "Takes an n and a group-stream and returns items from the group-stream in an n X n grid "
-  [n groups] (place-groups-at-positions (scale-group-stream n groups) (grid-layout-positions n))  )
+  [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (grid-layout-positions n))  )
 
 (defn half-drop-grid-layout "Like grid but with half-drop"
-  [n groups] (place-groups-at-positions (scale-group-stream n groups) (half-drop-grid-layout-positions n)))
+  [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (half-drop-grid-layout-positions n)))
 
 (defn diamond-layout "Like half-drop"
-  [n groups] (place-groups-at-positions (scale-group-stream n groups) (diamond-layout-positions n)))
+  [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (diamond-layout-positions n)))
 
 (defn q1-rot-group [group] (groups/rotate (float (/ maths/PI 2)) group ) )
 (defn q2-rot-group [group] (groups/rotate maths/PI group))
@@ -194,8 +207,9 @@
 
 (defn clock-rotate "Circular layout. Returns n copies in a rotation"
   [n group]
-  (let [angs (maths/clock-angles n)]
-    (concat (mapcat (fn [a] (groups/rotate a group)) angs ))
+  (let [angs (maths/clock-angles n)
+        groups (ensure-sequence group)]
+    (concat (mapcat (fn [a g] (groups/rotate a g)) angs groups ))
     ))
 
 (defn ring "Better clock-rotate" [n offset groups]
@@ -204,13 +218,14 @@
                         0
                         (groups/scale
                          (/ (- 1 offset) 2)
-                         (groups/rotate maths/PI (groups/h-centre (groups/reframe g))))))]
+                         (groups/rotate maths/PI (groups/h-centre (groups/reframe g))))))
+        groups-seq (ensure-sequence groups)]
 
     (groups/reframe (groups/rotate (- (/ maths/PI 2))
                                     (mapcat (fn [a g]
                                               (groups/rotate a (shift-f g)))
                                             (iterate (partial + (* 2 (/ maths/PI n))) 0 )
-                                            (take n (cycle groups)))))))
+                                            (take n (cycle groups-seq)))))))
 
 
 (defn four-round "Four squares rotated" [group]

@@ -1,7 +1,7 @@
 (ns patterning.library.std
   (:require [patterning.maths :as maths
              :refer [default-random get-time]]
-            [patterning.sshapes :refer [rotate-shape close-shape ->SShape set-color tie-together ]]
+            [patterning.sshapes :refer [rotate-shape close-shape ->SShape set-color tie-together]]
             [patterning.sshapes :as sshapes]
             [patterning.groups :refer [APattern]]
             [patterning.layouts :refer [stack four-mirror clock-rotate]]
@@ -11,22 +11,25 @@
 
 (def rect (optional-styled-primitive [x y w h]
                                      (let [x2 (+ x w) y2 (+ y h)]
-                                       [[x y] [x2 y] [x2 y2] [x y2] [x y]] ) ))
+                                       [[x y] [x2 y] [x2 y2] [x y2] [x y]])))
 
 (defn centered-rect
   [cx cy w h style]
   (let [w2 (/ w 2)
         h2 (/ h 2)]
-    (rect (- cx w2) (- cy h2) w h style))
-  )
+    (rect (- cx w2) (- cy h2) w h style)))
 
-(def square (optional-styled-primitive [] [[-1 -1] [-1 1] [1 1] [1 -1] [-1 -1]]  ))
+(def square (optional-styled-primitive [] [[-1 -1] [-1 1] [1 1] [1 -1] [-1 -1]]))
 
-(def poly (optional-styled-primitive [cx cy radius no-sides]
-             (let [ make-point (fn [a] (maths/add-points [cx cy] (maths/pol-to-rec [radius a])))]
-                (close-shape (into [] (map make-point (maths/clock-angles no-sides))))  )
-             ))
 
+
+(defn poly
+  ([cx cy radius no-sides style]
+   (let [make-point (fn [a] (maths/add-points [cx cy] (maths/pol-to-rec [radius a])))]
+     (APattern (->SShape style (close-shape (into [] (map make-point (maths/clock-angles no-sides))))))))
+  ([cx cy radius no-sides] (poly cx cy radius no-sides {}))
+  ([radius no-sides style] (poly 0 0 radius no-sides style))
+  ([radius no-sides] (poly 0 0 radius no-sides {})))
 
 
 (def multiline (optional-styled-primitive [ps] ps))
@@ -35,12 +38,12 @@
            [cx cy rads n]
            (close-shape (sshapes/translate-shape
                          cx cy
-                         (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles n)) ))) ))
+                         (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles n)))))))
 
 (def nangle (optional-styled-primitive
              [cx cy rad n]
              (let [dropped (maths/take-every (int (/ n 2)) (cycle (maths/clock-points n rad)))
-                   finite (maths/map-until-repeat (fn [x] x) maths/molp= dropped) ]
+                   finite (maths/map-until-repeat (fn [x] x) maths/molp= dropped)]
                (close-shape (sshapes/translate-shape
                              cx cy finite)))))
 
@@ -49,33 +52,37 @@
         m1 (fn [x] (- x 1))]
     (rect (m1 (rr 1)) (m1 (rr 1)) (rr 1) (rr 1) style)))
 
-(def horizontal-line (optional-styled-primitive [y] [[-1 y] [1 y] [-1 y] [1 y]] ))
+(def horizontal-line (optional-styled-primitive [y] [[-1 y] [1 y] [-1 y] [1 y]]))
 (def vertical-line (optional-styled-primitive [x] [[x -1] [x 1] [x -1] [x 1]]))
 
-(defn drunk-line-internal [steps stepsize random]
-  (let [offs (map (fn [a] [stepsize a]) 
-                (take steps (iterate #(.randomAngle random %) 0))) ]
+(defn drunk-line-internal [steps stepsize random angle-range]
+  (let [angle-changes (take steps (maths/random-angles angle-range random))
+        cumulative-angles (reductions + 0 angle-changes)
+        offs (map (fn [a] [stepsize a]) cumulative-angles)]
     (loop [pps offs current [0 0] acc []]
       (if (empty? pps) acc
-          (let [p (maths/add-points current (maths/pol-to-rec (first pps))) ]
-            (recur (rest pps) p (conj acc p))  )) )  ))
+          (let [p (maths/add-points current (maths/pol-to-rec (first pps)))]
+            (recur (rest pps) p (conj acc p)))))))
 
 (defn drunk-line [steps stepsize & args]
-  (let [[style & rest-args] args
-        {:keys [random] :or {random default-random}} (apply hash-map rest-args)]
-    (APattern (->SShape (or style {}) 
-                        (drunk-line-internal steps stepsize random)))))
+  (let [style (when (and (not (empty? args)) (map? (first args))) (first args))
+        rest-args (if style (rest args) args)
+        {:keys [random angle-range] :or {random default-random angle-range 0.3}}
+        (when (even? (count rest-args))
+          (apply hash-map rest-args))]
+    (APattern (->SShape (or style {})
+                        (drunk-line-internal steps stepsize random angle-range)))))
 
-(def h-sin (optional-styled-primitive [] (into [] (map (fn [a] [a (maths/sin (* maths/PI a))]  ) (range (- 1) 1 0.05)) ) ))
+(def h-sin (optional-styled-primitive [] (into [] (map (fn [a] [a (maths/sin (* maths/PI a))]) (range (- 1) 1 0.05)))))
 
-(def diamond (optional-styled-primitive [] (close-shape [[-1 0] [0 -1] [1 0] [0 1]] )))
+(def diamond (optional-styled-primitive [] (close-shape [[-1 0] [0 -1] [1 0] [0 1]])))
 
 (def quarter-ogee (optional-styled-primitive [resolution stretch]
-                                     (let [ogee (fn [x] (/ x (maths/sqrt (+ 1 (* x x)))))
-                                           points (into []
-                                                        (map (fn [x] [x (ogee (* stretch x))])
-                                                             (range (- 1) 1.0001 resolution) ) )]
-                                       (rotate-shape (/ maths/PI 2) points)   ) ))
+                                             (let [ogee (fn [x] (/ x (maths/sqrt (+ 1 (* x x)))))
+                                                   points (into []
+                                                                (map (fn [x] [x (ogee (* stretch x))])
+                                                                     (range (- 1) 1.0001 resolution)))]
+                                               (rotate-shape (/ maths/PI 2) points))))
 
 
 (defn spiral-points [a da r dr]
@@ -93,7 +100,7 @@
 ;; Complex patterns made as patterns (these have several disjoint sshapes)
 
 (defn cross "A cross, can only be made as a pattern (because sshapes are continuous lines) which is why we only define it now"
-  [color x y] (stack (horizontal-line y {:stroke color})  (vertical-line x {:stroke color}))  )
+  [color x y] (stack (horizontal-line y {:stroke color})  (vertical-line x {:stroke color})))
 
 
 (defn ogee "An ogee shape" [resolution stretch style]
@@ -103,17 +110,17 @@
         o2 (get (get o-group 2) :points)
         o3 (get (get o-group 3) :points)
         top (tie-together o0 o1)
-        bottom (tie-together o2 o3) ]
-    (APattern (->SShape style ( tie-together top bottom))) )  )
+        bottom (tie-together o2 o3)]
+    (APattern (->SShape style (tie-together top bottom)))))
 
 
 (defn bez-curve
-  ([points style] (APattern (sshapes/s-bez-curve style points))  )
-  ([points] (bez-curve points {})) )
+  ([points style] (APattern (sshapes/s-bez-curve style points)))
+  ([points] (bez-curve points {})))
 
 
 ;; Others
-(defn background [color pattern]
+(defn on-background [color pattern]
   (stack (square {:fill color}) pattern))
 
 
@@ -126,9 +133,9 @@
         minute-angle (* (/ minutes 60) maths/TwoPI)
         ;; Hour hand is shorter (0.35) than minute hand (0.4)
         hour-hand [(+ (* 0.35 (maths/sin hour-angle)))
-                  (- (* 0.35 (maths/cos hour-angle)))]
+                   (- (* 0.35 (maths/cos hour-angle)))]
         minute-hand [(+ (* 0.4 (maths/sin minute-angle)))
-                    (- (* 0.4 (maths/cos minute-angle)))]]
+                     (- (* 0.4 (maths/cos minute-angle)))]]
     [(->SShape {} [hour-hand [0 0] minute-hand])]))
 
 (defn clock-face [style]

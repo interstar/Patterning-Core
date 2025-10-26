@@ -68,6 +68,13 @@
   (let [da (float(/ TwoPI number))]
     (take number (iterate #(+ da %) (- half-PI)))) )
 
+(defn random-angles
+  "Generate a stream of random angles within a specified range.
+   range: maximum angle deviation (e.g., 0.1 for small turns, 0.5 for larger turns)
+   random: RandomGenerator instance"
+  [range random]
+  (repeatedly #(- (* 2 range (.randomFloat random)) range)))
+
 
 (defn rec-to-pol [[x y]] [(sqrt (+ (* x x) (* y y))) (atan2  x y)])
 (defn pol-to-rec [[r a]] [(* r (cos a)) (* r (sin a))])

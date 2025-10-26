@@ -73,6 +73,13 @@
 (defrecord SShape [style points])
 (defn empty-sshape [] (->SShape {} []))
 
+(defn is-sshape?
+  "Tests if x is an SShape (has :style and :points keys)"
+  [x]
+  (and (map? x)
+       (contains? x :style)
+       (contains? x :points)))
+
 
 ;; Adding styles to sshapes
 (defn add-style [new-style {:keys [style points]} ] {:points points :style (conj style new-style)})
