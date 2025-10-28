@@ -1,60 +1,78 @@
 Some examples to get you started with Patterning.
 
 ### Basic Polygon
+
+The function `poly` creates a polygon.
+
+In its simplest version it takes 3 arguments: *radius*, *number of sides*, and the *style*
+
+`(poly 0.7 5 {:stroke (p-color 0 255 0)})`
+
+This creates a polygon centred at the coordinates 0,0 on the canvas, and with a particular radius and style. Note that the visible canvas is always considered to be in a coordinate system between -1,-1 and 1,1, with 0,0 at the centre.
+
+The style is a map or dictionary with keys for attributes corresponding to similar properties you might have seen in SVG files or in Processing / P5. Eg
+
+    {:stroke (p-color 255 100 100) :stroke-weight 2 }
+
+
+Commonly used entries are :stroke, :stroke-weight and :fill. :stroke and :fill are colours defined with either `(p-color r g b)`. Or now a string such as 
+`(p-color "ff3399")` 
+
+
 ----
 :patterning
 
-(poly 0 0 0.7 5
+(poly 0.7 5
    {:stroke (p-color 0 255 0),
     :fill (p-color 150 150 255), 
     :stroke-weight 4})
 
+
 ----
-### Five red triangles in a ring
+We can also create the polygon with a different centre. In this case, we put the x and y coordinates **as the first two arguments**. 
 
-Note the definition of style. A style is represented as a mapping with keyword keys. For example :
+----
+:patterning
 
-    {:stroke (p-color 255 100 100) :stroke-weight 2 }
+(poly 0.3 0 0.7 5
+   {:stroke (p-color 0 255 0),
+    :fill (p-color 150 150 255), 
+    :stroke-weight 4})
 
-Commonly used entries are :stroke, :stroke-weight and :fill. :stroke and :fill are colours defined with (p-color r g b).
+
+----
+### Five red triangles rotated
+
+Take a polygon offset from the centre. And pass it through a *layout* function called clock-rotate
 
 Now let's make a simple pattern.
 
     (def triangles (clock-rotate 5 (poly 0.5 0.5 0.3 3 {:stroke (p-color 255 100 100) :stroke-weight 2 }) ) )
 
-poly creates a regular polygon. Its arguments are x-centre, y-centre, radius, number-of-sides and, optionally, style.
+*poly* creates the triangle
 
-clock-rotate is a Layout, a function which takes an existing pattern and returns a new one.
+*clock-rotate* is a Layout, a function which takes an existing pattern and returns a new one.
 
-In this case, clock-rotate takes a number, n, and a pattern, and makes the new pattern by rotating n copies of the input around the centre point.
+In this case, clock-rotate takes a number, *n*, and a pattern, and makes the new pattern by rotating n copies of the input around the centre point.
 
 ----
 :patterning
 
-(clock-rotate
- 5
- (poly
-  0.5 
-  0.5 
-  0.3 
-  3 
+(clock-rotate 5
+ (poly 0.5 0.5 0.3 3 
   {:stroke (p-color 255 100 100), :stroke-weight 2}))
 ----
 
 ### Stack the five triangles on a blue pentagon
 
+*Stack* is a simple layout that takes multiple patterns as arguments and stacks them on top of each other.
 ----
 :patterning
 
 (stack
  (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), :stroke-weight 2})
- (clock-rotate
-  5
-  (poly
-   0.5 
-   0.5 
-   0.3 
-   3 
+ (clock-rotate 5
+  (poly 0.5 0.5 0.3 3 
    {:stroke (p-color 255 100 100), :stroke-weight 2})))
 
 
@@ -70,18 +88,12 @@ Here we just use (repeat pattern) to make an infinite lazy list of them.
 ----
 :patterning
 
-(grid-layout
- 6
+(grid-layout 6
  (repeat
   (stack
    (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), :stroke-weight 2})
-   (clock-rotate
-    5
-    (poly
-     0.5
-     0.5 
-     0.3 
-     3 
+   (clock-rotate 5
+    (poly 0.5 0.5 0.3 3 
      {:stroke (p-color 255 100 100), :stroke-weight 2})))))
 
 
@@ -100,13 +112,8 @@ The checked-layout takes two streams of patterns and interpolates between them w
 
 (let
  [triangles
-  (clock-rotate
-   5
-   (poly
-    0.5
-    0.5
-    0.3
-    3
+  (clock-rotate 5
+   (poly 0.5 0.5 0.3 3
     {:stroke (p-color 255 100 100), :stroke-weight 2}))
   pentagon
   (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), :stroke-weight 2})]
@@ -143,11 +150,8 @@ Like clock-rotate them
 ----
 :patterning
 
-(clock-rotate
- 12
- (drunk-line
-  10 
-  0.1 
+(clock-rotate 12
+ (drunk-line 10 0.1 
   {:stroke (p-color 100 255 100), :stroke-weight 3}))
 
 
@@ -163,9 +167,7 @@ Or mirror them
 :patterning
 
 (four-mirror
- (drunk-line
-  10 
-  0.1 
+ (drunk-line 10 0.1 
   {:stroke (p-color 100 255 100), :stroke-weight 3}))
 
 
@@ -177,9 +179,7 @@ Or both.
 :patterning
 
 (->>
- (drunk-line
-  10
-  0.1
+ (drunk-line 10 0.1
   {:stroke (p-color 100 255 100), :stroke-weight 3})
  (four-mirror) 
  (clock-rotate 12))
@@ -193,18 +193,11 @@ And did you want that mixed with our other shapes?
 
 (let
  [dline
-  (drunk-line
-   10
-   0.1
+  (drunk-line 10 0.1
    {:stroke (p-color 100 255 100), :stroke-weight 3})
   triangles
-  (clock-rotate
-   5
-   (poly
-    0.5
-    0.5
-    0.3
-    3
+  (clock-rotate 5
+   (poly 0.5 0.5 0.3 3
     {:stroke (p-color 255 100 100), :stroke-weight 2}))]
  (->>
   (stack dline (scale 0.4 triangles))
@@ -220,18 +213,11 @@ And perhaps on a staggered grid? The half-drop-grid-layout gives us that.
 
 (let
  [dline
-  (drunk-line
-   10
-   0.1
+  (drunk-line 10 0.1
    {:stroke (p-color 100 255 100), :stroke-weight 2})
   triangles
-  (clock-rotate
-   5
-   (poly
-    0.5
-    0.5
-    0.3
-    3
+  (clock-rotate 5
+   (poly 0.5 0.5 0.3 3
     {:stroke (p-color 255 100 100), :stroke-weight 1}))]
  (->>
   (stack dline (scale 0.4 triangles))
@@ -250,25 +236,14 @@ Maybe bring back a bit of blue, every other.
 
 (let
  [dline
-  (drunk-line
-   10
-   0.1
+  (drunk-line 10 0.1
    {:stroke (p-color 100 255 100), :stroke-weight 2})
   triangles
-  (clock-rotate
-   5
-   (poly
-    0.5
-    0.5
-    0.3
-    3
+  (clock-rotate 5
+   (poly 0.5 0.5 0.3 3
     {:stroke (p-color 255 100 100), :stroke-weight 1}))
   pentagon
-  (poly
-   0
-   0
-   0.7
-   5
+  (poly 0.7 5
    {:stroke (p-color 0 0 255),
     :fill (p-color 100 100 255 100),
     :stroke-weight 1})]

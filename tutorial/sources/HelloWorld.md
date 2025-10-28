@@ -47,3 +47,4 @@ Other Patterns
 * [[Systems of Seeds]] - L-System plants in a framed labyrinth. 
 * [[Door]] - Pattern inspired by a door
 * [[The City we Invent]] - A stylised city pattern.
+* [[Pelican]] - Simon Willison's infamous "Pelican on a Bicycle"

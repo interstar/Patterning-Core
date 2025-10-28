@@ -15,7 +15,7 @@ Bezier curves? We got 'em
 
 Perhaps we can use this to make smoothly curved corners for a frame
 
-Note : framed is a Layout that takes three arguments :
+Note : `framed` is a Layout that takes three arguments :
 
 * a list of corner pieces (which it reflects appropriately),
 * a list of edge pieces (which it rotates appropriately)
@@ -29,8 +29,7 @@ Note : framed is a Layout that takes three arguments :
   {:stroke (p-color 255 128 64), :stroke-weight 2}
   blue
   {:stroke (p-color 100 100 200), :stroke-weight 2}]
- (framed
-  9
+ (framed 9
   (repeat
    (bez-curve
     [[0.9 -0.9] [-1.4 -0.9] [-0.9 -1.4] [-0.9 0.9]]
@@ -73,8 +72,7 @@ Which can be tiled together with grid-layout
    (poly 0 0 0.5 8 {:fill (p-color 150 150 255)}))
   centre
   (poly 0 0 0.9 30 {:fill (p-color 150 255 140)})]
- (grid-layout
-  5 
+ (grid-layout 5 
   (repeat (framed 7 (repeat corner) (repeat edge) centre))))
 
 ----
@@ -91,8 +89,7 @@ We can map other functions to these streams, for example to randomly rotate them
  [orange (p-color 254 129 64)]
  (stack
   (square {:fill (p-color 50 80 100)})
-  (grid-layout
-   10
+  (grid-layout 10
    (random-turn-groups
     (repeat
      [(->SShape
@@ -111,14 +108,11 @@ For more information on transforming streams of sub-patterns with functional pro
  [orange (p-color 254 129 64)]
  (stack
   (square {:fill (p-color 50 80 100)})
-  (checked-layout
-   18
+  (checked-layout 18
    (cycle
-    [(clock-rotate
-      8
+    [(clock-rotate 8
       (drunk-line 10 0.1 {:stroke orange, :stroke-weight 1}))
-     (clock-rotate
-      5
+     (clock-rotate 5
       (drunk-line 10 0.1 {:stroke orange, :stroke-weight 2}))])
    (random-turn-groups
     (repeat

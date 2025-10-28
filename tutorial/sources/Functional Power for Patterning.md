@@ -92,8 +92,7 @@ Here we generate our sequence by mapping a-round to a vector of integers.
 
 (let
  [lc (p-color 140 220 180) fc (p-color 190 255 200 100)]
- (grid-layout
-  4
+ (grid-layout 4
   (cycle
    (map (fn* [n] (a-round n lc fc)) [3 4 5 6]))))
 
@@ -111,8 +110,7 @@ Or we can generate the sequence using Clojure's iterate to constantly apply a tr
 
 (let
  [lc (p-color 220 140 180) fc (p-color 255 190 200 100)]
- (grid-layout
-  4 
+ (grid-layout 4 
   (iterate (partial scale 0.9) (a-round 9 lc fc))))
 ----
 We can even add random transformations, such as assigning each pattern an arbitrary colour.
@@ -130,15 +128,12 @@ We can even add random transformations, such as assigning each pattern an arbitr
 
 (let
  [rand-color
-  (fn
-   [p]
-   (let
-    [c (rand-col)]
+  (fn [p]
+   (let [c (rand-col)]
     (over-style
      {:fill c, :stroke-weight 2, :stroke (darker-color c)}
      p)))]
- (grid-layout
-  4 
+ (grid-layout 4 
   (map rand-color (map a-round (cycle [3 4 5 6 7])))))
 ----
 ### Clojure mapping can take multiple arguments
@@ -153,10 +148,8 @@ We can use this to apply evolving transforms to a stream of evolving patterns. F
 
 (let
  [rand-color
-  (fn
-   [p]
-   (let
-    [c (rand-col)]
+  (fn [p]
+   (let [c (rand-col)]
     (over-style
      {:fill c, :stroke-weight 2, :stroke (darker-color c)}
      p)))
@@ -164,12 +157,10 @@ We can use this to apply evolving transforms to a stream of evolving patterns. F
   (stack
    (poly 0 0 0.6 3 {:stroke-weight 1})
    (horizontal-line 0 {:stroke-weight 2}))]
- (grid-layout
-  6
+ (grid-layout 6
   (map
    rand-color
-   (map
-    rotate
+   (map rotate
     (iterate (partial + 0.2) 0)
     (iterate (partial scale 0.97) t)))))
 

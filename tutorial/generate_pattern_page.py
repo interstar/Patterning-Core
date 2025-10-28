@@ -138,14 +138,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             background: #2b6cb0;
         }
         
-        .pattern-actions button.download {
-            background: #2f855a;
-            color: white;
-        }
-        
-        .pattern-actions button.download:hover {
-            background: #38a169;
-        }
         
         .pattern-actions button.workbench {
             background: #805ad5;
@@ -159,7 +151,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
     <div class="top-bar">
-        <a href="../../index.html">Alchemy Islands</a>
+        <a href="../../index.html">Alchemy Islands</a> : 
+        <a href="HelloWorld.html">Patterning Tutorial</a>
     </div>
     <div class="layout">
         <div class="content">
@@ -240,21 +233,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             }, 2000);
         }
         
-        function downloadSVG(patternId) {
-            const svgElement = document.querySelector(`#${patternId}-preview svg`);
-            if (svgElement) {
-                const svgData = new XMLSerializer().serializeToString(svgElement);
-                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-                const svgUrl = URL.createObjectURL(svgBlob);
-                const downloadLink = document.createElement('a');
-                downloadLink.href = svgUrl;
-                downloadLink.download = `pattern-${patternId}.svg`;
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-                URL.revokeObjectURL(svgUrl);
-            }
-        }
         
         function openInWorkbench(patternId) {
             const code = patterns[patternId];
@@ -345,6 +323,7 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
     # Process each block
     patterns = []
     markdown_blocks = []
+    failed_patterns = []  # Track failed pattern generations
     
     for block in blocks:
         block = block.strip()
@@ -361,6 +340,14 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
             # Generate SVG for this pattern with page name prefix
             pattern_id = len(patterns)
             svg_path = generate_svg_for_pattern(pattern, pattern_id, output_dir, page_name)
+            
+            # Track failed patterns
+            if not svg_path:
+                failed_patterns.append({
+                    'pattern_id': pattern_id,
+                    'pattern_code': pattern,
+                    'expected_svg_path': os.path.join(output_dir, f'{page_name}-pattern-{pattern_id}.svg')
+                })
             
             # Add a pattern example div with the new styling
             if svg_path:
@@ -388,7 +375,6 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
     </div>
     <div class="pattern-actions">
         <button class="copy" onclick="copyCode('pattern{pattern_id}')">Copy Code</button>
-        <button class="download" onclick="downloadSVG('pattern-{pattern_id}')">Download SVG</button>
         <button class="workbench" onclick="openInWorkbench('pattern{pattern_id}')">Open in Workbench</button>
     </div>
 </div>'''
@@ -425,7 +411,7 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
     # Convert markdown to HTML
     html_content = md.convert(markdown_content)
     
-    return html_content, patterns
+    return html_content, patterns, failed_patterns
 
 def generate_html_page(markdown_file, output_file, tutorial_root):
     """Generate HTML page from markdown file with embedded pattern examples."""
@@ -449,7 +435,7 @@ def generate_html_page(markdown_file, output_file, tutorial_root):
     os.makedirs(output_dir, exist_ok=True)
     
     # Process content and extract patterns
-    html_content, patterns = process_blocks(content, output_dir, page_name, tutorial_root)
+    html_content, patterns, failed_patterns = process_blocks(content, output_dir, page_name, tutorial_root)
     
     # Generate HTML using template
     template = Template(HTML_TEMPLATE)
@@ -462,6 +448,16 @@ def generate_html_page(markdown_file, output_file, tutorial_root):
     # Write output file
     with open(output_file, 'w') as f:
         f.write(html)
+    
+    # Print summary of failed patterns
+    if failed_patterns:
+        print(f"\n❌ FAILED PATTERNS in {os.path.basename(output_file)}:")
+        for failed in failed_patterns:
+            print(f"  Pattern {failed['pattern_id']}: {failed['expected_svg_path']}")
+            print(f"    Code: {failed['pattern_code'][:100]}{'...' if len(failed['pattern_code']) > 100 else ''}")
+        print(f"  Total failed: {len(failed_patterns)}")
+    else:
+        print(f"✅ All patterns generated successfully for {os.path.basename(output_file)}")
 
 def main():
     import argparse

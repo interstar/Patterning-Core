@@ -131,10 +131,8 @@ Run this l-system on a seed "F" for 4 iterations, and pass the result to the tur
 (let
  [grow (l-system [["F" "F[+F]F[-F][F]"]])]
  (basic-turtle
-  [0 1]
-  0.1 
-  (/ PI -2) 
-  (/ PI 9) 
+  [0 1] 0.1 
+  (/ PI -2) (/ PI 9) 
   (grow 4 "F") 
   {} 
   {:stroke (p-color 0 155 50)}))
@@ -156,10 +154,8 @@ We don't want this fruit to appear everywhere in our tree, so we've created a tw
 (let
  [grow (l-system [["F" "F[+F]F[-F]Y[F]"] ["Y" "Z"]])]
  (basic-turtle
-  [0 1]
-  0.1
-  (/ PI -2)
-  (/ PI 9)
+  [0 1] 0.1
+  (/ PI -2) (/ PI 9)
   (grow 4 "F")
   {\Z
    (fn
