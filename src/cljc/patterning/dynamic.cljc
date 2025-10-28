@@ -13,7 +13,70 @@
             [patterning.library.symbols :as p-lib-symbols]
             [patterning.library.douat :as p-lib-douat]))
 
-  (defn get-core-allow-list
+(defn get-patterning-namespaces
+  "Returns the mapping of SCI namespace names to their public functions.
+   This is shared between both SCI context functions."
+  []
+  {'p-groups (ns-publics 'patterning.groups)
+   'p-layouts (ns-publics 'patterning.layouts)
+   'p-sshapes (ns-publics 'patterning.sshapes)
+   'p-color (ns-publics 'patterning.color)
+   'p-maths (ns-publics 'patterning.maths)
+   'p-view (ns-publics 'patterning.view)
+   'p-lib-std (ns-publics 'patterning.library.std)
+   'p-lib-turtle (ns-publics 'patterning.library.turtle)
+   'p-lib-lsystems (ns-publics 'patterning.library.l_systems)
+   'p-lib-complex (ns-publics 'patterning.library.complex-elements)
+   'p-lib-machines (ns-publics 'patterning.library.machines)
+   'p-lib-symbols (ns-publics 'patterning.library.symbols)
+   'p-lib-douat (ns-publics 'patterning.library.douat)})
+
+(defn get-key-bindings
+  "Returns the key bindings that patterns expect to be available.
+   This is shared between both SCI context functions."
+  []
+  {'basic-turtle #'p-lib-turtle/basic-turtle
+   'l-system #'p-lib-lsystems/l-system
+   'PI p-maths/PI
+   'p-color #'p-color/p-color
+   'poly #'p-lib-std/poly
+   'stack #'p-layouts/stack
+   'clock-rotate #'p-layouts/clock-rotate
+   'grid-layout #'p-layouts/grid-layout
+   'checked-layout #'p-layouts/checked-layout
+   'framed #'p-layouts/framed
+   'aspect-ratio-framed #'p-layouts/aspect-ratio-framed
+   'aspect-ratio-frame #'p-layouts/aspect-ratio-frame
+   'inner-stretch #'p-layouts/inner-stretch
+   'inner-min #'p-layouts/inner-min
+   'inner-max #'p-layouts/inner-max
+   'q1-rot-group #'p-layouts/q1-rot-group
+   'q2-rot-group #'p-layouts/q2-rot-group
+   'q3-rot-group #'p-layouts/q3-rot-group
+   '->SShape #'p-sshapes/->SShape
+   'APattern #'p-groups/APattern
+   'star #'p-lib-std/star
+   'nangle #'p-lib-std/nangle
+   'spiral #'p-lib-std/spiral
+   'diamond #'p-lib-std/diamond
+   'horizontal-line #'p-lib-std/horizontal-line
+   'square #'p-lib-std/square
+   'drunk-line #'p-lib-std/drunk-line
+   ;; Additional functions needed for complex patterns like Pelican
+   'translate #'p-groups/translate
+   'scale #'p-groups/scale
+   'rotate #'p-groups/rotate
+   'stretch #'p-groups/stretch
+   'reframe #'p-groups/reframe
+   'clock-points #'p-maths/clock-points
+   'distance #'p-maths/distance
+   'atan2 #'p-maths/atan2
+   'rect #'p-lib-std/rect
+   'rect-std #'p-lib-std/rect
+   ;; Additional core functions needed for complex patterns
+   'abs #'p-maths/abs})
+
+(defn get-core-allow-list
   "Returns the core Clojure/ClojureScript functions that need to be explicitly allowed in SCI.
    This centralizes the :allow list to avoid duplication."
   []
@@ -236,56 +299,22 @@
    'clojure.core/volatile!
    'clojure.core/vswap!
    'clojure.core/vreset!
-   'clojure.core/vderef])
+   'clojure.core/vderef
+   ;; Additional functions needed for complex patterns
+   'first
+   'second
+   'clojure.core/first
+   'clojure.core/second])
 
 
 (defn get-sci-context
   "Create a shared SCI context for pattern evaluation.
    This function provides the same evaluation environment for both CLI and workbench."
   []
-  (let [;; By including clojure.core/cljs.core, we get most standard functions automatically.
-        ns-map {'p-groups (ns-publics 'patterning.groups)
-                'p-layouts (ns-publics 'patterning.layouts)
-                'p-sshapes (ns-publics 'patterning.sshapes)
-                'p-color (ns-publics 'patterning.color)
-                'p-maths (ns-publics 'patterning.maths)
-                'p-view (ns-publics 'patterning.view)
-                'p-lib-std (ns-publics 'patterning.library.std)
-                'p-lib-turtle (ns-publics 'patterning.library.turtle)
-                'p-lib-lsystems (ns-publics 'patterning.library.l_systems)
-                'p-lib-complex (ns-publics 'patterning.library.complex-elements)
-                'p-lib-machines (ns-publics 'patterning.library.machines)
-                'p-lib-symbols (ns-publics 'patterning.library.symbols)
-                'p-lib-douat (ns-publics 'patterning.library.douat)}
+  (let [;; Use shared configuration
+        ns-map (get-patterning-namespaces)
         bindings (apply merge (vals ns-map))
-        ;; Add key functions that patterns expect - these are the main entry points
-        key-bindings {'basic-turtle #'p-lib-turtle/basic-turtle
-                     'l-system #'p-lib-lsystems/l-system
-                     'PI p-maths/PI
-                     'p-color #'p-color/p-color
-                     'poly #'p-lib-std/poly
-                     'stack #'p-layouts/stack
-                     'clock-rotate #'p-layouts/clock-rotate
-                     'grid-layout #'p-layouts/grid-layout
-                     'checked-layout #'p-layouts/checked-layout
-                     'framed #'p-layouts/framed
-                     'aspect-ratio-framed #'p-layouts/aspect-ratio-framed
-                     'aspect-ratio-frame #'p-layouts/aspect-ratio-frame
-                     'inner-stretch #'p-layouts/inner-stretch
-                     'inner-min #'p-layouts/inner-min
-                     'inner-max #'p-layouts/inner-max
-                     'q1-rot-group #'p-layouts/q1-rot-group
-                     'q2-rot-group #'p-layouts/q2-rot-group
-                     'q3-rot-group #'p-layouts/q3-rot-group
-                     '->SShape #'p-sshapes/->SShape
-                     'APattern #'p-groups/APattern
-                     'star #'p-lib-std/star
-                     'nangle #'p-lib-std/nangle
-                     'spiral #'p-lib-std/spiral
-                     'diamond #'p-lib-std/diamond
-                     'horizontal-line #'p-lib-std/horizontal-line
-                     'square #'p-lib-std/square
-                     'drunk-line #'p-lib-std/drunk-line}
+        key-bindings (get-key-bindings)
         all-bindings (merge bindings key-bindings)]
     (sci/init {:namespaces ns-map
                :bindings all-bindings
@@ -293,6 +322,8 @@
                ;; Most clojure.core/cljs.core functions are now covered by the ns-map and all-bindings.
                :allow (set (concat (keys all-bindings)
                                   ['let 'let* 'def 'defn 'fn 'fn* 'if 'when 'cond 'case 'do '-> '->>
+                                   'clojure.core/->
+                                   'clojure.core/->>
                                    'loop 'loop* 'clojure.core/loop* 'recur 'throw 'try 'catch 'finally
                                    'quote 'syntax-quote 'unquote 'unquote-splicing
                                    'cycle
@@ -331,7 +362,12 @@
                                    'fn?
                                    'last
                                    'concat
-                                   'or]))})))
+                                   'or
+                                   ;; Additional functions needed for complex patterns
+                                   'first
+                                   'second
+                                   'clojure.core/first
+                                   'clojure.core/second]))})))
 
 (defn evaluate-pattern
   "Evaluate a pattern string using the shared SCI context.
@@ -339,9 +375,9 @@
   [sci-ctx pattern-code]
   (sci/eval-string pattern-code sci-ctx))
 
-(defn get-sci-context-config
-  "Shared configuration for SCI contexts across platforms.
-   Returns the common parts that both Clojure and ClojureScript can use."
+(defn get-sci-namespace-config
+  "Returns the SCI namespace configuration for the second SCI context function.
+   This creates SCI namespaces and copies vars from the patterning namespaces."
   []
   (let [;; Create SCI namespaces for each patterning namespace
         p-groups-ns (sci/create-ns 'p-groups nil)
@@ -386,36 +422,73 @@
                   'p-lib-machines p-lib-machines-sci
                   'p-lib-symbols p-lib-symbols-sci
                   'p-lib-douat p-lib-douat-sci}
-     :key-bindings {'basic-turtle (get p-lib-turtle-sci 'basic-turtle)
-                    'l-system (get p-lib-lsystems-sci 'l-system)
-                    'PI (get p-maths-sci 'PI)
-                    'p-color (get p-color-sci 'p-color)
-                    'hex-color (get p-color-sci 'hex-color)
-                    'paint (get p-color-sci 'paint)
-                    'darker-color (get p-color-sci 'darker-color)
-                    'poly (get p-lib-std-sci 'poly)
-                    'stack (get p-layouts-sci 'stack)
-                    'clock-rotate (get p-layouts-sci 'clock-rotate)
-                    'grid-layout (get p-layouts-sci 'grid-layout)
-                    'checked-layout (get p-layouts-sci 'checked-layout)
-                    'framed (get p-layouts-sci 'framed)
-                    'aspect-ratio-framed (get p-layouts-sci 'aspect-ratio-framed)
-                    'aspect-ratio-frame (get p-layouts-sci 'aspect-ratio-frame)
-                    'inner-stretch (get p-layouts-sci 'inner-stretch)
-                    'inner-min (get p-layouts-sci 'inner-min)
-                    'inner-max (get p-layouts-sci 'inner-max)
-                    'q1-rot-group (get p-layouts-sci 'q1-rot-group)
-                    'q2-rot-group (get p-layouts-sci 'q2-rot-group)
-                    'q3-rot-group (get p-layouts-sci 'q3-rot-group)
-                    '->SShape (get p-sshapes-sci '->SShape)
-                    'APattern (get p-groups-sci 'APattern)
-                    'star (get p-lib-std-sci 'star)
-                    'nangle (get p-lib-std-sci 'nangle)
-                    'spiral (get p-lib-std-sci 'spiral)
-                    'diamond (get p-lib-std-sci 'diamond)
-                    'horizontal-line (get p-lib-std-sci 'horizontal-line)
-                    'square (get p-lib-std-sci 'square)
-                    'drunk-line (get p-lib-std-sci 'drunk-line)}}))
+     :sci-vars {'p-groups-sci p-groups-sci
+                'p-layouts-sci p-layouts-sci
+                'p-sshapes-sci p-sshapes-sci
+                'p-color-sci p-color-sci
+                'p-maths-sci p-maths-sci
+                'p-view-sci p-view-sci
+                'p-lib-std-sci p-lib-std-sci
+                'p-lib-turtle-sci p-lib-turtle-sci
+                'p-lib-lsystems-sci p-lib-lsystems-sci
+                'p-lib-complex-sci p-lib-complex-sci
+                'p-lib-machines-sci p-lib-machines-sci
+                'p-lib-symbols-sci p-lib-symbols-sci
+                'p-lib-douat-sci p-lib-douat-sci}}))
+
+(defn get-sci-context-config
+  "Shared configuration for SCI contexts across platforms.
+   Returns the common parts that both Clojure and ClojureScript can use."
+  []
+  (let [sci-config (get-sci-namespace-config)
+        key-bindings (get-key-bindings)]
+    
+    (merge sci-config
+           {:key-bindings (merge (:key-bindings sci-config)
+                                ;; Convert key bindings to use SCI vars
+                                {'basic-turtle (get (:sci-vars sci-config) 'p-lib-turtle-sci 'basic-turtle)
+                                 'l-system (get (:sci-vars sci-config) 'p-lib-lsystems-sci 'l-system)
+                                 'PI (get (:sci-vars sci-config) 'p-maths-sci 'PI)
+                                 'p-color (get (:sci-vars sci-config) 'p-color-sci 'p-color)
+                                 'hex-color (get (:sci-vars sci-config) 'p-color-sci 'hex-color)
+                                 'paint (get (:sci-vars sci-config) 'p-color-sci 'paint)
+                                 'darker-color (get (:sci-vars sci-config) 'p-color-sci 'darker-color)
+                                 'poly (get (:sci-vars sci-config) 'p-lib-std-sci 'poly)
+                                 'stack (get (:sci-vars sci-config) 'p-layouts-sci 'stack)
+                                 'clock-rotate (get (:sci-vars sci-config) 'p-layouts-sci 'clock-rotate)
+                                 'grid-layout (get (:sci-vars sci-config) 'p-layouts-sci 'grid-layout)
+                                 'checked-layout (get (:sci-vars sci-config) 'p-layouts-sci 'checked-layout)
+                                 'framed (get (:sci-vars sci-config) 'p-layouts-sci 'framed)
+                                 'aspect-ratio-framed (get (:sci-vars sci-config) 'p-layouts-sci 'aspect-ratio-framed)
+                                 'aspect-ratio-frame (get (:sci-vars sci-config) 'p-layouts-sci 'aspect-ratio-frame)
+                                 'inner-stretch (get (:sci-vars sci-config) 'p-layouts-sci 'inner-stretch)
+                                 'inner-min (get (:sci-vars sci-config) 'p-layouts-sci 'inner-min)
+                                 'inner-max (get (:sci-vars sci-config) 'p-layouts-sci 'inner-max)
+                                 'q1-rot-group (get (:sci-vars sci-config) 'p-layouts-sci 'q1-rot-group)
+                                 'q2-rot-group (get (:sci-vars sci-config) 'p-layouts-sci 'q2-rot-group)
+                                 'q3-rot-group (get (:sci-vars sci-config) 'p-layouts-sci 'q3-rot-group)
+                                 '->SShape (get (:sci-vars sci-config) 'p-sshapes-sci '->SShape)
+                                 'APattern (get (:sci-vars sci-config) 'p-groups-sci 'APattern)
+                                 ;; Additional functions needed for complex patterns like Pelican
+                                 'translate (get (:sci-vars sci-config) 'p-groups-sci 'translate)
+                                 'scale (get (:sci-vars sci-config) 'p-groups-sci 'scale)
+                                             'rotate (get (:sci-vars sci-config) 'p-groups-sci 'rotate)
+                                             'stretch (get (:sci-vars sci-config) 'p-groups-sci 'stretch)
+                                 'reframe (get (:sci-vars sci-config) 'p-groups-sci 'reframe)
+                                 'clock-points (get (:sci-vars sci-config) 'p-maths-sci 'clock-points)
+                                 'distance (get (:sci-vars sci-config) 'p-maths-sci 'distance)
+                                 'atan2 (get (:sci-vars sci-config) 'p-maths-sci 'atan2)
+                                 'rect (get (get (:sci-vars sci-config) 'p-lib-std-sci) 'rect)
+                                 ;; Additional core functions needed for complex patterns
+                                 'abs (get (:sci-vars sci-config) 'p-maths-sci 'abs)
+                                 'star (get (:sci-vars sci-config) 'p-lib-std-sci 'star)
+                                 'nangle (get (:sci-vars sci-config) 'p-lib-std-sci 'nangle)
+                                 'spiral (get (:sci-vars sci-config) 'p-lib-std-sci 'spiral)
+                                 'diamond (get (:sci-vars sci-config) 'p-lib-std-sci 'diamond)
+                                 'horizontal-line (get (:sci-vars sci-config) 'p-lib-std-sci 'horizontal-line)
+                                 'square (get (:sci-vars sci-config) 'p-lib-std-sci 'square)
+                                 'drunk-line (get (:sci-vars sci-config) 'p-lib-std-sci 'drunk-line)})})))
+
 
 (defn evaluate-pattern-with-error-handling
   "Evaluate a pattern string with comprehensive error handling.

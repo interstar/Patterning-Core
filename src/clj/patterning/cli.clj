@@ -141,6 +141,42 @@
   
   (println "DIAGNOSTICS: Analysis complete"))
 
+(defn analyze-pattern-result [result filepath]
+  "Analyze the result of pattern evaluation and provide focused diagnostics"
+  (cond
+    (nil? result)
+    (println "ERROR: Pattern evaluation returned nil - this usually means a function failed silently or the final expression doesn't return a pattern")
+    
+    (not (seq? result))
+    (println (str "ERROR: Expected a sequence of SShapes, got: " (type result)))
+    
+    (empty? result)
+    (println "ERROR: Pattern is an empty sequence")
+    
+    :else
+    (println (str "DEBUG: Pattern has " (count result) " elements"))))
+
+(defn debug-pattern-evaluation [content filepath]
+  "Debug pattern evaluation by trying to evaluate parts of the code"
+  (println "DEBUG: Attempting step-by-step evaluation...")
+  (let [sci-ctx (dynamic/get-sci-context)
+        lines (str/split-lines content)
+        ;; Try to find function definitions and test them individually
+        def-lines (filter #(re-find #"^\s*\(def" %) lines)]
+    
+    (println (str "DEBUG: Found " (count def-lines) " definitions"))
+    (doseq [line def-lines]
+      (println (str "DEBUG: Definition: " line)))
+    
+    ;; Try to evaluate just the definitions without the final expression
+    (try
+      (let [defs-only (str/join "\n" def-lines)]
+        (println "DEBUG: Evaluating definitions only...")
+        (dynamic/evaluate-pattern sci-ctx defs-only)
+        (println "DEBUG: Definitions evaluated successfully"))
+      (catch Exception e
+        (println (str "DEBUG: Error evaluating definitions: " (.getMessage e)))))))
+
 (defn read-pattern-file [filepath]
   "Read and evaluate a pattern from a file using shared SCI context"
   (let [content (slurp filepath)
@@ -148,11 +184,21 @@
     (try
       (let [result (dynamic/evaluate-pattern sci-ctx content)
             pattern (if (map? result) [result] result)] ; Wrap single maps
+        (when (nil? result)
+          (analyze-pattern-result result filepath)
+          ;; Try with error handling to see if there's a hidden exception
+          (let [error-result (dynamic/evaluate-pattern-with-error-handling sci-ctx content)]
+            (when-not (:success error-result)
+              (println "ERROR: Found hidden exception:")
+              (println (str "ERROR: " (.getMessage (:error error-result))))
+              (println "ERROR: Stack trace:")
+              (.printStackTrace (:error error-result)))))
         pattern)
       (catch Exception e
         (println "ERROR: Failed to evaluate pattern")
         (extract-clean-error e filepath)
         (diagnose-common-issues content e)
+        (debug-pattern-evaluation content filepath)
         (println "ERROR: Full stack trace:")
         (.printStackTrace e)
         (throw e)))))

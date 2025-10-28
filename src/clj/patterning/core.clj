@@ -1,12 +1,12 @@
 (ns patterning.core
-  (:require [patterning.maths :as maths :refer [PI]]
+  (:require [patterning.maths :as maths :refer [PI clock-points distance atan2]]
 
             [patterning.sshapes
              :refer [->SShape to-triangles ]
              :as sshapes]
 
             [patterning.strings :as strings]
-            [patterning.groups :as groups]
+            [patterning.groups :as groups :refer [translate scale stretch reframe rotate]]
             [patterning.layouts
              :refer [framed clock-rotate stack grid-layout diamond-layout
                      four-mirror four-round nested-stack checked-layout
@@ -15,7 +15,7 @@
 
             [patterning.library.std
              :refer [poly star nangle spiral diamond
-                     horizontal-line square drunk-line]]
+                     horizontal-line square drunk-line rect]]
             [patterning.library.turtle :refer [basic-turtle]]
             [patterning.library.l_systems :refer [l-system]]
             [patterning.library.complex-elements :refer [vase zig-zag]]
@@ -244,6 +244,109 @@
       )
      ))
 
+(def pelican-pattern
+  '(let [sky      (p-color 220 240 255)
+         dark     (p-color  25  30  35)
+         tire     (p-color  20  22  26)
+         rimc     (p-color 185 190 200)
+         framec   (p-color 220  60  60)
+         beakc    (p-color 255 180  40)
+         bodyc    (p-color 240 240 235)
+         wingc    (p-color 225 225 220)
+         footc    (p-color 255 170   0)
+         seatc    (p-color  40  40  50)
+         barc     (p-color  40  45  60)
+         eyew     (p-color 255 255 255)
+         pupilc   (p-color  10  10  10)
+
+         ;; Helpers that return patterns
+         circle (fn [n r s] [(->SShape s (clock-points n r))])
+         centered-rod (fn [L t s] (rect (- (/ L 2)) (- (/ t 2)) L t s))
+
+         wheel (fn [cx cy r]
+                 (let [tire   (circle 48 r             {:fill tire})
+                       rim    (circle 32 (* 0.7 r)     {:fill rimc})
+                       spokes (clock-rotate 8 (centered-rod (* 0.4 r) 0.01 {:stroke rimc :stroke-weight 0.01}))]
+                   (stack tire rim spokes)))
+
+         bike-frame (fn [rear front wheel-r]
+                      (let [base-x (first rear)
+                            base-y (second rear)
+                            front-x (first front)
+                            front-y (second front)
+                            seat-x (+ base-x (* 0.1 wheel-r))
+                            seat-y (- base-y (* 1.5 wheel-r))
+                            bar-x (+ front-x (* 0.1 wheel-r))
+                            bar-y (- front-y (* 1.2 wheel-r))
+                            seat (rect (- seat-x (* 0.15 wheel-r)) (- seat-y (* 0.1 wheel-r)) (* 0.3 wheel-r) (* 0.2 wheel-r) {:fill seatc})
+                            bar (centered-rod (distance [seat-x seat-y] [bar-x bar-y]) (* 0.05 wheel-r) {:fill barc})
+                            bar-rot (atan2 (- bar-y seat-y) (- bar-x seat-x))
+                            bar-rotated (rotate bar-rot bar)
+                            bar-positioned (translate (- bar-x seat-x) (- bar-y seat-y) bar-rotated)]
+                        (stack seat bar-positioned)))
+
+         pelican (fn [base-x base-y wheel-r]
+                   (let [body0 (rect -0.15 -0.4 0.3 0.8 {:fill bodyc
+                                                         :stroke (p-color 210 210 210)
+                                                         :stroke-weight 0.01})
+                         body1 (stretch 1.7 1.2 body0)
+                         body (translate (+ base-x (* 0.1 wheel-r)) (- base-y (* 1.5 wheel-r)) body1)
+
+                         wing0 [(->SShape {:fill wingc}
+                                         [[0.0 0.0] [0.6 0.15] [0.9 0.0] [0.6 -0.25] [0.15 -0.35] [-0.2 -0.2]])]
+                         wing1 (scale (* 1.2 wheel-r) wing0)
+                         wing2 (rotate -0.2 wing1)
+                         wing (translate (+ base-x (* 0.15 wheel-r)) (- base-y (* 1.55 wheel-r)) wing2)
+
+                         neck0 (rect -0.03 -0.25 0.06 0.5 {:fill bodyc})
+                         neck1 (stretch 1.2 1.5 neck0)
+                         neck2 (rotate 0.3 neck1)
+                         neck (translate (+ base-x (* 0.25 wheel-r)) (- base-y (* 1.8 wheel-r)) neck2)
+
+                         head0 (rect -0.08 -0.15 0.16 0.3 {:fill bodyc})
+                         head1 (stretch 1.3 1.1 head0)
+                         head2 (rotate 0.2 head1)
+                         head (translate (+ base-x (* 0.35 wheel-r)) (- base-y (* 2.0 wheel-r)) head2)
+
+                         beakU0 [(->SShape {:fill beakc}
+                                           [[0 0] [0.6 0.08] [0.95 0.02] [0.6 -0.02]])]
+                         beakL0 [(->SShape {:fill (p-color 240 160 40)}
+                                           [[0 0] [0.58 -0.05] [0.95 -0.09] [0.58 -0.08]])]
+                         beakU1 (scale (* 0.9 wheel-r) beakU0)
+                         beakL1 (scale (* 0.9 wheel-r) beakL0)
+                         beakU2 (rotate 0.1 beakU1)
+                         beakL2 (rotate 0.1 beakL1)
+                         beakU (translate (+ base-x (* 0.45 wheel-r)) (- base-y (* 1.95 wheel-r)) beakU2)
+                         beakL (translate (+ base-x (* 0.45 wheel-r)) (- base-y (* 1.95 wheel-r)) beakL2)
+
+                         eye0 (rect -0.02 -0.02 0.04 0.04 {:fill eyew})
+                         eye1 (translate (+ base-x (* 0.32 wheel-r)) (- base-y (* 2.05 wheel-r)) eye0)
+
+                         pupil0 (rect -0.01 -0.01 0.02 0.02 {:fill pupilc})
+                         pupil1 (translate (+ base-x (* 0.32 wheel-r)) (- base-y (* 2.05 wheel-r)) pupil0)
+
+                         foot0 [(->SShape {:fill footc} [[-0.05 0.0] [0.08 0.03] [0.1 -0.03]])]
+                         foot1 (scale (* 0.8 wheel-r) foot0)
+                         foot2 (rotate -0.1 foot1)
+                         foot3 (translate (+ base-x (* 0.05 wheel-r)) (- base-y (* 0.8 wheel-r)) foot2)
+                         foot4 (translate (+ base-x (* 0.15 wheel-r)) (- base-y (* 0.8 wheel-r)) foot2)]
+
+                     (stack body wing neck head beakU beakL eye1 pupil1 foot3 foot4)))
+
+         pelican-riding-bike (fn []
+                               (let [wheel-r 0.25
+                                     rear    [-0.5 -0.2]
+                                     front   [ 0.2 -0.2]
+                                     bg      (rect -1.05 -1.05 2.1 2.1 {:fill sky})
+                                     ground  (rect -1.2 -0.47 2.4 0.02 {:fill dark})
+                                     w1      (wheel (first rear)  (second rear)  wheel-r)
+                                     w2      (wheel (first front) (second front) wheel-r)
+                                     frame   (bike-frame rear front wheel-r)
+                                     bird    (pelican (first rear) (second rear) wheel-r)]
+                                 ;; z-order: later args drawn on top
+                                 (stack bg ground w1 w2 frame bird)))]
+    (-> (pelican-riding-bike) reframe)))
+
 (defn finals [ps]
   (println "Producing Example Outputs in outs/")
   (doseq [[n qp] ps]
@@ -274,6 +377,7 @@
     ["p7 L-System" p7]
     ["p8 Cog Pair" p8]    
     ["p9 Black Square" p9]
-    ["p10 The City We Invent" '(city/city 11)]    
+    ["p10 The City We Invent" '(city/city 11)]
+    ["p11 Pelican on a Bicycle" pelican-pattern]
     ])  )
 
