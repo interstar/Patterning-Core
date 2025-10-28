@@ -200,6 +200,31 @@ html, body {
     color: inherit;
 }
 
+/* Improve highlight contrast for better visibility */
+.CodeMirror-selected {
+    background: rgb(119, 180, 48) !important; /* Medium yellow - halfway between original and bright */
+}
+
+.CodeMirror-focused .CodeMirror-selected {
+    background: #ffc107 !important;
+}
+
+/* Parenthesis matching styles */
+.CodeMirror-matchingbracket {
+    background: #ff6b6b !important; /* Bright red for matching brackets */
+    color: white !important;
+    font-weight: bold;
+    border-radius: 2px;
+    box-shadow: 0 0 3px rgba(255, 107, 107, 0.5);
+}
+
+.CodeMirror-nonmatchingbracket {
+    background: #ff4757 !important; /* Slightly different red for non-matching */
+    color: white !important;
+    border-radius: 2px;
+    box-shadow: 0 0 3px rgba(255, 71, 87, 0.5);
+}
+
 .CodeMirror-code {
     font-size: inherit;
     line-height: inherit;
