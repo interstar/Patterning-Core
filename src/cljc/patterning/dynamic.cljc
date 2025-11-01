@@ -436,58 +436,46 @@
                 'p-lib-symbols-sci p-lib-symbols-sci
                 'p-lib-douat-sci p-lib-douat-sci}}))
 
+(defn include-from
+  "Helper function to extract SCI vars from a namespace map.
+   Usage: (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint])
+   Returns a map of function names to their SCI vars."
+  [sci-vars namespace-sym function-syms]
+  (let [namespace-map (get sci-vars namespace-sym)]
+    (into {}
+          (map (fn [fn-sym]
+                 [fn-sym (get namespace-map fn-sym)]))
+          function-syms)))
+
 (defn get-sci-context-config
   "Shared configuration for SCI contexts across platforms.
    Returns the common parts that both Clojure and ClojureScript can use."
   []
   (let [sci-config (get-sci-namespace-config)
-        key-bindings (get-key-bindings)]
+        sci-vars (:sci-vars sci-config)]
     
     (merge sci-config
-           {:key-bindings (merge (:key-bindings sci-config)
+           {:key-bindings (merge (:key-bindings sci-config {})
                                 ;; Convert key bindings to use SCI vars
-                                {'basic-turtle (get (:sci-vars sci-config) 'p-lib-turtle-sci 'basic-turtle)
-                                 'l-system (get (:sci-vars sci-config) 'p-lib-lsystems-sci 'l-system)
-                                 'PI (get (:sci-vars sci-config) 'p-maths-sci 'PI)
-                                 'p-color (get (:sci-vars sci-config) 'p-color-sci 'p-color)
-                                 'hex-color (get (:sci-vars sci-config) 'p-color-sci 'hex-color)
-                                 'paint (get (:sci-vars sci-config) 'p-color-sci 'paint)
-                                 'darker-color (get (:sci-vars sci-config) 'p-color-sci 'darker-color)
-                                 'poly (get (:sci-vars sci-config) 'p-lib-std-sci 'poly)
-                                 'stack (get (:sci-vars sci-config) 'p-layouts-sci 'stack)
-                                 'clock-rotate (get (:sci-vars sci-config) 'p-layouts-sci 'clock-rotate)
-                                 'grid-layout (get (:sci-vars sci-config) 'p-layouts-sci 'grid-layout)
-                                 'checked-layout (get (:sci-vars sci-config) 'p-layouts-sci 'checked-layout)
-                                 'framed (get (:sci-vars sci-config) 'p-layouts-sci 'framed)
-                                 'aspect-ratio-framed (get (:sci-vars sci-config) 'p-layouts-sci 'aspect-ratio-framed)
-                                 'aspect-ratio-frame (get (:sci-vars sci-config) 'p-layouts-sci 'aspect-ratio-frame)
-                                 'inner-stretch (get (:sci-vars sci-config) 'p-layouts-sci 'inner-stretch)
-                                 'inner-min (get (:sci-vars sci-config) 'p-layouts-sci 'inner-min)
-                                 'inner-max (get (:sci-vars sci-config) 'p-layouts-sci 'inner-max)
-                                 'q1-rot-group (get (:sci-vars sci-config) 'p-layouts-sci 'q1-rot-group)
-                                 'q2-rot-group (get (:sci-vars sci-config) 'p-layouts-sci 'q2-rot-group)
-                                 'q3-rot-group (get (:sci-vars sci-config) 'p-layouts-sci 'q3-rot-group)
-                                 '->SShape (get (:sci-vars sci-config) 'p-sshapes-sci '->SShape)
-                                 'APattern (get (:sci-vars sci-config) 'p-groups-sci 'APattern)
-                                 ;; Additional functions needed for complex patterns like Pelican
-                                 'translate (get (:sci-vars sci-config) 'p-groups-sci 'translate)
-                                 'scale (get (:sci-vars sci-config) 'p-groups-sci 'scale)
-                                             'rotate (get (:sci-vars sci-config) 'p-groups-sci 'rotate)
-                                             'stretch (get (:sci-vars sci-config) 'p-groups-sci 'stretch)
-                                 'reframe (get (:sci-vars sci-config) 'p-groups-sci 'reframe)
-                                 'clock-points (get (:sci-vars sci-config) 'p-maths-sci 'clock-points)
-                                 'distance (get (:sci-vars sci-config) 'p-maths-sci 'distance)
-                                 'atan2 (get (:sci-vars sci-config) 'p-maths-sci 'atan2)
-                                 'rect (get (get (:sci-vars sci-config) 'p-lib-std-sci) 'rect)
-                                 ;; Additional core functions needed for complex patterns
-                                 'abs (get (:sci-vars sci-config) 'p-maths-sci 'abs)
-                                 'star (get (:sci-vars sci-config) 'p-lib-std-sci 'star)
-                                 'nangle (get (:sci-vars sci-config) 'p-lib-std-sci 'nangle)
-                                 'spiral (get (:sci-vars sci-config) 'p-lib-std-sci 'spiral)
-                                 'diamond (get (:sci-vars sci-config) 'p-lib-std-sci 'diamond)
-                                 'horizontal-line (get (:sci-vars sci-config) 'p-lib-std-sci 'horizontal-line)
-                                 'square (get (:sci-vars sci-config) 'p-lib-std-sci 'square)
-                                 'drunk-line (get (:sci-vars sci-config) 'p-lib-std-sci 'drunk-line)})})))
+                                (merge
+                                 ;; Color functions
+                                 (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color])
+                                 ;; Standard library shapes
+                                 (include-from sci-vars 'p-lib-std-sci ['poly 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line])
+                                 ;; Layout functions
+                                 (include-from sci-vars 'p-layouts-sci ['stack 'clock-rotate 'grid-layout 'checked-layout 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group])
+                                 ;; Group/transform functions
+                                 (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe])
+                                 ;; Shape construction
+                                 (include-from sci-vars 'p-sshapes-sci ['->SShape])
+                                 ;; Maths functions
+                                 (include-from sci-vars 'p-maths-sci ['clock-points 'distance 'atan2 'abs])
+                                 ;; Turtle functions
+                                 (include-from sci-vars 'p-lib-turtle-sci ['basic-turtle])
+                                 ;; L-systems
+                                 (include-from sci-vars 'p-lib-lsystems-sci ['l-system])
+                                 ;; Special case: PI is a constant, not a function
+                                 {'PI (get-in sci-vars ['p-maths-sci 'PI])}))})))
 
 
 (defn evaluate-pattern-with-error-handling
