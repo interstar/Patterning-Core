@@ -21,22 +21,26 @@
       (is (empty? (:ps initial-state))))))
 
 (deftest add-douat-accumulation-test
-  (testing "add-douat should accumulate patterns until the limit is reached."
+  (testing "add-douat should accumulate patterns until the limit (3) is reached."
     (let [state-0 (douat/Douat test-shape)
-          state-5 (-> state-0 douat/A douat/A douat/A douat/A douat/A)]
-      (is (= 5 (count (:ps state-5))))
-      (is (= test-shape (:p state-5))))))
+          state-2 (-> state-0 douat/A douat/A)]
+      (is (= 2 (count (:ps state-2))) "Should accumulate 2 patterns before reset")
+      (is (= test-shape (:p state-2)) "Original pattern should be preserved"))))
 
 (deftest add-douat-recursion-test
-  (testing "add-douat should reset and create a new pattern after 5 elements."
-    (let [state-5 {:p test-shape
-                   :ps (repeat 5 test-shape)}
-          state-6 (douat/A state-5)]
-      (is (empty? (:ps state-6)) "The :ps list should be reset to empty.")
-      (is (not= test-shape (:p state-6)) "A new pattern should be generated for :p.")
-      (is (coll? (:p state-6)) "The new pattern should be a collection of shapes."))))
+  (testing "add-douat should reset and create a new pattern after 3 elements."
+    (let [state-2 {:p test-shape
+                   :ps (repeat 2 test-shape)
+                   :depth 0}
+          state-3 (douat/A state-2)]
+      (is (= 3 (count (:ps state-3))) "Should have 3 elements before reset")
+      (let [state-4 (douat/A state-3)]
+        (is (empty? (:ps state-4)) "The :ps list should be reset to empty after 3 elements.")
+        (is (not= test-shape (:p state-4)) "A new pattern should be generated for :p.")
+        (is (coll? (:p state-4)) "The new pattern should be a collection of shapes.")))))
 
 (deftest truchet-var-test
-  (testing "The truchet var should be defined and be a collection."
+  (testing "The truchet function should be defined and return a collection."
     (is (some? douat/truchet))
-    (is (coll? douat/truchet))))
+    (is (fn? douat/truchet))
+    (is (coll? (douat/truchet)))))

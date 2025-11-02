@@ -8,7 +8,7 @@
             [patterning.layouts :as layouts]
             [patterning.library.l_systems :as l-systems]
             [patterning.library.turtle :as turtle]
-            [patterning.library.complex_elements :as complex-elements]            
+            [patterning.library.complex-elements :as complex-elements]            
             [patterning.core :refer :all]))
 
 
