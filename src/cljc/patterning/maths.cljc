@@ -1,6 +1,6 @@
 (ns patterning.maths
-  (:require [clojure.core]
-            [malli.core :as m]
+  (:refer-clojure :exclude [abs])
+  (:require [malli.core :as m]
             [malli.error :as me]))
 
 ;; Define the interface for random number generation
