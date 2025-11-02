@@ -370,6 +370,10 @@
   )
 
 (defn aspect-ratio-frame [cols rows corner-pattern edge-pattern]
+  ;; Validate inputs - prevent invalid dimensions that would cause calculation errors
+  (when (or (<= cols 0) (<= rows 0))
+    (throw (ex-info "cols and rows must be positive" 
+                    {:cols cols :rows rows})))
   (stack
    (corners cols rows corner-pattern)
    (edges cols rows edge-pattern))
