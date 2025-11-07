@@ -34,18 +34,69 @@
 
 (def multiline (optional-styled-primitive [ps] ps))
 
-(def star (optional-styled-primitive
-           [cx cy rads n]
-           (close-shape (sshapes/translate-shape
-                         cx cy
-                         (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles n)))))))
+(defn star
+  ([cx cy rads n style]
+   ;; Double n internally so that n represents the number of outer points
+   ;; e.g., n=5 creates a 5-pointed star with 10 total points (5 outer, 5 inner)
+   (let [total-points (* 2 n)]
+     (APattern (->SShape style (close-shape (sshapes/translate-shape
+                                              cx cy
+                                              (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles total-points)))))))))
+  ([cx cy rads n] (star cx cy rads n {}))
+  ([rads n style] (star 0 0 rads n style))
+  ([rads n] (star 0 0 rads n {})))
 
-(def nangle (optional-styled-primitive
-             [cx cy rad n]
-             (let [dropped (maths/take-every (int (/ n 2)) (cycle (maths/clock-points n rad)))
-                   finite (maths/map-until-repeat (fn [x] x) maths/molp= dropped)]
-               (close-shape (sshapes/translate-shape
-                             cx cy finite)))))
+(defn find-cycle
+  "Find a single cycle starting from start-idx, returning [cycle-points new-visited]"
+  [point-vec step start-idx visited]
+  (loop [current-idx start-idx
+         cycle-points []
+         visited-set visited]
+    (let [point (nth point-vec current-idx)
+          new-cycle-points (conj cycle-points point)
+          new-visited (conj visited-set current-idx)
+          next-idx (mod (+ current-idx step) (count point-vec))]
+      (if (= next-idx start-idx)
+        [new-cycle-points new-visited]
+        (recur next-idx new-cycle-points new-visited)))))
+
+(defn find-all-cycles
+  "Find all distinct cycles when stepping through points by step size"
+  [points step]
+  (let [point-vec (vec points)
+        n (count point-vec)]
+    (loop [start-idx 0
+           visited #{}
+           all-cycles []]
+      (if (>= start-idx n)
+        all-cycles
+        (if (contains? visited start-idx)
+          (recur (inc start-idx) visited all-cycles)
+          (let [[cycle-points new-visited] (find-cycle point-vec step start-idx visited)]
+            (if (>= (count cycle-points) 3)
+              (recur (inc start-idx) new-visited (conj all-cycles cycle-points))
+              (recur (inc start-idx) new-visited all-cycles))))))))
+
+(defn nangle
+  ([cx cy rad n style]
+   (let [step (if (even? n)
+                (- (int (/ n 2)) 1)  ; For even n, use n/2 - 1 to avoid degenerate case
+                (int (/ n 2)))       ; For odd n, use n/2 as before
+         all-points (maths/clock-points n rad)
+         cycles (find-all-cycles all-points step)]
+     (if (empty? cycles)
+       ;; Fallback: if no cycles found, return empty pattern
+       (APattern)
+       (let [translated-cycles (map (fn [cycle-points]
+                                      (sshapes/translate-shape cx cy cycle-points))
+                                    cycles)
+             sshapes (map (fn [translated-points]
+                            (->SShape style (close-shape translated-points)))
+                          translated-cycles)]
+         (apply APattern sshapes)))))
+  ([cx cy rad n] (nangle cx cy rad n {}))
+  ([rad n style] (nangle 0 0 rad n style))
+  ([rad n] (nangle 0 0 rad n {})))
 
 (defn random-rect [style & {:keys [random] :or {random default-random}}]
   (let [rr (fn [l] (.randomFloat random))
