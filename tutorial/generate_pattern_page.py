@@ -151,8 +151,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
     <div class="top-bar">
-        <a href="../../index.html">Alchemy Islands</a> : 
-        <a href="HelloWorld.html">Patterning Tutorial</a>
+        <a href="../../index.html">Alchemy Islands</a> : --- : 
+        <span style="font-size: 1rem;"><a href="HelloWorld.html">Patterning Tutorial</a></span>
     </div>
     <div class="layout">
         <div class="content">
