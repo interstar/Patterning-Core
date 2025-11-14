@@ -150,6 +150,68 @@
       (. js/console log "SVG download process completed"))
     (. js/console log "No pattern to download - pattern-atom is nil")))
 
+(defn save-code [editor]
+  "Save the current editor code as a downloadable .cljs file"
+  (. js/console log "=== SAVE CODE FUNCTION CALLED ===")
+  (try
+    (let [code (.getValue editor)
+          _ (. js/console log "Code retrieved, length:" (count code))
+          blob (js/Blob. [code] #js{:type "text/plain"})
+          _ (. js/console log "Blob created:" blob)
+          url (.createObjectURL js/URL blob)
+          _ (. js/console log "Object URL created:" url)
+          link (.createElement js/document "a")
+          _ (. js/console log "Link element created:" link)]
+      (set! (.-href link) url)
+      (set! (.-download link) "pattern.cljs")
+      (. js/console log "Link properties set, href:" (.-href link) "download:" (.-download link))
+      (.appendChild (.-body js/document) link)
+      (. js/console log "Link appended to body")
+      (.click link)
+      (. js/console log "Link clicked")
+      (.removeChild (.-body js/document) link)
+      (. js/console log "Link removed from body")
+      (.revokeObjectURL js/URL url)
+      (. js/console log "Object URL revoked"))
+    (catch :default e
+      (. js/console error "Error in save code:" e))))
+
+(defn load-code [editor]
+  "Trigger file input to load code from a file"
+  (. js/console log "=== LOAD CODE FUNCTION CALLED ===")
+  (let [file-input (. js/document getElementById "file-input")]
+    (if file-input
+      (do
+        (. js/console log "File input found, setting up change handler")
+        ;; Clear the value first so selecting the same file will trigger change event
+        (set! (.-value file-input) "")
+        ;; Set up change handler
+        (set! (.-onchange file-input)
+              (fn [event]
+                (let [file (first (array-seq (.-files (.-target event))))
+                      reader (js/FileReader.)]
+                  (if file
+                    (do
+                      (. js/console log "File selected:" (.-name file))
+                      (set! (.-onload reader)
+                            (fn [e]
+                              (let [content (.-result (.-target e))]
+                                (. js/console log "File content loaded, length:" (count content))
+                                (.setValue editor content)
+                                (. js/console log "Editor value set")
+                                ;; Trigger evaluation after loading
+                                (evaluate-code editor))))
+                      (set! (.-onerror reader)
+                            (fn [e]
+                              (. js/console error "Error reading file:" e)
+                              (update-error-display "Error reading file. Please try again.")))
+                      (.readAsText reader file))
+                    (. js/console log "No file selected")))))
+        ;; Trigger file input click
+        (.click file-input)
+        (. js/console log "File input clicked"))
+      (. js/console error "File input element not found"))))
+
 (defn show-copy-feedback []
   "Show temporary feedback when code is copied"
   (let [button (. js/document getElementById "copy-code")]
@@ -328,15 +390,25 @@
 (defn setup-button-listeners [editor]
   "Set up event listeners for all download buttons"
   (let [copy-code-btn (. js/document getElementById "copy-code")
+        save-code-btn (. js/document getElementById "save-code")
+        load-code-btn (. js/document getElementById "load-code")
         download-edn-btn (. js/document getElementById "download-edn")
         download-svg-btn (. js/document getElementById "download-svg")]
-    (if (and copy-code-btn download-edn-btn download-svg-btn)
+    (if (and copy-code-btn save-code-btn load-code-btn download-edn-btn download-svg-btn)
       (do
         (. js/console log "All buttons found, setting up listeners")
         (.addEventListener copy-code-btn "click" 
                           (fn [event]
                             (. js/console log "Copy Code button clicked via event listener")
                             (copy-code editor)))
+        (.addEventListener save-code-btn "click" 
+                          (fn [event]
+                            (. js/console log "Save Code button clicked via event listener")
+                            (save-code editor)))
+        (.addEventListener load-code-btn "click" 
+                          (fn [event]
+                            (. js/console log "Load Code button clicked via event listener")
+                            (load-code editor)))
         (.addEventListener download-edn-btn "click" 
                           (fn [event]
                             (. js/console log "EDN button clicked via event listener")
@@ -352,6 +424,8 @@
 (defn setup-global-functions [editor]
   "Set up global window functions for testing"
   (set! js/window.copyCode #(copy-code editor))
+  (set! js/window.saveCode #(save-code editor))
+  (set! js/window.loadCode #(load-code editor))
   (set! js/window.downloadEdn #(download-edn))
   (set! js/window.downloadSvg #(download-svg))
   
@@ -359,6 +433,14 @@
         (fn []
           (. js/console log "JavaScript wrapper called")
           (copy-code editor)))
+  (set! js/window.testSaveCode 
+        (fn []
+          (. js/console log "JavaScript wrapper called")
+          (save-code editor)))
+  (set! js/window.testLoadCode 
+        (fn []
+          (. js/console log "JavaScript wrapper called")
+          (load-code editor)))
   (set! js/window.testDownloadEdn 
         (fn []
           (. js/console log "JavaScript wrapper called")
