@@ -27,7 +27,10 @@
       (let [{:keys [style points]} (transformed-sshape txpt sshape)]
         ;; Set style properties
         (set! (.-strokeStyle ctx) (patterning-color-to-css (:stroke style)))
-        (set! (.-fillStyle ctx) (patterning-color-to-css (:fill style)))
+        ;; Only set fillStyle if fill is specified, otherwise set to transparent
+        (if (contains? style :fill)
+          (set! (.-fillStyle ctx) (patterning-color-to-css (:fill style)))
+          (set! (.-fillStyle ctx) "transparent"))
         (set! (.-lineWidth ctx) (get style :stroke-weight 1))
         
         ;; Draw the shape
@@ -47,7 +50,7 @@
             (.lineTo ctx x y)))
         
         ;; Fill and stroke
-        (when (and (:fill style) (not= (:fill style) "none"))
+        (when (and (contains? style :fill) (not= (:fill style) "none"))
           (.fill ctx))
         (.stroke ctx)))))
 
