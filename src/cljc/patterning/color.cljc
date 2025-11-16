@@ -73,8 +73,9 @@
     (+ (* high 16) low)))
 
 (defn parse-hex-string
-  "Parse a hex color string to RGB values.
-   Supports formats: #RGB, #RRGGBB, RGB, RRGGBB"
+  "Parse a hex color string to RGB or RGBA values.
+   Supports formats: #RGB, #RRGGBB, #RGBA, #RRGGBBAA, RGB, RRGGBB, RGBA, RRGGBBAA
+   Returns [r g b] for 3/6 digit formats, [r g b a] for 4/8 digit formats"
   [hex-str]
   (let [clean-str #?(:clj (clojure.string/replace hex-str #"^#" "")
                      :cljs (-> hex-str (.replace #"^#" "")))
@@ -86,24 +87,49 @@
             b (hex-char-to-int (nth clean-str 2))]
         [(* r 17) (* g 17) (* b 17)]) ; Convert to 0-255 range
       
+      (= len 4) ; #RGBA format
+      (let [r (hex-char-to-int (nth clean-str 0))
+            g (hex-char-to-int (nth clean-str 1))
+            b (hex-char-to-int (nth clean-str 2))
+            a (hex-char-to-int (nth clean-str 3))]
+        [(* r 17) (* g 17) (* b 17) (* a 17)]) ; Convert to 0-255 range
+      
       (= len 6) ; #RRGGBB format
       (let [r (hex-pair-to-int (take 2 clean-str))
             g (hex-pair-to-int (drop 2 (take 4 clean-str)))
             b (hex-pair-to-int (drop 4 clean-str))]
         [r g b])
       
+      (= len 8) ; #RRGGBBAA format (CSS standard with alpha)
+      (let [r (hex-pair-to-int (take 2 clean-str))
+            g (hex-pair-to-int (drop 2 (take 4 clean-str)))
+            b (hex-pair-to-int (drop 4 (take 6 clean-str)))
+            a (hex-pair-to-int (drop 6 clean-str))]
+        [r g b a])
+      
       :else
-      (throw (ex-info (str "Invalid hex string length: " len " (expected 3 or 6 characters)") 
+      (throw (ex-info (str "Invalid hex string length: " len " (expected 3, 4, 6, or 8 characters)") 
                       {:hex-str hex-str :length len})))))
 
 (defn hex-color
   "Convert a hex color string to p-color format.
-   Supports formats: #RGB, #RRGGBB, RGB, RRGGBB
-   Optional alpha parameter (0-255, defaults to 255)"
-  ([hex-str] (hex-color hex-str 255))
+   Supports formats: #RGB, #RRGGBB, #RGBA, #RRGGBBAA, RGB, RRGGBB, RGBA, RRGGBBAA
+   If hex string includes alpha (4 or 8 digits), it will be used.
+   Otherwise, optional alpha parameter (0-255, defaults to 255)"
+  ([hex-str] 
+   (let [parsed (parse-hex-string hex-str)]
+     (if (= (count parsed) 4)
+       ;; Alpha included in hex string
+       (apply p-color parsed)
+       ;; No alpha, use default
+       (apply p-color (conj parsed 255)))))
   ([hex-str alpha]
-   (let [[r g b] (parse-hex-string hex-str)]
-     (p-color r g b alpha))))
+   (let [parsed (parse-hex-string hex-str)]
+     (if (= (count parsed) 4)
+       ;; Alpha included in hex string, but user provided one - use user's value
+       (apply p-color (conj (take 3 parsed) alpha))
+       ;; No alpha in hex string, use provided value
+       (apply p-color (conj parsed alpha))))))
 
 
 (defn resolve-color [c]

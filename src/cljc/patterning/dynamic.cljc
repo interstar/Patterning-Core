@@ -5,6 +5,8 @@
             [patterning.sshapes :as p-sshapes]
             [patterning.color :as p-color]
             [patterning.maths :as p-maths]
+            [patterning.view :as p-view]
+            [patterning.macros :as p-macros]
             [patterning.library.std :as p-lib-std]
             [patterning.library.turtle :as p-lib-turtle]
             [patterning.library.l_systems :as p-lib-lsystems]
@@ -23,6 +25,7 @@
    'p-color (ns-publics 'patterning.color)
    'p-maths (ns-publics 'patterning.maths)
    'p-view (ns-publics 'patterning.view)
+   'p-macros (ns-publics 'patterning.macros)
    'p-lib-std (ns-publics 'patterning.library.std)
    'p-lib-turtle (ns-publics 'patterning.library.turtle)
    'p-lib-lsystems (ns-publics 'patterning.library.l_systems)
@@ -39,6 +42,8 @@
    'l-system #'p-lib-lsystems/l-system
    'PI p-maths/PI
    'p-color #'p-color/p-color
+   'hex-color #'p-color/hex-color
+   'defcolor #'p-macros/defcolor
    'poly #'p-lib-std/poly
    'stack #'p-layouts/stack
    'clock-rotate #'p-layouts/clock-rotate
@@ -386,6 +391,7 @@
         p-color-ns (sci/create-ns 'p-color nil)
         p-maths-ns (sci/create-ns 'p-maths nil)
         p-view-ns (sci/create-ns 'p-view nil)
+        p-macros-ns (sci/create-ns 'p-macros nil)
         p-lib-std-ns (sci/create-ns 'p-lib-std nil)
         p-lib-turtle-ns (sci/create-ns 'p-lib-turtle nil)
         p-lib-lsystems-ns (sci/create-ns 'p-lib-lsystems nil)
@@ -401,6 +407,7 @@
         p-color-sci (update-vals (ns-publics 'patterning.color) #(sci/copy-var* % p-color-ns))
         p-maths-sci (update-vals (ns-publics 'patterning.maths) #(sci/copy-var* % p-maths-ns))
         p-view-sci (update-vals (ns-publics 'patterning.view) #(sci/copy-var* % p-view-ns))
+        p-macros-sci (update-vals (ns-publics 'patterning.macros) #(sci/copy-var* % p-macros-ns))
         p-lib-std-sci (update-vals (ns-publics 'patterning.library.std) #(sci/copy-var* % p-lib-std-ns))
         p-lib-turtle-sci (update-vals (ns-publics 'patterning.library.turtle) #(sci/copy-var* % p-lib-turtle-ns))
         p-lib-lsystems-sci (update-vals (ns-publics 'patterning.library.l_systems) #(sci/copy-var* % p-lib-lsystems-ns))
@@ -415,6 +422,7 @@
                   'p-color p-color-sci
                   'p-maths p-maths-sci
                   'p-view p-view-sci
+                  'p-macros p-macros-sci
                   'p-lib-std p-lib-std-sci
                   'p-lib-turtle p-lib-turtle-sci
                   'p-lib-lsystems p-lib-lsystems-sci
@@ -428,6 +436,7 @@
                 'p-color-sci p-color-sci
                 'p-maths-sci p-maths-sci
                 'p-view-sci p-view-sci
+                'p-macros-sci p-macros-sci
                 'p-lib-std-sci p-lib-std-sci
                 'p-lib-turtle-sci p-lib-turtle-sci
                 'p-lib-lsystems-sci p-lib-lsystems-sci
@@ -460,6 +469,8 @@
                                 (merge
                                  ;; Color functions
                                  (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color])
+                                 ;; Macro functions
+                                 (include-from sci-vars 'p-macros-sci ['defcolor])
                                  ;; Standard library shapes
                                  (include-from sci-vars 'p-lib-std-sci ['poly 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line])
                                  ;; Layout functions
