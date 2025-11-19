@@ -3,6 +3,12 @@
   :url "http://alchemyislands.com/"
   :license {:name "Gnu Lesser Public License"
             :url "https://www.gnu.org/licenses/lgpl.html"}
+  :scm {:name "git"
+        :url "https://github.com/interstar/Patterning-Core"}
+  :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
+                                     :username :env/CLOJARS_USERNAME
+                                     :password :env/CLOJARS_PASSWORD
+                                     :sign-releases false}]]
 
   :test-selectors {:default (constantly true)
                    :namespace :namespace}
