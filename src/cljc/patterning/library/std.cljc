@@ -136,14 +136,27 @@
                                                (rotate-shape (/ maths/PI 2) points))))
 
 
-(defn spiral-points [a da r dr]
-  (map maths/pol-to-rec
-       (map vector
-            (iterate (partial + da) a)
-            (iterate (partial + dr) r))))
+(defn spiral-points [r a dr da]
+   (map maths/pol-to-rec
+        (map vector
+             (iterate (partial + dr) r)
+             (iterate (partial + da) a))))
 
-(def spiral (optional-styled-primitive [n a da r dr]
-                                       (take n (spiral-points a da r dr))))
+(defn spiral
+  "Creates a spiral shape.
+   nopoints: number of points per full rotation (like poly, nangle, star)
+   da is calculated as 2*PI / nopoints
+   Supports multiple arities:
+   (spiral n dr nopoints) - n total points, starts at r=0, a=0, default style
+   (spiral n dr nopoints style) - n total points, starts at r=0, a=0
+   (spiral n r a dr nopoints) - n total points, explicit start position, default style
+   (spiral n r a dr nopoints style) - all parameters"
+  ([n dr nopoints] (spiral n 0 0 dr nopoints {}))
+  ([n dr nopoints style] (spiral n 0 0 dr nopoints style))
+  ([n r a dr nopoints] (spiral n r a dr nopoints {}))
+  ([n r a dr nopoints style]
+   (let [da (/ maths/TwoPI nopoints)]
+     (APattern (->SShape style (take n (spiral-points r a dr da)))))))
 
 
 
