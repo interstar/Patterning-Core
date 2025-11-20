@@ -160,7 +160,7 @@ We don't want this fruit to appear everywhere in our tree, so we've created a tw
   {\Z
    (fn
     [x y a]
-     (poly x y 0.03 8
+     (poly 8 0.03 x y
         {:fill (p-color 255 0 0) :stroke-weight 0})
     )}
   {:stroke (p-color 0 155 50)}))

@@ -15,7 +15,7 @@
            ))
       )
     (testing "primitives"               
-      (let [result (poly 0 0 0.5 4 {})
+      (let [result (poly 4 0.5 0 0 {})
             expected-points [[0 -0.5] [0.5 0] [0 0.5] [-0.5 0] [0 -0.5]]]
         (is (= 1 (count result)))
         (is (= {} (:style (first result))))

@@ -76,7 +76,7 @@
 
 ; Shape making
 (defn -makeShapePattern [style points] [(->SShape style points)])
-(defn -poly [cx cy radius no-sides style] (poly cx cy radius no-sides style))
+(defn -poly [n radius cx cy style] (poly n radius cx cy style))
 (defn -basicTurtle [startX startY d a da script leafMap style] (basic-turtle [startX startY] d a da script leafMap style))
 
 

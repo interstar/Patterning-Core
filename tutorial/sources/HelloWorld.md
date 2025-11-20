@@ -24,12 +24,12 @@ Once you have either a an online workspace, or the library available from within
  [triangles
   (clock-rotate 5 ; we are making 5 copies of a pattern in a circle
    (poly
-    0.5 0.5 ; centre of the polygon
-    0.3 ; radius 
     3 ; the number of sides of this poly, it's a triangle
+    0.3 ; radius
+    0.5 0.5 ; centre of the polygon
     {:stroke (p-color 255 100 100), :stroke-weight 2})) ; the colour.
   pentagon
-  (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), :stroke-weight 2})] ; this makes a blue pentagon
+  (poly 5 0.7 0 0 {:stroke (p-color 0 0 255), :stroke-weight 2})] ; this makes a blue pentagon
  (checked-layout 6 (repeat pentagon) (repeat triangles))) ; we layout a "checker-board" of alternating pentagons and bouquets of triangles
 
 ----

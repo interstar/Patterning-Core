@@ -10,7 +10,7 @@ Let's start with a simple function that makes a ring of n copies of an n-sided r
 (defn a-round
   ([n] (a-round n (p-color 0) (p-color 255)))
   ([n lc fc]
-   (clock-rotate n (poly 0 0.5 0.4 n
+   (clock-rotate n (poly n 0.4 0 0.5
        {:stroke lc
         :fill fc 
         :stroke-weight 3}))))
@@ -21,7 +21,7 @@ Let's start with a simple function that makes a ring of n copies of an n-sided r
 (defn a-round
   ([n] (a-round n (p-color 0) (p-color 255)))
   ([n lc fc]
-   (clock-rotate n (poly 0 0.5 0.4 n
+   (clock-rotate n (poly n 0.4 0 0.5
        {:stroke lc
         :fill fc 
         :stroke-weight 3}))))
@@ -36,7 +36,7 @@ As described previously, we can place this pattern into a grid.
 (defn a-round
   ([n] (a-round n (p-color 0) (p-color 255)))
   ([n lc fc]
-   (clock-rotate n (poly 0 0.5 0.4 n
+   (clock-rotate n (poly n 0.4 0 0.5
        {:stroke lc
         :fill fc 
         :stroke-weight 3}))))
@@ -65,7 +65,7 @@ But we can also use cycle to turn finite vector of patterns into an infinite lis
 (defn a-round
   ([n] (a-round n (p-color 0) (p-color 255)))
   ([n lc fc]
-   (clock-rotate n (poly 0 0.5 0.4 n
+   (clock-rotate n (poly n 0.4 0 0.5
        {:stroke lc
         :fill fc 
         :stroke-weight 3}))))
@@ -85,7 +85,7 @@ Here we generate our sequence by mapping a-round to a vector of integers.
 (defn a-round
   ([n] (a-round n (p-color 0) (p-color 255)))
   ([n lc fc]
-   (clock-rotate n (poly 0 0.5 0.4 n
+   (clock-rotate n (poly n 0.4 0 0.5
        {:stroke lc
         :fill fc 
         :stroke-weight 3}))))
@@ -103,7 +103,7 @@ Or we can generate the sequence using Clojure's iterate to constantly apply a tr
 (defn a-round
   ([n] (a-round n (p-color 0) (p-color 255)))
   ([n lc fc]
-   (clock-rotate n (poly 0 0.5 0.4 n
+   (clock-rotate n (poly n 0.4 0 0.5
        {:stroke lc
         :fill fc 
         :stroke-weight 3}))))
@@ -121,7 +121,7 @@ We can even add random transformations, such as assigning each pattern an arbitr
 (defn a-round
   ([n] (a-round n (p-color 0) (p-color 255)))
   ([n lc fc]
-   (clock-rotate n (poly 0 0.5 0.4 n
+   (clock-rotate n (poly n 0.4 0 0.5
        {:stroke lc
         :fill fc 
         :stroke-weight 3}))))
@@ -155,7 +155,7 @@ We can use this to apply evolving transforms to a stream of evolving patterns. F
      p)))
   t
   (stack
-   (poly 0 0 0.6 3 {:stroke-weight 1})
+   (poly 3 0.6 0 0 {:stroke-weight 1})
    (horizontal-line 0 {:stroke-weight 2}))]
  (grid-layout 6
   (map

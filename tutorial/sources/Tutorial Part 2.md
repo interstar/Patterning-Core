@@ -47,13 +47,13 @@ Framed can be used to generate various bordered patterns
  [corner
   (stack
    (square {:fill (p-color 255 0 0 100)})
-   (poly 0 0 0.9 4 {:fill (p-color 240 100 240)}))
+   (poly 4 0.9 0 0 {:fill (p-color 240 100 240)}))
   edge
   (stack
    (square {:fill (p-color 0 0 255)})
-   (poly 0 0 0.5 8 {:fill (p-color 150 150 255)}))
+   (poly 8 0.5 0 0 {:fill (p-color 150 150 255)}))
   centre
-  (poly 0 0 0.9 30 {:fill (p-color 150 255 140)})]
+  (poly 30 0.9 0 0 {:fill (p-color 150 255 140)})]
  (framed 7 (repeat corner) (repeat edge) centre))
 ----
 Which can be tiled together with grid-layout
@@ -65,13 +65,13 @@ Which can be tiled together with grid-layout
  [corner
   (stack
    (square {:fill (p-color 255 0 0 100)})
-   (poly 0 0 0.9 4 {:fill (p-color 240 100 240)}))
+   (poly 4 0.9 0 0 {:fill (p-color 240 100 240)}))
   edge
   (stack
    (square {:fill (p-color 0 0 255)})
-   (poly 0 0 0.5 8 {:fill (p-color 150 150 255)}))
+   (poly 8 0.5 0 0 {:fill (p-color 150 150 255)}))
   centre
-  (poly 0 0 0.9 30 {:fill (p-color 150 255 140)})]
+  (poly 30 0.9 0 0 {:fill (p-color 150 255 140)})]
  (grid-layout 5 
   (repeat (framed 7 (repeat corner) (repeat edge) centre))))
 

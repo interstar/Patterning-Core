@@ -75,7 +75,7 @@ The original exhibition featured a larger laser-engraved panel made of 5 x 4 sma
 (defn person []
    (let [x (rand-nth [-0.5 -0.1 0 0.2 0.6])
           p (stack
-               (poly x -0.3 0.1 10 engrave)
+               (poly 10 0.1 x -0.3 engrave)
                [
        (->SShape engrave [[x -0.2] [x 0.1] [(- x 0.1) 0.6]])
        (->SShape engrave [[x 0.1] [(+ x 0.1) 0.6]])
@@ -104,7 +104,7 @@ The original exhibition featured a larger laser-engraved panel made of 5 x 4 sma
 )
 
 (def round-window
-   (poly 0 0 0.65 50 engrave)
+   (poly 50 0.65 0 0 engrave)
 )
 
 (def arched-window
@@ -139,7 +139,7 @@ The original exhibition featured a larger laser-engraved panel made of 5 x 4 sma
 
 (def clock
  (stack
-      (poly 0 0 0.65 50 engrave)
+      (poly 50 0.65 0 0 engrave)
       (clock-rotate 12 [(->SShape engrave [[0.5 0] [0.6 0]])])
       [(->SShape engrave [[0 0.35] [0 0] [0.3 -0.3]])]
    )
@@ -147,7 +147,7 @@ The original exhibition featured a larger laser-engraved panel made of 5 x 4 sma
 
 (def segmented-window
     (stack
-      (poly 0 0 0.65 50 engrave)
+      (poly 50 0.65 0 0 engrave)
       (clock-rotate
          8
          [(->SShape engrave [[0 0] [0 0.7]])]

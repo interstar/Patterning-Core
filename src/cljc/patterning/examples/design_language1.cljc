@@ -32,10 +32,10 @@
 (def my-black (p-color 0))
 
 
-(def simple-clock (clock-rotate 8 (poly 0.5 0 0.2 8
-                                        {:stroke my-orange
-                                         :fill my-cream
-                                         :stroke-weight 1 })))
+(def simple-clock (clock-rotate 8 (poly 8 0.2 0.5 0
+                                       {:stroke my-orange
+                                        :fill my-cream
+                                        :stroke-weight 1 })))
 
 (def simple-diamond  (diamond {:stroke my-red :stroke-weight 2}))
 
@@ -61,9 +61,9 @@
 (def corner (rotate maths/q-PI edge))
 
 (def red-ball
-  (poly 0 -0.82 0.3 8 {:stroke my-red :fill my-red :stroke-weight 2} ))
+  (poly 8 0.3 0 -0.82 {:stroke my-red :fill my-red :stroke-weight 2} ))
 
-(def tri (poly 0 0 0.7 3 {:stroke (p-color 240 200 170)}))
+(def tri (poly 3 0.7 0 0 {:stroke (p-color 240 200 170)}))
 (def star (stack tri (groups/rotate maths/PI tri)))
 (def emp (groups/empty-pattern))
 (def star-band (grid-layout 7 (cycle [emp emp emp star emp emp emp])))
@@ -83,8 +83,8 @@
 (def basic (stack
             (clock-rotate 6
              (stack
-              (poly 0.3 0.6 0.2 7 {:stroke my-pink})
-              (poly (- 0.4) (- 0.5) 0.2 4
+              (poly 7 0.2 0.3 0.6 {:stroke my-pink})
+              (poly 4 0.2 (- 0.4) (- 0.5)
                     {:stroke my-purple :stroke-weight 2 } ))  ))  )
 
 (defn dl []
@@ -93,7 +93,7 @@
         a-cross ( rotate (- (rand (/ maths/PI 2)) (/ maths/PI 4)) (cross my-green 0 0))
         blue-cross (rotate (- (rand (/ maths/PI 2)) (/ maths/PI 4)) (cross (p-color 100 100 200) 0 0))
         clock (clock-rotate 12 (stack
-                                (poly (rand 1) (rand 1)  0.12 4 {:stroke my-yellow :stroke-weight 2 :fill my-green})
+                                (poly 4 0.12 (rand 1) (rand 1) {:stroke my-yellow :stroke-weight 2 :fill my-green})
                                 (drunk-line 9 0.2 {:stroke my-red :fill my-blue :stroke-weight 3 })))
         flake (spoke-flake-group {:stroke my-orange :stroke-weight 1 })
         face (groups/scale 0.8 (face-group [20 my-burgundy] [5 my-blue] [3 my-purple]  [8 my-red]))

@@ -47,6 +47,9 @@ def compile_pattern(pattern_file, pattern_name):
     # Ensure directories exist
     ensure_dirs()
     
+    success = False
+    error_message = None
+    
     # Create pattern directory if it doesn't exist
     pattern_dir = Path("NFTmaker/patterns")
     pattern_dir.mkdir(exist_ok=True)
@@ -128,21 +131,23 @@ def compile_pattern(pattern_file, pattern_name):
                 print(f"\nPattern compiled successfully!")
                 print(f"Output files created in: {pattern_output_dir}/")
                 print(f"To view the pattern, run: cd {pattern_output_dir} && python3 -m http.server")
-                return True
+                success = True
             else:
-                print(f"Error: Compiled JS file not found at {js_file}")
-                return False
+                error_message = f"Compiled JS file not found at {js_file}"
+                print(f"Error: {error_message}")
             
         except subprocess.CalledProcessError as e:
+            error_message = f"Compilation failed: {e.stderr}"
             print(f"Error compiling pattern:")
             print(e.stdout)
             print(e.stderr)
-            sys.exit(1)
             
     finally:
         # Clean up pattern file only if we copied it
         if should_cleanup and dest_path.exists():
             dest_path.unlink()
+    
+    return success, error_message
 
 def main():
     parser = argparse.ArgumentParser(description="Compile a Patterning pattern into a standalone JS bundle")
@@ -154,7 +159,13 @@ def main():
     # Get pattern name from filename if not provided
     pattern_name = args.name or Path(args.pattern_file).stem
     
-    success = compile_pattern(args.pattern_file, pattern_name)
+    success, error_message = compile_pattern(args.pattern_file, pattern_name)
+    
+    if success:
+        print(f"✅ Pattern '{pattern_name}' compiled successfully!")
+    else:
+        print(f"❌ Pattern '{pattern_name}' failed to compile: {error_message}")
+    
     sys.exit(0 if success else 1)
 
 if __name__ == "__main__":

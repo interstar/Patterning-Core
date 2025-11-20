@@ -479,11 +479,11 @@
   "Set up default code and handle URL parameters"
   (let [default-code "(let 
   [tri
-   (poly 0 0.3 1.05 3
+   (poly 3 1.05 0 0.3
      {:fill (p-color 200 0 100)
       :stroke (p-color 250 50 150)})
     hex
-   (poly 0 0 0.8 6 
+   (poly 6 0.8 0 0 
      {:fill (p-color 100 150 100) 
       :stroke (p-color 200 255 50) 
       :stroke-weight 2})]

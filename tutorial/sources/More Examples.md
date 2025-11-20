@@ -158,9 +158,9 @@ Brazilian floral kitsch "Chita" patterns are common for textiles, table covering
 	#(rotate (* (mod (rand-int 100) 8) (/ PI 4)) %)
 
 	inner (stack
-		   (poly 0 0 0.3 12 {:fill (p-color 50 50 220)
+		   (poly 12 0.3 0 0 {:fill (p-color 50 50 220)
 							 :stroke-weight 0})
-		   (->> (poly 0 0.1 0.06 5 yellow)
+		   (->> (poly 5 0.06 0 0.1 yellow)
 				(clock-rotate 5)
 				(translate -0.09 -0.07)
 				))
@@ -198,11 +198,11 @@ Brazilian floral kitsch "Chita" patterns are common for textiles, table covering
 	whites 
 	(stack
 		(->> 
-			(poly 0 0.3 0.2 5
+			(poly 5 0.2 0 0.3
 			  {:fill (p-color 255 255 255)
 			   :stroke-weight 0})
 			(clock-rotate 7))
-		(poly 0 0 0.2 8 {:fill (p-color 0 0 200)}))
+		(poly 8 0.2 0 0 {:fill (p-color 0 0 200)}))
 
 	small-yellow 
 	  (let [all (->> (diamond yellow)
@@ -304,7 +304,7 @@ This complex tiling pattern can generate a number of stylized "cities". Useful f
 (defn person []
    (let [x (rand-nth [-0.5 -0.1 0 0.2 0.6])
           p (stack
-               (poly x -0.3 0.1 10 engrave)
+               (poly 10 0.1 x -0.3 engrave)
                [
        (->SShape engrave [[x -0.2] [x 0.1] [(- x 0.1) 0.6]])
        (->SShape engrave [[x 0.1] [(+ x 0.1) 0.6]])
@@ -333,7 +333,7 @@ This complex tiling pattern can generate a number of stylized "cities". Useful f
 )
 
 (def round-window
-   (poly 0 0 0.65 50 engrave)
+   (poly 50 0.65 0 0 engrave)
 )
 
 (def arched-window
@@ -368,7 +368,7 @@ This complex tiling pattern can generate a number of stylized "cities". Useful f
 
 (def clock
  (stack
-      (poly 0 0 0.65 50 engrave)
+      (poly 50 0.65 0 0 engrave)
       (clock-rotate 12 [(->SShape engrave [[0.5 0] [0.6 0]])])
       [(->SShape engrave [[0 0.35] [0 0] [0.3 -0.3]])]
    )
@@ -376,7 +376,7 @@ This complex tiling pattern can generate a number of stylized "cities". Useful f
 
 (def segmented-window
     (stack
-      (poly 0 0 0.65 50 engrave)
+      (poly 50 0.65 0 0 engrave)
       (clock-rotate
          8
          [(->SShape engrave [[0 0] [0 0.7]])]

@@ -43,7 +43,7 @@
 ;; THIS IS THE CURRENT PATTERN
 ;; assign to "final-pattern" the result of creating a pattern,
 
-(defn a-round [n] (clock-rotate n (poly 0 0.5 0.3 n {:stroke (p-color 0 0 0) :stroke-weight 2 :fill (p-color 0 0 0)} )))
+(defn a-round [n] (clock-rotate n (poly n 0.3 0 0.5 {:stroke (p-color 0 0 0) :stroke-weight 2 :fill (p-color 0 0 0)} )))
 
 
 (defn rand-col [] (p-color (rand-int 255) (rand-int 255) (rand-int 255) ))
@@ -70,9 +70,9 @@
         rand-rot #(groups/rotate (* (mod (rand-int 100) 8) (/ maths/PI 4)) %)
 
         inner (stack
-               (poly 0 0 0.3 12 {:fill (p-color 50 50 220)
+               (poly 12 0.3 0 0 {:fill (p-color 50 50 220)
                                  :stroke-weight 0})
-               (->> (poly 0 0.1 0.06 5 yellow)
+               (->> (poly 5 0.06 0 0.1 yellow)
                     (clock-rotate 5)
                     (groups/translate -0.09 -0.07)
                     ))
@@ -105,13 +105,13 @@
                  flower))
 
         whites (stack
-                (->> (poly 0 0.3 0.2 5
+                (->> (poly 5 0.2 0 0.3
                            {:fill (p-color 255 255 255)
                             :stroke-weight 0})
                      (clock-rotate 7)
 
                      )
-                (poly 0 0 0.2 8 {:fill (p-color 0 0 200)}))
+                (poly 8 0.2 0 0 {:fill (p-color 0 0 200)}))
 
         small-yellow (let [all (->> (diamond yellow)
                                     (groups/stretch 0.4 0.5)
@@ -141,7 +141,7 @@
      ) ))
 
 
-(defn a-nangle [n] (nangle 0 0 0.6 n {:stroke (p-color 0 0 0) :stroke-weight 2 }   ))
+(defn a-nangle [n] (nangle n 0.6 0 0 {:stroke (p-color 0 0 0) :stroke-weight 2 }   ))
 (defn randomize-color [p] (let [c (rand-col)] (groups/over-style {:fill (darker-color c)
                                                                   :stroke c} p ) ))
 
@@ -152,7 +152,7 @@
           (clock-rotate 12 (stack l (sshape-as-layout (first l) s 0.1)))))
 
 
-(def p6 '(let [p (poly 0 0 0.8 9 {:fill (p-color 200 100 100 100) :stroke-weight 2 :stroke (p-color 100 200 150)})
+(def p6 '(let [p (poly 9 0.8 0 0 {:fill (p-color 200 100 100 100) :stroke-weight 2 :stroke (p-color 100 200 150)})
               ss (first p)
               p2 (groups/triangle-list-to-pattern (to-triangles ss))
               p3 (apply stack (map #(-> % vector randomize-color) p2))
@@ -168,10 +168,10 @@
      (/ PI -2)
      (/ PI 9)
      (grow 4 "F")
-     {\Z
+      {\Z
       (fn [x y a]
         (do
-          (poly x y 0.03 8
+          (poly 8 0.03 x y
                 {:fill (p-color 255 0 0) :stroke-weight 0})))
       }
      {:stroke (p-color 0 155 50)})) )

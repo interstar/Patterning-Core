@@ -151,11 +151,11 @@ Some improvisations made at a gallery opening event in Portugal.
 ;; Checked one
 (checked-layout gridsize
    (repeat
-      (clock-rotate (rint 3 13) (poly 0 0.7 0.3 (rint 3 10) s1))
+      (clock-rotate (rint 3 13) (poly (rint 3 10) 0.3 0 0.7 s1))
    )
   (repeat
       (clock-rotate (rint 4 12) 
-         (poly 0 0.7 0.5 4 s2)
+         (poly 4 0.5 0 0.7 s2)
       )
    )
 )
@@ -193,7 +193,7 @@ Some improvisations made at a gallery opening event in Portugal.
 (defn triangles [x]
    (map     
      #(->>
-        (poly 0 1.1 0.6 3 {:fill (p-color 205 100 255)})
+        (poly 3 0.6 0 1.1 {:fill (p-color 205 100 255)})
         (rotate (/ 3.14159 x))
     )
     (range 0 100)

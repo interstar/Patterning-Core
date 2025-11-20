@@ -67,7 +67,7 @@ This pattern was laser-engraved onto wood, creating a kind of imaginary board-ga
      (stack
        [(->SShape engrave [[-1 0.6] [-0.4 0.6] [0.4 -0.6] [1 -0.6]])]
        [(->SShape engrave [[-1 -0.6] [-0.4 -0.6] [0.4 0.6] [1 0.6]])]
-       (poly 1 0 0.3 8 engrave)
+       (poly 8 0.3 1 0 engrave)
      )
    )
 )

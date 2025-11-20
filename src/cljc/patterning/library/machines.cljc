@@ -213,7 +213,7 @@ a-ratio should be a Clojure ratio"
 
 (defn crude-circle
   ([cx cy r s]
-   (poly cx cy r 80 s))
+   (poly 80 r cx cy s))
   ([r s] (crude-circle 0 0 r s)))
 
 (def multiline

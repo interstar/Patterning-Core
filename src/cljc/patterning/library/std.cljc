@@ -24,27 +24,27 @@
 
 
 (defn poly
-  ([cx cy radius no-sides style]
+  ([n radius cx cy style]
    (let [make-point (fn [a] (maths/add-points [cx cy] (maths/pol-to-rec [radius a])))]
-     (APattern (->SShape style (close-shape (into [] (map make-point (maths/clock-angles no-sides))))))))
-  ([cx cy radius no-sides] (poly cx cy radius no-sides {}))
-  ([radius no-sides style] (poly 0 0 radius no-sides style))
-  ([radius no-sides] (poly 0 0 radius no-sides {})))
+     (APattern (->SShape style (close-shape (into [] (map make-point (maths/clock-angles n))))))))
+  ([n radius cx cy] (poly n radius cx cy {}))
+  ([n radius style] (poly n radius 0 0 style))
+  ([n radius] (poly n radius 0 0 {})))
 
 
 (def multiline (optional-styled-primitive [ps] ps))
 
 (defn star
-  ([cx cy rads n style]
+  ([n rads cx cy style]
    ;; Double n internally so that n represents the number of outer points
    ;; e.g., n=5 creates a 5-pointed star with 10 total points (5 outer, 5 inner)
    (let [total-points (* 2 n)]
      (APattern (->SShape style (close-shape (sshapes/translate-shape
                                               cx cy
                                               (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles total-points)))))))))
-  ([cx cy rads n] (star cx cy rads n {}))
-  ([rads n style] (star 0 0 rads n style))
-  ([rads n] (star 0 0 rads n {})))
+  ([n rads cx cy] (star n rads cx cy {}))
+  ([n rads style] (star n rads 0 0 style))
+  ([n rads] (star n rads 0 0 {})))
 
 (defn find-cycle
   "Find a single cycle starting from start-idx, returning [cycle-points new-visited]"
@@ -78,7 +78,7 @@
               (recur (inc start-idx) new-visited all-cycles))))))))
 
 (defn nangle
-  ([cx cy rad n style]
+  ([n rad cx cy style]
    (let [step (if (even? n)
                 (- (int (/ n 2)) 1)  ; For even n, use n/2 - 1 to avoid degenerate case
                 (int (/ n 2)))       ; For odd n, use n/2 as before
@@ -88,15 +88,15 @@
        ;; Fallback: if no cycles found, return empty pattern
        (APattern)
        (let [translated-cycles (map (fn [cycle-points]
-                                      (sshapes/translate-shape cx cy cycle-points))
-                                    cycles)
+                                     (sshapes/translate-shape cx cy cycle-points))
+                                   cycles)
              sshapes (map (fn [translated-points]
-                            (->SShape style (close-shape translated-points)))
-                          translated-cycles)]
+                           (->SShape style (close-shape translated-points)))
+                         translated-cycles)]
          (apply APattern sshapes)))))
-  ([cx cy rad n] (nangle cx cy rad n {}))
-  ([rad n style] (nangle 0 0 rad n style))
-  ([rad n] (nangle 0 0 rad n {})))
+  ([n rad cx cy] (nangle n rad cx cy {}))
+  ([n rad style] (nangle n rad 0 0 style))
+  ([n rad] (nangle n rad 0 0 {})))
 
 (defn random-rect [style & {:keys [random] :or {random default-random}}]
   (let [rr (fn [l] (.randomFloat random))
@@ -147,14 +147,14 @@
    nopoints: number of points per full rotation (like poly, nangle, star)
    da is calculated as 2*PI / nopoints
    Supports multiple arities:
-   (spiral n dr nopoints) - n total points, starts at r=0, a=0, default style
-   (spiral n dr nopoints style) - n total points, starts at r=0, a=0
-   (spiral n r a dr nopoints) - n total points, explicit start position, default style
-   (spiral n r a dr nopoints style) - all parameters"
-  ([n dr nopoints] (spiral n 0 0 dr nopoints {}))
-  ([n dr nopoints style] (spiral n 0 0 dr nopoints style))
-  ([n r a dr nopoints] (spiral n r a dr nopoints {}))
-  ([n r a dr nopoints style]
+   (spiral nopoints dr n) - n total points, starts at r=0, a=0, default style
+   (spiral nopoints dr n style) - n total points, starts at r=0, a=0
+   (spiral nopoints dr n r a) - n total points, explicit start position, default style
+   (spiral nopoints dr n r a style) - all parameters"
+  ([nopoints dr n] (spiral nopoints dr n 0 0 {}))
+  ([nopoints dr n style] (spiral nopoints dr n 0 0 style))
+  ([nopoints dr n r a] (spiral nopoints dr n r a {}))
+  ([nopoints dr n r a style]
    (let [da (/ maths/TwoPI nopoints)]
      (APattern (->SShape style (take n (spiral-points r a dr da)))))))
 
@@ -204,7 +204,7 @@
 
 (defn clock-face [style]
   (stack
-   (poly 0 0 0.65 50 style)  ; Circular face
+   (poly 50 0.65 0 0 style)  ; Circular face
    (clock-rotate 12 [(->SShape style [[0.5 0] [0.6 0]])])  ; 12 hour markers
    ))
 

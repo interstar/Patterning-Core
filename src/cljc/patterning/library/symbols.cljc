@@ -13,11 +13,11 @@
             )  )
 
 (defn khatim [style]
-  (clock-rotate 8  (poly 0 -0.45 0.25 4 style) ))
+  (clock-rotate 8  (poly 4 0.25 0 -0.45 style) ))
 
 (defn seed-of-life [style]
   (let [pos (flower-of-life-positions 0.4 1 [0 0] )]
-    (place-groups-at-positions (repeat (poly 0 0 0.4 80 style)) pos  )  ))
+    (place-groups-at-positions (repeat (poly 80 0.4 0 0 style)) pos  )  ))
 
 (defn flower-of-life
   ([sides style]
@@ -25,13 +25,13 @@
          r3 (* r 3)
          pos (flower-of-life-positions r 3 [0 0])]
      (clip (fn [[x y]] (> (* r3 r3) (+ (* x x) (* y y))))
-           (place-groups-at-positions (repeat  (poly 0 0 r sides style)) pos ))))
+           (place-groups-at-positions (repeat  (poly sides r 0 0 style)) pos ))))
   ([style] 
    (flower-of-life 80 style)))
 
 (defn ringed-flower-of-life
   ([sides style] 
-   (stack (poly 0 0 1.2 sides style) (flower-of-life sides style)))
+   (stack (poly sides 1.2 0 0 style) (flower-of-life sides style)))
   ([style] 
    (ringed-flower-of-life 80 style)))
 
@@ -47,7 +47,7 @@
         ]
     (stack
      (clock-rotate 4 part1)
-     (rotate (/ maths/PI 8)  (poly 0 0 0.55 8 s)))  ))
+     (rotate (/ maths/PI 8)  (poly 8 0.55 0 0 s)))  ))
 
 ;; example that can be called from javascript
 (defn folexample []

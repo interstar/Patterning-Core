@@ -4,11 +4,11 @@ Some examples to get you started with Patterning.
 
 The function `poly` creates a polygon.
 
-In its simplest version it takes 3 arguments: *radius*, *number of sides*, and the *style*
+In its simplest version it takes 3 arguments: *number of sides*, *radius*, and the *style*
 
-`(poly 0.7 5 {:stroke (p-color 0 255 0)})`
+`(poly 5 0.7 {:stroke (p-color 0 255 0)})`
 
-This creates a polygon centred at the coordinates 0,0 on the canvas, and with a particular radius and style. Note that the visible canvas is always considered to be in a coordinate system between -1,-1 and 1,1, with 0,0 at the centre.
+This creates a polygon centred at the coordinates 0,0 on the canvas, with a particular number of sides, radius and style. Note that the visible canvas is always considered to be in a coordinate system between -1,-1 and 1,1, with 0,0 at the centre.
 
 The style is a map or dictionary with keys for attributes corresponding to similar properties you might have seen in SVG files or in Processing / P5. Eg
 
@@ -22,19 +22,19 @@ Commonly used entries are :stroke, :stroke-weight and :fill. :stroke and :fill a
 ----
 :patterning
 
-(poly 0.7 5
+(poly 5 0.7
    {:stroke (p-color 0 255 0),
     :fill (p-color 150 150 255), 
     :stroke-weight 4})
 
 
 ----
-We can also create the polygon with a different centre. In this case, we put the x and y coordinates **as the first two arguments**. 
+We can also create the polygon with a different centre. In this case, we put the x and y coordinates **after the number of sides and radius, before the style**. 
 
 ----
 :patterning
 
-(poly 0.3 0 0.7 5
+(poly 5 0.7 0.3 0
    {:stroke (p-color 0 255 0),
     :fill (p-color 150 150 255), 
     :stroke-weight 4})
@@ -47,7 +47,7 @@ Take a polygon offset from the centre. And pass it through a *layout* function c
 
 Now let's make a simple pattern.
 
-    (def triangles (clock-rotate 5 (poly 0.5 0.5 0.3 3 {:stroke (p-color 255 100 100) :stroke-weight 2 }) ) )
+    (def triangles (clock-rotate 5 (poly 3 0.3 0.5 0.5 {:stroke (p-color 255 100 100) :stroke-weight 2 }) ) )
 
 *poly* creates the triangle
 
@@ -59,7 +59,7 @@ In this case, clock-rotate takes a number, *n*, and a pattern, and makes the new
 :patterning
 
 (clock-rotate 5
- (poly 0.5 0.5 0.3 3 
+ (poly 3 0.3 0.5 0.5 
   {:stroke (p-color 255 100 100), :stroke-weight 2}))
 ----
 
@@ -70,9 +70,9 @@ In this case, clock-rotate takes a number, *n*, and a pattern, and makes the new
 :patterning
 
 (stack
- (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), :stroke-weight 2})
+ (poly 5 0.7 0 0 {:stroke (p-color 0 0 255), :stroke-weight 2})
  (clock-rotate 5
-  (poly 0.5 0.5 0.3 3 
+  (poly 3 0.3 0.5 0.5 
    {:stroke (p-color 255 100 100), :stroke-weight 2})))
 
 
@@ -91,9 +91,9 @@ Here we just use (repeat pattern) to make an infinite lazy list of them.
 (grid-layout 6
  (repeat
   (stack
-   (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), :stroke-weight 2})
+   (poly 5 0.7 0 0 {:stroke (p-color 0 0 255), :stroke-weight 2})
    (clock-rotate 5
-    (poly 0.5 0.5 0.3 3 
+    (poly 3 0.3 0.5 0.5 
      {:stroke (p-color 255 100 100), :stroke-weight 2})))))
 
 
@@ -113,10 +113,10 @@ The checked-layout takes two streams of patterns and interpolates between them w
 (let
  [triangles
   (clock-rotate 5
-   (poly 0.5 0.5 0.3 3
+   (poly 3 0.3 0.5 0.5
     {:stroke (p-color 255 100 100), :stroke-weight 2}))
   pentagon
-  (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), :stroke-weight 2})]
+  (poly 5 0.7 0 0 {:stroke (p-color 0 0 255), :stroke-weight 2})]
  (checked-layout 6 (repeat pentagon) (repeat triangles)))
 
 ----
@@ -240,10 +240,10 @@ Maybe bring back a bit of blue, every other.
    {:stroke (p-color 100 255 100), :stroke-weight 2})
   triangles
   (clock-rotate 5
-   (poly 0.5 0.5 0.3 3
+   (poly 3 0.3 0.5 0.5
     {:stroke (p-color 255 100 100), :stroke-weight 1}))
   pentagon
-  (poly 0.7 5
+  (poly 5 0.7
    {:stroke (p-color 0 0 255),
     :fill (p-color 100 100 255 100),
     :stroke-weight 1})]

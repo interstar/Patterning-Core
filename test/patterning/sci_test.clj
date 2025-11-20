@@ -29,7 +29,7 @@
     (is (= [255 0 0 221] (eval-sci "(hex-color \"ff0000dd\")"))))
   
   (testing "poly function"
-    (let [result (eval-sci "(poly 0 0 0.5 6 {:fill (p-color 255 0 0)})")]
+    (let [result (eval-sci "(poly 6 0.5 0 0 {:fill (p-color 255 0 0)})")]
       (is (seq? result))
       (is (groups/validate-group result))))
   
@@ -39,7 +39,7 @@
       (is (groups/validate-group result))))
   
   (testing "stack function"
-    (let [result (eval-sci "(stack (square) (poly 0 0 0.3 3))")]
+    (let [result (eval-sci "(stack (square) (poly 3 0.3 0 0))")]
       (is (seq? result))
       (is (groups/validate-group result))
       (is (> (count result) 1))))
@@ -79,7 +79,7 @@
   (testing "Simple pattern with stack"
     (let [code "(stack 
                   (square {:fill (p-color 255 0 0)})
-                  (poly 0 0 0.5 6 {:fill (p-color 0 255 0)}))"
+                  (poly 6 0.5 0 0 {:fill (p-color 0 255 0)}))"
           result (eval-sci code)]
       (is (groups/validate-group result))
       (is (> (count result) 0))))
@@ -96,7 +96,7 @@
                   (defcolor shape-color 255 0 0)
                   (stack
                     (square {:fill bg-color})
-                    (poly 0 0 0.4 5 {:fill shape-color})))"
+                    (poly 5 0.4 0 0 {:fill shape-color})))"
           result (eval-sci code)]
       (is (groups/validate-group result))
       (is (> (count result) 0)))))
@@ -131,12 +131,12 @@
 (deftest test-library-functions-available
   "Test that library functions are available"
   (testing "star function"
-    (let [result (eval-sci "(star 0 0 [0.3 0.5] 5 {:fill (p-color 255 255 0)})")]
+    (let [result (eval-sci "(star 5 [0.3 0.5] 0 0 {:fill (p-color 255 255 0)})")]
       (is (seq? result))
       (is (groups/validate-group result))))
   
   (testing "nangle function"
-    (let [result (eval-sci "(nangle 0 0 0.5 7 {:stroke (p-color 0 0 255)})")]
+    (let [result (eval-sci "(nangle 7 0.5 0 0 {:stroke (p-color 0 0 255)})")]
       (is (seq? result))
       (is (groups/validate-group result))))
   

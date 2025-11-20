@@ -120,16 +120,16 @@ Furthermore we can add more transformations. As well as A (the identity), B (rot
 
 (let 
   [tri
-   (poly 0 0.2 0.7 3
+   (poly 3 0.7 0 0.2
      {:fill (p-color 250 200 100)
       :stroke (p-color 250 50 150)})
    tri2
-   (poly 0 0.2 0.7 3
+   (poly 3 0.7 0 0.2
      {:fill (p-color 50 180 250)
       :stroke (p-color 250 50 150)})
 
     hex
-   (poly 0 0 0.7 6 
+   (poly 6 0.7 0 0 
      {:fill (p-color 100 150 100) 
       :stroke (p-color 200 255 50) 
       })]

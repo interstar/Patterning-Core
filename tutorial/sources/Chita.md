@@ -37,9 +37,9 @@ As part of an exhibition focused on this style, I live-coded some patterns inspi
 	#(rotate (* (mod (rand-int 100) 8) (/ PI 4)) %)
 
 	inner (stack
-		   (poly 0 0 0.3 12 {:fill (p-color 50 50 220)
+		   (poly 12 0.3 0 0 {:fill (p-color 50 50 220)
 							 :stroke-weight 0})
-		   (->> (poly 0 0.1 0.06 5 yellow)
+		   (->> (poly 5 0.06 0 0.1 yellow)
 				(clock-rotate 5)
 				(translate -0.09 -0.07)
 				))
@@ -77,11 +77,11 @@ As part of an exhibition focused on this style, I live-coded some patterns inspi
 	whites 
 	(stack
 		(->> 
-			(poly 0 0.3 0.2 5
+			(poly 5 0.2 0 0.3
 			  {:fill (p-color 255 255 255)
 			   :stroke-weight 0})
 			(clock-rotate 7))
-		(poly 0 0 0.2 8 {:fill (p-color 0 0 200)}))
+		(poly 8 0.2 0 0 {:fill (p-color 0 0 200)}))
 
 	small-yellow 
 	  (let [all (->> (diamond yellow)
