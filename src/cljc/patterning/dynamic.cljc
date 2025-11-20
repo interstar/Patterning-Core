@@ -79,7 +79,9 @@
    'rect #'p-lib-std/rect
    'rect-std #'p-lib-std/rect
    ;; Additional core functions needed for complex patterns
-   'abs #'p-maths/abs})
+   'abs #'p-maths/abs
+   'deg-to-rad #'p-maths/deg-to-rad
+   'rad-to-deg #'p-maths/rad-to-deg})
 
 (defn get-core-allow-list
   "Returns the core Clojure/ClojureScript functions that need to be explicitly allowed in SCI.
@@ -480,7 +482,7 @@
                                  ;; Shape construction
                                  (include-from sci-vars 'p-sshapes-sci ['->SShape])
                                  ;; Maths functions
-                                 (include-from sci-vars 'p-maths-sci ['clock-points 'distance 'atan2 'abs])
+                                 (include-from sci-vars 'p-maths-sci ['clock-points 'distance 'atan2 'abs 'deg-to-rad 'rad-to-deg])
                                  ;; Turtle functions
                                  (include-from sci-vars 'p-lib-turtle-sci ['basic-turtle])
                                  ;; L-systems

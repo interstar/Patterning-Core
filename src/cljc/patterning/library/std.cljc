@@ -144,18 +144,27 @@
 
 (defn spiral
   "Creates a spiral shape.
-   nopoints: number of points per full rotation (like poly, nangle, star)
-   da is calculated as 2*PI / nopoints
+   nopoints: number of points per full cycle (like poly, nangle, star)
+   dr-per-cycle: how much the radius increases over one full cycle
+   num-cycles: number of full cycles to draw
+   
+   The parameters are independent:
+   - Resolution: nopoints controls how smooth the spiral is
+   - Tightness: dr-per-cycle controls how tightly the spiral coils (independent of resolution)
+   - Length: num-cycles controls how many full rotations (independent of resolution)
+   
    Supports multiple arities:
-   (spiral nopoints dr n) - n total points, starts at r=0, a=0, default style
-   (spiral nopoints dr n style) - n total points, starts at r=0, a=0
-   (spiral nopoints dr n r a) - n total points, explicit start position, default style
-   (spiral nopoints dr n r a style) - all parameters"
-  ([nopoints dr n] (spiral nopoints dr n 0 0 {}))
-  ([nopoints dr n style] (spiral nopoints dr n 0 0 style))
-  ([nopoints dr n r a] (spiral nopoints dr n r a {}))
-  ([nopoints dr n r a style]
-   (let [da (/ maths/TwoPI nopoints)]
+   (spiral nopoints dr-per-cycle num-cycles) - starts at r=0, a=0, default style
+   (spiral nopoints dr-per-cycle num-cycles style) - starts at r=0, a=0
+   (spiral nopoints dr-per-cycle num-cycles r a) - explicit start position, default style
+   (spiral nopoints dr-per-cycle num-cycles r a style) - all parameters"
+  ([nopoints dr-per-cycle num-cycles] (spiral nopoints dr-per-cycle num-cycles 0 0 {}))
+  ([nopoints dr-per-cycle num-cycles style] (spiral nopoints dr-per-cycle num-cycles 0 0 style))
+  ([nopoints dr-per-cycle num-cycles r a] (spiral nopoints dr-per-cycle num-cycles r a {}))
+  ([nopoints dr-per-cycle num-cycles r a style]
+   (let [da (/ maths/TwoPI nopoints)           ; angle increment per step
+         dr (/ dr-per-cycle nopoints)            ; radius increment per step
+         n (* num-cycles nopoints)]              ; total number of points
      (APattern (->SShape style (take n (spiral-points r a dr da)))))))
 
 

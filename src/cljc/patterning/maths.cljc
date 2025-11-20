@@ -57,6 +57,17 @@
 (def half-PI (float (/ PI 2)))
 (def q-PI (float (/ PI 4)))
 
+;; Degree conversion helpers
+(defn deg-to-rad
+  "Convert degrees to radians"
+  [deg]
+  (* deg (/ PI 180)))
+
+(defn rad-to-deg
+  "Convert radians to degrees"
+  [rad]
+  (* rad (/ 180 PI)))
+
 (defn sqrt [x] #?(:clj (Math/sqrt x) :cljs (js/Math.sqrt x)) )
 (defn abs [n] (max n (- n)))
 (defn atan2 [x y] #?(:clj (Math/atan2 x y) :cljs (js/Math.atan2 x y) ) )
