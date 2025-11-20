@@ -1,4 +1,4 @@
-(defproject com.alchemyislands/patterning "0.6.0"
+(defproject com.alchemyislands/patterning "0.6.1"
   :description "Generating Patterns with Clojure"
   :url "http://alchemyislands.com/"
   :license {:name "Gnu Lesser Public License"
