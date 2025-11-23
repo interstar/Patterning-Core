@@ -6,16 +6,13 @@
 I loved the vibe so much I wanted to experiment with it in Patterning. These are just the first rough experiments with the simplest elements of these tiles.
 
 ----
-:patterning 
+:patterning
 
-(def s1 (paint :white :black 2)) 
-(def black (p-color 0))
+(defcolor black 0)
+(defcolor c 255)
+(def s1 (paint c :black 2))
 
 (def step 2/6)
-(def rB (/ PI 2))
-(def rC PI)
-(def rD (/ (* 3 PI) 2))
-
 
 (def k1
   (on-background black
@@ -23,11 +20,10 @@ I loved the vibe so much I wanted to experiment with it in Patterning. These are
       (apply stack 
          (map #(horizontal-line % s1) steps )))))
 
-(def k2 (rotate (/ PI 2) k1))
       
-(defn circle [r] (poly 80 r s1))
- 
-(defn circles [n] 
+(defn circle [r] (poly 80 r s1)) 
+
+(defn circles [n]
   (apply stack
       (map circle (take n (iterate #(- % step) (* step n))))))
 
@@ -35,18 +31,47 @@ I loved the vibe so much I wanted to experiment with it in Patterning. These are
   (on-background black
     (stack k1 (circles 3))))
 
-(def k4 (rotate (/ PI 2) k3))   
+
+(defn arcs [n]
+  (->>
+    (apply stack
+      (map 
+       (fn [r] (arc r 0 d180 s1))
+       (take n (iterate #(- % step) (* step n)))))
+    (translate -1 -1)
+    ))
 
 (def k5 
-  (on-background black 
-      (clip (fn [[x y]](and (> x -1) (> y -1))) 
-       (translate -1 -1 (circles 5)))))
-(def k6 (rotate rB k5))
-(def k7 (rotate rC k5))
-(def k8 (rotate rD k5)) 
+  (on-background black
+    (stack k1 (arcs 5))))
+
+(def k6 (h-reflect k5))
+
+(def half-arc 
+  (arc 0.5 0 d180 s1))
+
+(def k9
+  (let [h1
+        (->> half-arc 
+          (rotate d270)
+          (scale 0.67)
+          (translate -0.8 (- step)))
+        h2 (v-reflect h1)        
+        ]
+    (stack k1 h1 h2)
+    ))
+
+(defn m2 [p] [p (rotate d90 p)])
+(defn m4 [p] (into [] (map #(rotate % p) [0 d90 d180 d270])))
+
+(def all-tiles 
+  (concat
+    (m2 k1) (m2 k3) (m4 k5) (m4 k6) (m4 k9)
+   ))
+
 
 (grid-layout 5
- (iterate (fn [_] (rand-nth [k1 k2 k3 k4 k5 k6 k7 k8])) k1)
+ (iterate (fn [_] (rand-nth all-tiles)) k1)
 )
 
 ----
@@ -55,14 +80,11 @@ Or we can run through `four-round`
 ----
 :patterning
 
-(def s1 (paint :white :black 2)) 
-(def black (p-color 0))
+(defcolor black 0)
+(defcolor c "ffaa00")
+(def s1 (paint c :black 2))
 
 (def step 2/6)
-(def rB (/ PI 2))
-(def rC PI)
-(def rD (/ (* 3 PI) 2))
-
 
 (def k1
   (on-background black
@@ -70,11 +92,10 @@ Or we can run through `four-round`
       (apply stack 
          (map #(horizontal-line % s1) steps )))))
 
-(def k2 (rotate (/ PI 2) k1))
       
-(defn circle [r] (poly 80 r s1))
- 
-(defn circles [n] 
+(defn circle [r] (poly 80 r s1)) 
+
+(defn circles [n]
   (apply stack
       (map circle (take n (iterate #(- % step) (* step n))))))
 
@@ -82,78 +103,58 @@ Or we can run through `four-round`
   (on-background black
     (stack k1 (circles 3))))
 
-(def k4 (rotate (/ PI 2) k3))   
+
+(defn arcs [n]
+  (->>
+    (apply stack
+      (map 
+       (fn [r] (arc r 0 d180 s1))
+       (take n (iterate #(- % step) (* step n)))))
+    (translate -1 -1)
+    ))
 
 (def k5 
-  (on-background black 
-      (clip (fn [[x y]](and (> x -1) (> y -1))) 
-       (translate -1 -1 (circles 5)))))
-(def k6 (rotate rB k5))
-(def k7 (rotate rC k5))
-(def k8 (rotate rD k5)) 
+  (on-background black
+    (stack k1 (arcs 5))))
 
+(def k6 (h-reflect k5))
+
+(def half-arc 
+  (arc 0.5 0 d180 s1))
+
+(def k9
+  (let [h1
+        (->> half-arc 
+          (rotate d270)
+          (scale 0.67)
+          (translate -0.8 (- step)))
+        h2 (v-reflect h1)        
+        ]
+    (stack k1 h1 h2)
+    ))
+
+(defn m2 [p] [p (rotate d90 p)])
+(defn m4 [p] (into [] (map #(rotate % p) [0 d90 d180 d270])))
+
+(def all-tiles 
+  (concat
+    (m2 k1) (m2 k3) (m4 k5) (m4 k6) (m4 k9)
+   ))
+   
 (four-round
  (grid-layout 3
- (iterate (fn [_] (rand-nth [k1 k2 k3 k4 k5 k6 k7 k8])) k1)
-))
-----
-Or `four-mirror`
-----
-:patterning
-(def s1 (paint :white :black 2)) 
-(def black (p-color 0))
-
-(def step 2/6)
-(def rB (/ PI 2))
-(def rC PI)
-(def rD (/ (* 3 PI) 2))
-
-
-(def k1
-  (on-background black
-    (let [steps (take 5 (iterate #(+ % step) (- step 1)))]
-      (apply stack 
-         (map #(horizontal-line % s1) steps )))))
-
-(def k2 (rotate (/ PI 2) k1))
-      
-(defn circle [r] (poly 80 r s1))
- 
-(defn circles [n] 
-  (apply stack
-      (map circle (take n (iterate #(- % step) (* step n))))))
-
-(def k3 
-  (on-background black
-    (stack k1 (circles 3))))
-
-(def k4 (rotate (/ PI 2) k3))   
-
-(def k5 
-  (on-background black 
-      (clip (fn [[x y]](and (> x -1) (> y -1))) 
-       (translate -1 -1 (circles 5)))))
-(def k6 (rotate rB k5))
-(def k7 (rotate rC k5))
-(def k8 (rotate rD k5)) 
-
-(four-mirror 
- (grid-layout 3
- (iterate (fn [_] (rand-nth [k1 k2 k3 k4 k5 k6 k7 k8])) k1)
+ (iterate (fn [_] (rand-nth all-tiles)) k1)
 ))
 ----
 Or [Douat](Douat.html) 
 ----
 :patterning
 
-(def s1 (paint :white :black 2)) 
-(def black (p-color 0))
+(defcolor black 0)
+(defcolor c "ffaa00")
+(def s1 (paint c :black 2))
 
 (def step 2/6)
-(def rB (/ PI 2))
-(def rC PI)
-(def rD (/ (* 3 PI) 2))
-
 
 (def k1
   (on-background black
@@ -161,11 +162,10 @@ Or [Douat](Douat.html)
       (apply stack 
          (map #(horizontal-line % s1) steps )))))
 
-(def k2 (rotate (/ PI 2) k1))
       
-(defn circle [r] (poly 80 r s1))
- 
-(defn circles [n] 
+(defn circle [r] (poly 80 r s1)) 
+
+(defn circles [n]
   (apply stack
       (map circle (take n (iterate #(- % step) (* step n))))))
 
@@ -173,20 +173,48 @@ Or [Douat](Douat.html)
   (on-background black
     (stack k1 (circles 3))))
 
-(def k4 (rotate (/ PI 2) k3))   
+
+(defn arcs [n]
+  (->>
+    (apply stack
+      (map 
+       (fn [r] (arc r 0 d180 s1))
+       (take n (iterate #(- % step) (* step n)))))
+    (translate -1 -1)
+    ))
 
 (def k5 
-  (on-background black 
-      (clip (fn [[x y]](and (> x -1) (> y -1))) 
-       (translate -1 -1 (circles 5)))))
-(def k6 (rotate rB k5))
-(def k7 (rotate rC k5))
-(def k8 (rotate rD k5)) 
+  (on-background black
+    (stack k1 (arcs 5))))
+
+(def k6 (h-reflect k5))
+
+(def half-arc 
+  (arc 0.5 0 d180 s1))
+
+(def k9
+  (let [h1
+        (->> half-arc 
+          (rotate d270)
+          (scale 0.67)
+          (translate -0.8 (- step)))
+        h2 (v-reflect h1)        
+        ]
+    (stack k1 h1 h2)
+    ))
+
+(defn m2 [p] [p (rotate d90 p)])
+(defn m4 [p] (into [] (map #(rotate % p) [0 d90 d180 d270])))
+
+(def all-tiles 
+  (concat
+    (m2 k1) (m2 k3) (m4 k5) (m4 k6) (m4 k9)
+   ))
 
 
 (->> 
  (grid-layout 3
- (iterate (fn [_] (rand-nth [k1 k2 k3 k4 k5 k6 k7 k8])) k1)
+ (iterate (fn [_] (rand-nth all-tiles)) k1)
  )
  (Douat)
  A C A B 
