@@ -47,6 +47,7 @@
    'poly #'p-lib-std/poly
    'arc #'p-lib-std/arc
    'stack #'p-layouts/stack
+   'nested-stack #'p-layouts/nested-stack
    'clock-rotate #'p-layouts/clock-rotate
    'grid-layout #'p-layouts/grid-layout
    'checked-layout #'p-layouts/checked-layout
@@ -528,7 +529,7 @@
                                  ;; Standard library shapes
                                  (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line 'on-background])
                                  ;; Layout functions
-                                 (include-from sci-vars 'p-layouts-sci ['stack 'clock-rotate 'grid-layout 'checked-layout 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
+                                 (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'clock-rotate 'grid-layout 'checked-layout 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
                                  ;; Group/transform functions
                                  (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe 'h-reflect 'v-reflect 'rotate-tile-set 'reflect-tile-set])
                                  ;; Shape construction
