@@ -115,3 +115,58 @@
     (let [invalid-sshape (sshapes/->SShape {} nil)]
       (is (not (m/validate groups/SShape invalid-sshape)))
       (is (contains? (groups/explain-sshape invalid-sshape) :points)))))
+
+(deftest tile-set-functions-test
+  (let [p1 (groups/APattern (sshapes/->SShape {} [[0 0] [1 0] [0 1]]))
+        p2 (groups/APattern (sshapes/->SShape {} [[-0.5 -0.5] [0.5 -0.5] [0.5 0.5] [-0.5 0.5]]))]
+    
+    (testing "rotate-tile-set with default (4 rotations)"
+      (let [tiles (groups/rotate-tile-set p1)]
+        (is (= 4 (count tiles)))
+        (is (vector? tiles))
+        (is (groups/mol= (first tiles) p1)) ; First should be original
+        (is (groups/mol= (second tiles) (groups/rotate maths/d90 p1))) ; Second should be 90° rotation
+        (is (groups/mol= (nth tiles 2) (groups/rotate maths/d180 p1))) ; Third should be 180° rotation
+        (is (groups/mol= (nth tiles 3) (groups/rotate maths/d270 p1))))) ; Fourth should be 270° rotation
+    
+    (testing "rotate-tile-set with 2-fold symmetry"
+      (let [tiles (groups/rotate-tile-set [p1 2])]
+        (is (= 2 (count tiles)))
+        (is (vector? tiles))
+        (is (groups/mol= (first tiles) p1)) ; First should be original
+        (is (groups/mol= (second tiles) (groups/rotate maths/d90 p1))))) ; Second should be 90° rotation
+    
+    (testing "rotate-tile-set with multiple patterns"
+      (let [tiles (groups/rotate-tile-set p1 p2)]
+        (is (= 8 (count tiles))) ; 4 rotations each
+        (is (vector? tiles))))
+    
+    (testing "rotate-tile-set with mixed symmetry"
+      (let [tiles (groups/rotate-tile-set [p1 2] p2)]
+        (is (= 6 (count tiles))) ; 2 for p1, 4 for p2
+        (is (vector? tiles))
+        (is (groups/mol= (first tiles) p1))
+        (is (groups/mol= (second tiles) (groups/rotate maths/d90 p1)))
+        (is (groups/mol= (nth tiles 2) p2)) ; p2 starts at index 2
+        (is (groups/mol= (nth tiles 3) (groups/rotate maths/d90 p2)))))
+    
+    (testing "reflect-tile-set with single pattern"
+      (let [tiles (groups/reflect-tile-set p1)]
+        (is (= 4 (count tiles)))
+        (is (vector? tiles))
+        (is (groups/mol= (first tiles) p1)) ; Original
+        (is (groups/mol= (second tiles) (groups/h-reflect p1))) ; h-reflect
+        (is (groups/mol= (nth tiles 2) (groups/v-reflect p1))) ; v-reflect
+        (is (groups/mol= (nth tiles 3) (groups/h-reflect (groups/v-reflect p1)))))) ; both
+    
+    (testing "reflect-tile-set with multiple patterns"
+      (let [tiles (groups/reflect-tile-set p1 p2)]
+        (is (= 8 (count tiles))) ; 4 reflections each
+        (is (vector? tiles))
+        (is (groups/mol= (first tiles) p1))
+        (is (groups/mol= (nth tiles 4) p2)))) ; p2 starts at index 4
+    
+    (testing "rotate-tile-set error handling"
+      (is (thrown? clojure.lang.ExceptionInfo 
+                   (groups/rotate-tile-set [p1 3])))) ; Invalid rotation count
+    ))
