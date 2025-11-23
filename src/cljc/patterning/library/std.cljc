@@ -31,6 +31,34 @@
   ([n radius style] (poly n radius 0 0 style))
   ([n radius] (poly n radius 0 0 {})))
 
+(defn arc
+  "Creates an arc (fraction of a circle).
+   radius: radius of the arc
+   start-angle: starting angle in radians
+   offset: angular span of the arc in radians (can be negative to go backwards)
+   resolution: number of points in the arc (default: 30)
+   style: optional style map (default: {})
+   cx: center X coordinate (default: 0)
+   cy: center Y coordinate (default: 0)
+   
+   Supports multiple arities:
+   (arc radius start-angle offset) - uses default resolution (30) and default style
+   (arc radius start-angle offset resolution) - explicit resolution, default style
+   (arc radius start-angle offset resolution style) - all parameters
+   (arc radius start-angle offset style) - if 4th arg is a map, it's style, resolution defaults to 30"
+  ([radius start-angle offset]
+   (arc radius start-angle offset 30 {} 0 0))
+  ([radius start-angle offset second-arg]
+   (if (number? second-arg)
+     ;; Second arg is resolution
+     (arc radius start-angle offset second-arg {} 0 0)
+     ;; Second arg is style map
+     (arc radius start-angle offset 30 second-arg 0 0)))
+  ([radius start-angle offset resolution style]
+   (arc radius start-angle offset resolution style 0 0))
+  ([radius start-angle offset resolution style cx cy]
+   (let [make-point (fn [a] (maths/add-points [cx cy] (maths/pol-to-rec [radius a])))]
+     (APattern (->SShape style (into [] (map make-point (maths/arc-angles resolution start-angle offset))))))))
 
 (def multiline (optional-styled-primitive [ps] ps))
 
@@ -110,7 +138,7 @@
   (let [angle-changes (take steps (maths/random-angles angle-range random))
         cumulative-angles (reductions + 0 angle-changes)
         offs (map (fn [a] [stepsize a]) cumulative-angles)]
-    (loop [pps offs current [0 0] acc []]
+    (loop [pps offs current [0 0] acc [[0 0]]]
       (if (empty? pps) acc
           (let [p (maths/add-points current (maths/pol-to-rec (first pps)))]
             (recur (rest pps) p (conj acc p)))))))
@@ -176,15 +204,33 @@
   [color x y] (stack (horizontal-line y {:stroke color})  (vertical-line x {:stroke color})))
 
 
-(defn ogee "An ogee shape" [resolution stretch style]
-  (let [o-group (into [] (four-mirror (quarter-ogee resolution stretch style)))
-        o0 (get (get o-group 0) :points)
-        o1 (get (get o-group 1) :points)
-        o2 (get (get o-group 2) :points)
-        o3 (get (get o-group 3) :points)
-        top (tie-together o0 o1)
-        bottom (tie-together o2 o3)]
-    (APattern (->SShape style (tie-together top bottom)))))
+(defn ogee
+  "An ogee shape.
+   stretch: controls the stretch of the ogee curve
+   resolution: step size for generating points (default: 0.1)
+   style: optional style map (default: {})
+   
+   Supports multiple arities:
+   (ogee stretch) - uses default resolution (0.1) and default style ({})
+   (ogee stretch resolution) - if second arg is a number, it's resolution
+   (ogee stretch style) - if second arg is a map, it's style
+   (ogee stretch resolution style) - all parameters"
+  ([stretch] (ogee stretch 0.1 {}))
+  ([stretch second-arg]
+   (if (number? second-arg)
+     ;; Second arg is resolution
+     (ogee stretch second-arg {})
+     ;; Second arg is style map
+     (ogee stretch 0.1 second-arg)))
+  ([stretch resolution style]
+   (let [o-group (into [] (four-mirror (quarter-ogee resolution stretch style)))
+         o0 (get (get o-group 0) :points)
+         o1 (get (get o-group 1) :points)
+         o2 (get (get o-group 2) :points)
+         o3 (get (get o-group 3) :points)
+         top (tie-together o0 o1)
+         bottom (tie-together o2 o3)]
+     (APattern (->SShape style (tie-together top bottom))))))
 
 
 (defn bez-curve
