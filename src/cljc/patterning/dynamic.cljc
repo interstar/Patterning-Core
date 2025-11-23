@@ -45,6 +45,7 @@
    'hex-color #'p-color/hex-color
    'defcolor #'p-macros/defcolor
    'poly #'p-lib-std/poly
+   'arc #'p-lib-std/arc
    'stack #'p-layouts/stack
    'clock-rotate #'p-layouts/clock-rotate
    'grid-layout #'p-layouts/grid-layout
@@ -73,6 +74,13 @@
    'rotate #'p-groups/rotate
    'stretch #'p-groups/stretch
    'reframe #'p-groups/reframe
+   'h-reflect #'p-groups/h-reflect
+   'v-reflect #'p-groups/v-reflect
+   'rotate-tile-set #'p-groups/rotate-tile-set
+   'reflect-tile-set #'p-groups/reflect-tile-set
+   'on-background #'p-lib-std/on-background
+   'four-round #'p-layouts/four-round
+   'Douat #'p-lib-douat/Douat
    'clock-points #'p-maths/clock-points
    'distance #'p-maths/distance
    'atan2 #'p-maths/atan2
@@ -81,7 +89,15 @@
    ;; Additional core functions needed for complex patterns
    'abs #'p-maths/abs
    'deg-to-rad #'p-maths/deg-to-rad
-   'rad-to-deg #'p-maths/rad-to-deg})
+   'rad-to-deg #'p-maths/rad-to-deg
+   ;; Core sequence functions needed for lazy sequences
+   'seq #'clojure.core/seq
+   'first #'clojure.core/first
+   'iterate #'clojure.core/iterate
+   'take #'clojure.core/take
+   'cycle #'clojure.core/cycle
+   'rand-nth #'clojure.core/rand-nth
+   'repeat #'clojure.core/repeat})
 
 (defn get-core-allow-list
   "Returns the core Clojure/ClojureScript functions that need to be explicitly allowed in SCI.
@@ -103,6 +119,10 @@
    'map
    'conj
    '=
+   '<
+   '>
+   '<=
+   '>=
    '*
    '+
    'apply
@@ -127,6 +147,7 @@
    'last
    'concat
    'or
+   'and
    ;; Additional functions needed for threading macros
    'assoc
    'get
@@ -210,6 +231,10 @@
    'clojure.core/map
    'clojure.core/conj
    'clojure.core/=
+   'clojure.core/<
+   'clojure.core/>
+   'clojure.core/<=
+   'clojure.core/>=
    'clojure.core/*
    'clojure.core/+
    'clojure.core/apply
@@ -234,6 +259,7 @@
    'clojure.core/last
    'clojure.core/concat
    'clojure.core/or
+   'clojure.core/and
    ;; Additional functions that might be needed
    'clojure.core/identity
    'clojure.core/constantly
@@ -322,7 +348,16 @@
         ns-map (get-patterning-namespaces)
         bindings (apply merge (vals ns-map))
         key-bindings (get-key-bindings)
-        all-bindings (merge bindings key-bindings)]
+        ;; Add angle constants from p-maths namespace at runtime
+        ;; Need to dereference Vars to get their actual numeric values
+        p-maths-publics (get ns-map 'p-maths)
+        angle-constants (when p-maths-publics
+                          (into {}
+                                (keep (fn [[k v]]
+                                        (when (contains? #{'d360 'd270 'd180 'd90 'd45 'd60 'd30 'd10 'd36} k)
+                                          [k (deref v)])))
+                                p-maths-publics))
+        all-bindings (merge bindings key-bindings (or angle-constants {}))]
     (sci/init {:namespaces ns-map
                :bindings all-bindings
                ;; We still need to allow the bindings themselves, plus core macros and special forms.
@@ -346,6 +381,10 @@
                                    'map
                                    'conj
                                    '=
+                                   '<
+                                   '>
+                                   '<=
+                                   '>=
                                    '*
                                    '+
                                    'apply
@@ -370,11 +409,24 @@
                                    'last
                                    'concat
                                    'or
+                                   'and
                                    ;; Additional functions needed for complex patterns
                                    'first
                                    'second
+                                   'seq
+                                   'rest
+                                   'next
+                                   'cons
+                                   'empty?
+                                   'count
                                    'clojure.core/first
-                                   'clojure.core/second]))})))
+                                   'clojure.core/second
+                                   'clojure.core/seq
+                                   'clojure.core/rest
+                                   'clojure.core/next
+                                   'clojure.core/cons
+                                   'clojure.core/empty?
+                                   'clojure.core/count]))})))
 
 (defn evaluate-pattern
   "Evaluate a pattern string using the shared SCI context.
@@ -474,11 +526,11 @@
                                  ;; Macro functions
                                  (include-from sci-vars 'p-macros-sci ['defcolor])
                                  ;; Standard library shapes
-                                 (include-from sci-vars 'p-lib-std-sci ['poly 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line])
+                                 (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line 'on-background])
                                  ;; Layout functions
-                                 (include-from sci-vars 'p-layouts-sci ['stack 'clock-rotate 'grid-layout 'checked-layout 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group])
+                                 (include-from sci-vars 'p-layouts-sci ['stack 'clock-rotate 'grid-layout 'checked-layout 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
                                  ;; Group/transform functions
-                                 (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe])
+                                 (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe 'h-reflect 'v-reflect 'rotate-tile-set 'reflect-tile-set])
                                  ;; Shape construction
                                  (include-from sci-vars 'p-sshapes-sci ['->SShape])
                                  ;; Maths functions
@@ -487,8 +539,19 @@
                                  (include-from sci-vars 'p-lib-turtle-sci ['basic-turtle])
                                  ;; L-systems
                                  (include-from sci-vars 'p-lib-lsystems-sci ['l-system])
-                                 ;; Special case: PI is a constant, not a function
-                                 {'PI (get-in sci-vars ['p-maths-sci 'PI])}))})))
+                                 ;; Douat functions
+                                 (include-from sci-vars 'p-lib-douat-sci ['Douat])
+                                 ;; Special cases: constants, not functions
+                                 {'PI (get-in sci-vars ['p-maths-sci 'PI])
+                                  'd360 (get-in sci-vars ['p-maths-sci 'd360])
+                                  'd270 (get-in sci-vars ['p-maths-sci 'd270])
+                                  'd180 (get-in sci-vars ['p-maths-sci 'd180])
+                                  'd90 (get-in sci-vars ['p-maths-sci 'd90])
+                                  'd45 (get-in sci-vars ['p-maths-sci 'd45])
+                                  'd60 (get-in sci-vars ['p-maths-sci 'd60])
+                                  'd30 (get-in sci-vars ['p-maths-sci 'd30])
+                                  'd10 (get-in sci-vars ['p-maths-sci 'd10])
+                                  'd36 (get-in sci-vars ['p-maths-sci 'd36])}))})))
 
 
 (defn evaluate-pattern-with-error-handling
