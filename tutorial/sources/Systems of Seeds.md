@@ -33,13 +33,11 @@ This pattern was laser-engraved onto wood, creating a kind of imaginary board-ga
 (def triangle
   (stack
     [(->SShape engrave [[-1 1] [1 -1]])]
-    (take 4
-      (nested-stack 
-        [(->SShape engrave
-           [ [-1 1] [-1 -1] [1 -1] ] )]
-        #(- % 0.2)
-        (repeat engrave)
-      )
+    (nested-stack 
+      #(- % 0.2) 4
+      [(->SShape engrave
+         [ [-1 1] [-1 -1] [1 -1] ] )]
+      (repeat engrave)
     )
   )
 ) 
