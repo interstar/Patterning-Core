@@ -26,7 +26,7 @@
 
 (defn p1 [{:keys [x y x01 y01 frame-count]}]
   (l/four-mirror
-   (l/grid-layout
+   (l/grid
     4
     (repeat
      (l/four-round
@@ -39,14 +39,14 @@
 (comment 
   (defn my-pattern [{:keys [x y x01 y01 frame-count]}]
     (let [max-size 24]
-      (l/checked-layout
+      (l/checkered-grid
        5 (repeat (std/poly 0 0 y01 5 {:fill (p-color 0 255 0)}))
        (repeat 
         (groups/scale
          0.7
          (groups/rotate
           (* frame-count (/ maths/PI 24)) 
-          (l/checked-layout
+          (l/checkered-grid
            9
            (repeat (std/poly 0 0 x01 6 {:fill (p-color 0 255 255)}))
            (cycle
@@ -65,7 +65,7 @@
 
 (defn my-pattern [{:keys [x y x01 y01 frame-count]}]
     (let [max-size 24]
-      (l/checked-layout
+      (l/checkered-grid
        9
        (repeat (std/poly 0 0 x01 6 {:fill (p-color 0 255 255)}))
        (cycle

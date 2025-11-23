@@ -3,9 +3,9 @@
   (:require [patterning.sshapes :refer [->SShape ]])
   (:require [patterning.groups :as groups])
   (:require [patterning.layouts
-             :refer [framed clock-rotate stack grid-layout diamond-layout
-                     four-mirror four-round nested-stack checked-layout
-                     half-drop-grid-layout random-turn-groups h-mirror]])
+             :refer [framed clock-rotate stack grid diamond-grid
+                     four-mirror four-round nested-stack checkered-grid
+                     half-drop-grid random-turn-groups h-mirror]])
   (:require [patterning.library.std :refer [poly spiral horizontal-line drunk-line]])
   (:require [patterning.library.turtle :refer [basic-turtle]])
   (:require [patterning.library.complex_elements :refer [vase zig-zag]])
@@ -60,7 +60,7 @@
 (defn blksqr [x]
   (stack
    (groups/rect -1 -1 2 2 {:fill (p-color 0)})
-   (grid-layout 5
+   (grid 5
                 (repeat (t1 [] {:stroke (p-color 250 180 200)
                                :stroke-weight 2})))
    (->>
