@@ -513,7 +513,7 @@
       :stroke-weight 2})]
   (stack 
    (square {:fill (p-color 0)})
-   (grid-layout 5 (cycle [hex tri]))))"
+   (grid 5 (cycle [hex tri]))))"
         ;; Check for code parameter in URL or localStorage
         url-params (js/URLSearchParams. (.-search js/window.location))
         code-param (.get url-params "code")
