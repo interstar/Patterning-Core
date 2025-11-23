@@ -12,7 +12,7 @@ Inspired by the panels of a door
 (def gcol {:fill gold :stroke-weight 3 :stroke (darker-color gold)})
 
 (defn shrink [n styles f pat]
-    (take n  (nested-stack  styles pat f ) )
+    (take n  (nested-stack  pat f styles) )
 )
 
 (defn shift-to-shrink [n dx dy styles f p] 

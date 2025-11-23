@@ -35,10 +35,10 @@ This pattern was laser-engraved onto wood, creating a kind of imaginary board-ga
     [(->SShape engrave [[-1 1] [1 -1]])]
     (take 4
       (nested-stack 
-        (repeat engrave)
         [(->SShape engrave
            [ [-1 1] [-1 -1] [1 -1] ] )]
         #(- % 0.2)
+        (repeat engrave)
       )
     )
   )

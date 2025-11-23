@@ -122,3 +122,4 @@ For more information on transforming streams of sub-patterns with functional pro
 
 ----
 
+Continue to [[Color]]
