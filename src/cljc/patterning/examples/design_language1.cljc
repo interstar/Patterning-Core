@@ -43,7 +43,7 @@
 (def flower (clock-rotate 5 (stack (petal-pair-group flower-style 0.5 0.7) )))
 
 (def less-complex-diamond (nested-stack
-                           simple-diamond (fn [x] (- x 0.2))
+                           (fn [x] (- x 0.2)) 2 simple-diamond
                            (setup-colors [my-blue my-pink ] (p-color 0))))
 
 
@@ -51,7 +51,7 @@
 
 
 
-(def complex-diamond (nested-stack simple-diamond (fn [x] (- x 0.25))
+(def complex-diamond (nested-stack (fn [x] (- x 0.25)) 3 simple-diamond
                                           (setup-colors  [my-green my-pink my-cream] (p-color 0))))
 
 (def pink-tile (stack complex-diamond (groups/APattern (->SShape {:stroke my-blue :stroke-weight 5} [[0 0] [0 1] ]))))
@@ -71,8 +71,8 @@
 (defn complex-ogee
   ([] (complex-ogee (take 5 (cycle [my-purple my-blue my-green])) ) )
   ([colours]
-     (nested-stack (ogee 3 0.1 {:stroke-weight 2})
-                   (fn [x] (- x 0.2))
+     (nested-stack (fn [x] (- x 0.2)) 5
+                   (ogee 3 0.1 {:stroke-weight 2})
                    (mod-styles color-to-fill (color-seq colours)))))
 
 
@@ -109,14 +109,14 @@
                     )
 
 
-        complex-square (nested-stack square (fn [x] (- x 0.2))
+        complex-square (nested-stack (fn [x] (- x 0.2)) 4 square
                                      [{:stroke my-red} {:stroke my-blue} {:stroke my-pink} {:stroke my-cream}])
 
 
 
 
-        complex-ogee2 (nested-stack (ogee 3 0.1 {:stroke-weight 2})
-                                    (fn [x] (- x 0.2))
+        complex-ogee2 (nested-stack (fn [x] (- x 0.2)) 5
+                                    (ogee 3 0.1 {:stroke-weight 2})
                                     (color-seq (take 5 (cycle [my-purple my-red my-pink]))))
 
         my-style {:stroke (p-color 0) :stroke-weight 1}
