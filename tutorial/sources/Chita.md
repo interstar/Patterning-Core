@@ -103,11 +103,11 @@ As part of an exhibition focused on this style, I live-coded some patterns inspi
 	]
 (stack
  (square {:fill (p-color 255 10 10)})
- (half-drop-grid-layout
+ (half-drop-grid
   17 (map rand-rot
 	   (map rand-nth
 		 (repeat [whites []
 		   small-yellow small-yellow ]))))
 
- (half-drop-grid-layout 6 leafy-seq)))
+ (half-drop-grid 6 leafy-seq)))
 

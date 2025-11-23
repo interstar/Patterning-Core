@@ -79,16 +79,16 @@ In this case, clock-rotate takes a number, *n*, and a pattern, and makes the new
 ----
 ### Let's make some grids of these
 
-Note that grid-layout takes a list of the patterns we want to lay out on it.
+Note that grid takes a list of the patterns we want to lay out on it.
 
 Here we just use (repeat pattern) to make an infinite lazy list of them.
 
-    (grid-layout 8 (repeat a-pat))
+    (grid 8 (repeat a-pat))
 
 ----
 :patterning
 
-(grid-layout 6
+(grid 6
  (repeat
   (stack
    (poly 5 0.7 0 0 {:stroke (p-color 0 0 255), :stroke-weight 2})
@@ -103,9 +103,9 @@ Here we just use (repeat pattern) to make an infinite lazy list of them.
 
 Not massively exciting, instead let's do a chequered pattern.
 
-The checked-layout takes two streams of patterns and interpolates between them when laying on a grid
+The checkered-grid takes two streams of patterns and interpolates between them when laying on a grid
 
-    (checked-layout 8 (repeat pentagon) (repeat triangles))
+    (checkered-grid 8 (repeat pentagon) (repeat triangles))
 
 ----
 :patterning
@@ -117,7 +117,7 @@ The checked-layout takes two streams of patterns and interpolates between them w
     {:stroke (p-color 255 100 100), :stroke-weight 2}))
   pentagon
   (poly 5 0.7 0 0 {:stroke (p-color 0 0 255), :stroke-weight 2})]
- (checked-layout 6 (repeat pentagon) (repeat triangles)))
+ (checkered-grid 6 (repeat pentagon) (repeat triangles)))
 
 ----
 
@@ -206,7 +206,7 @@ And did you want that mixed with our other shapes?
 
 ----
 
-And perhaps on a staggered grid? The half-drop-grid-layout gives us that.
+And perhaps on a staggered grid? The half-drop-grid gives us that.
 
 ----
 :patterning
@@ -224,7 +224,7 @@ And perhaps on a staggered grid? The half-drop-grid-layout gives us that.
   (four-mirror)
   (clock-rotate 5) 
   repeat 
-  (half-drop-grid-layout 3)))
+  (half-drop-grid 3)))
 
 ----
 
@@ -252,7 +252,7 @@ Maybe bring back a bit of blue, every other.
   (four-mirror)
   (clock-rotate 5)
   ((fn* [p1__43559#] (cycle [pentagon p1__43559#])))
-  (half-drop-grid-layout 6)))
+  (half-drop-grid 6)))
 
 ----
 

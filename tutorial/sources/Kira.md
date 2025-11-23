@@ -70,7 +70,7 @@ I loved the vibe so much I wanted to experiment with it in Patterning. These are
    ))
 
 
-(grid-layout 5
+(grid 5
  (iterate (fn [_] (rand-nth all-tiles)) k1)
 )
 
@@ -142,7 +142,7 @@ Or we can run through `four-round`
    ))
    
 (four-round
- (grid-layout 3
+ (grid 3
  (iterate (fn [_] (rand-nth all-tiles)) k1)
 ))
 ----
@@ -213,7 +213,7 @@ Or [Douat](Douat.html)
 
 
 (->> 
- (grid-layout 3
+ (grid 3
  (iterate (fn [_] (rand-nth all-tiles)) k1)
  )
  (Douat)

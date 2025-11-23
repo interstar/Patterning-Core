@@ -43,7 +43,7 @@ As described previously, we can place this pattern into a grid.
 
 (let
  [lc (p-color 140 220 180) fc (p-color 190 255 200 100)]
- (grid-layout 4 (repeat (a-round 8 lc fc))))
+ (grid 4 (repeat (a-round 8 lc fc))))
 
 ----
 
@@ -51,7 +51,7 @@ As described previously, we can place this pattern into a grid.
 
 The meaning of this code should be self-evident. But what about the call to repeat?
 
-Layouts such as grid-layout take not just a single pattern to fill the grid, but a list of them. The algorithm starts by generating a sequence of positions to place each 'tile' at. And then runs through the list of positions and the list of patterns and places one pattern at one position. The number of positions is finite, so in Clojure we can pass in an infinite, lazily evaluated list of patterns.
+Layouts such as grid take not just a single pattern to fill the grid, but a list of them. The algorithm starts by generating a sequence of positions to place each 'tile' at. And then runs through the list of positions and the list of patterns and places one pattern at one position. The number of positions is finite, so in Clojure we can pass in an infinite, lazily evaluated list of patterns.
 
 repeat is a function that takes a single item and returns an infinite list of them.
 
@@ -72,7 +72,7 @@ But we can also use cycle to turn finite vector of patterns into an infinite lis
 
 (let
  [lc (p-color 140 220 180) fc (p-color 190 255 200 100)]
- (grid-layout 4 (cycle [(a-round 4 lc fc) (a-round 8 lc fc)])))
+ (grid 4 (cycle [(a-round 4 lc fc) (a-round 8 lc fc)])))
 ----
 ### Sequence tricks
 
@@ -92,7 +92,7 @@ Here we generate our sequence by mapping a-round to a vector of integers.
 
 (let
  [lc (p-color 140 220 180) fc (p-color 190 255 200 100)]
- (grid-layout 4
+ (grid 4
   (cycle
    (map (fn* [n] (a-round n lc fc)) [3 4 5 6]))))
 
@@ -110,7 +110,7 @@ Or we can generate the sequence using Clojure's iterate to constantly apply a tr
 
 (let
  [lc (p-color 220 140 180) fc (p-color 255 190 200 100)]
- (grid-layout 4 
+ (grid 4 
   (iterate (partial scale 0.9) (a-round 9 lc fc))))
 ----
 We can even add random transformations, such as assigning each pattern an arbitrary colour.
@@ -133,7 +133,7 @@ We can even add random transformations, such as assigning each pattern an arbitr
     (over-style
      {:fill c, :stroke-weight 2, :stroke (darker-color c)}
      p)))]
- (grid-layout 4 
+ (grid 4 
   (map rand-color (map a-round (cycle [3 4 5 6 7])))))
 ----
 ### Clojure mapping can take multiple arguments
@@ -157,7 +157,7 @@ We can use this to apply evolving transforms to a stream of evolving patterns. F
   (stack
    (poly 3 0.6 0 0 {:stroke-weight 1})
    (horizontal-line 0 {:stroke-weight 2}))]
- (grid-layout 6
+ (grid 6
   (map
    rand-color
    (map rotate

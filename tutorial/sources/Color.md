@@ -73,7 +73,7 @@ And to see the transparency we can stack it on top of a basic grid of squares.
 
 (on-background black
   (stack
-    (grid-layout 10 (square {:stroke-weight 2, :stroke purple}))
+    (grid 10 (square {:stroke-weight 2, :stroke purple}))
     (over-style
       {:fill (p-color 150 255 150 150)}
       (clock-rotate 12

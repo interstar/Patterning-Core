@@ -172,7 +172,7 @@ The original exhibition featured a larger laser-engraved panel made of 5 x 4 sma
 
 (def grid-windows
   (scale 0.8
-       (grid-layout 3 (repeat (rect -0.6 -0.6 1.2 1.2 engrave)))
+       (grid 3 (repeat (rect -0.6 -0.6 1.2 1.2 engrave)))
     )
 )
 
@@ -258,7 +258,7 @@ The original exhibition featured a larger laser-engraved panel made of 5 x 4 sma
 
 (stack
 (rect -1 -1 2 2)
-(grid-layout 11
+(grid 11
    (tile-stream 11)
 )
 )

@@ -6,7 +6,7 @@ Some improvisations made at a gallery opening event in Portugal.
  [orange (p-color 129 64 254 )]
  (stack
   (square {:fill (p-color  100 50 80)})
-  (checked-layout
+  (checkered-grid
 5
    (cycle
     [(clock-rotate
@@ -25,7 +25,7 @@ Some improvisations made at a gallery opening event in Portugal.
  [orange (p-color 129 64  254 )]
  (stack
   (square {:fill (p-color  100 50 80)})
-  (checked-layout 7
+  (checkered-grid 7
    (cycle
     [
   
@@ -69,7 +69,7 @@ Some improvisations made at a gallery opening event in Portugal.
  [orange (p-color 129 64  254 )]
  (stack
   (square {:fill (p-color  100 50 80)})
-  (checked-layout 7
+  (checkered-grid 7
    (cycle
     [
   
@@ -149,7 +149,7 @@ Some improvisations made at a gallery opening event in Portugal.
 (rect -1 -1 2 2 {:fill (rand-nth bgcols)})
 
 ;; Checked one
-(checked-layout gridsize
+(checkered-grid gridsize
    (repeat
       (clock-rotate (rint 3 13) (poly (rint 3 10) 0.3 0 0.7 s1))
    )
@@ -162,7 +162,7 @@ Some improvisations made at a gallery opening event in Portugal.
 ;; checked one ends
 
 ;; Grid
-(grid-layout gridsize
+(grid gridsize
 (repeat
 (multiline
 (into [] (map (fn [_] (rand-coords)) (range 6)))
@@ -203,7 +203,7 @@ Some improvisations made at a gallery opening event in Portugal.
 (->>
 (stack 
 (->>
-(grid-layout 4
+(grid 4
   (repeat (rect -1 -1 2 2 
     {:fill (p-color 180 250 180)
      :stroke-weight 3
@@ -211,7 +211,7 @@ Some improvisations made at a gallery opening event in Portugal.
  
 )
 )
-(checked-layout 2
+(checkered-grid 2
   (squares 0)
   (triangles 1)
 ))
@@ -219,6 +219,6 @@ Some improvisations made at a gallery opening event in Portugal.
   (rotate (/ 3.15 -6) )
   (h-mirror)
   (four-round)
-  (#(grid-layout 1 (repeat %)))
+  (#(grid 1 (repeat %)))
 
 )

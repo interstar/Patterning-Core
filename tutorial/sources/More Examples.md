@@ -21,7 +21,7 @@ The `rotate-tile-set` is a convenience function that takes a number of patterns,
    tiles (rotate-tile-set s s2)
    ]
   (on-background (p-color 0 0 80) 
-   (diamond-layout 5 (cycle tiles))))
+   (diamond-grid 5 (cycle tiles))))
 
 ----
 
@@ -74,7 +74,7 @@ Firstly this pattern can exhibit a wide variety of variations based on the sever
 (stack
    (rect -1 -1 2 2 {:fill (p-color 0)})
 
-   (grid-layout 5 
+   (grid 5 
      (repeat (t1 []  {:stroke (p-color 250 180 200)
                             :stroke-weight 2}))
    ) 
@@ -131,7 +131,7 @@ Firstly this pattern can exhibit a wide variety of variations based on the sever
 (stack
    (rect -1 -1 2 2 {:fill (p-color 0)})
 
-   (grid-layout 5 
+   (grid 5 
      (repeat (t1 []  {:stroke (p-color 250 180 200)
                             :stroke-weight 2}))
    ) 

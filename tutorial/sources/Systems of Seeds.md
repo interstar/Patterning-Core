@@ -49,7 +49,7 @@ This pattern was laser-engraved onto wood, creating a kind of imaginary board-ga
 (defn inner [n]
   (stack
     (square engrave)
-    (checked-layout
+    (checkered-grid
        n
        plants
        (random-turn-groups

@@ -56,7 +56,7 @@ Framed can be used to generate various bordered patterns
   (poly 30 0.9 0 0 {:fill (p-color 150 255 140)})]
  (framed 7 (repeat corner) (repeat edge) centre))
 ----
-Which can be tiled together with grid-layout
+Which can be tiled together with grid
 
 ----
 :patterning
@@ -72,7 +72,7 @@ Which can be tiled together with grid-layout
    (poly 8 0.5 0 0 {:fill (p-color 150 150 255)}))
   centre
   (poly 30 0.9 0 0 {:fill (p-color 150 255 140)})]
- (grid-layout 5 
+ (grid 5 
   (repeat (framed 7 (repeat corner) (repeat edge) centre))))
 
 ----
@@ -89,7 +89,7 @@ We can map other functions to these streams, for example to randomly rotate them
  [orange (p-color 254 129 64)]
  (stack
   (square {:fill (p-color 50 80 100)})
-  (grid-layout 10
+  (grid 10
    (random-turn-groups
     (repeat
      [(->SShape
@@ -108,7 +108,7 @@ For more information on transforming streams of sub-patterns with functional pro
  [orange (p-color 254 129 64)]
  (stack
   (square {:fill (p-color 50 80 100)})
-  (checked-layout 18
+  (checkered-grid 18
    (cycle
     [(clock-rotate 8
       (drunk-line 10 0.1 {:stroke orange, :stroke-weight 1}))

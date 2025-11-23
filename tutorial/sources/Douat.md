@@ -139,7 +139,7 @@ Furthermore we can add more transformations. As well as A (the identity), B (rot
 	   (stack 
    		(square {:fill (p-color 80 0 0) 
                  :stroke-weight 1})
-   		(grid-layout 3 (cycle [tri2 hex tri]))
+   		(grid 3 (cycle [tri2 hex tri]))
        ))
        A B D D
        A E G F

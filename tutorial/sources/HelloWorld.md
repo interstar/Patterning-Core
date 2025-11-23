@@ -30,7 +30,7 @@ Once you have either a an online workspace, or the library available from within
     {:stroke (p-color 255 100 100), :stroke-weight 2})) ; the colour.
   pentagon
   (poly 5 0.7 0 0 {:stroke (p-color 0 0 255), :stroke-weight 2})] ; this makes a blue pentagon
- (checked-layout 6 (repeat pentagon) (repeat triangles))) ; we layout a "checker-board" of alternating pentagons and bouquets of triangles
+ (checkered-grid 6 (repeat pentagon) (repeat triangles))) ; we layout a "checker-board" of alternating pentagons and bouquets of triangles
 
 ----
 
