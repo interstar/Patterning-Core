@@ -18,9 +18,12 @@ A compiled version of this library is now available on Clojars. Include in your 
 
 ### Patterning works in ClojureScript
 
-The easiest way, today, to just play around with Patterning is to try it in the online tutorial. Previously "Project RoseEngine" was a browser-based Patterning editor. This has now been replaced by the ability to edit and update Patterning patterns on many sites. Including in the [tutorial itself](https://alchemyislands.com/assets/patterning-tutorial/HelloWorld.html).
+The easiest way, today, to just play around with Patterning is to try it in the [online tutorial](https://alchemyislands.com/assets/patterning-tutorial/HelloWorld.html). Any Pattern from the tutorial can be opened in our browser-based *workbench" (previously known as Project RoseEngine).
 
-This is a purely ClojureScript, in-browser environment in which you can write and render patterns, and export them as SVG or PostScript.
+Go to the Workbench directly : [https://alchemyislands.com/assets/patterning-tutorial/workbench/index.html](https://alchemyislands.com/assets/patterning-tutorial/workbench/index.html)
+
+
+This is a ClojureScript, in-browser environment which uses the Small Clojure Interpreter to interpret and render patterns. From this workbench you can load and save patterning code, and export patterns as SVG or PNG. 
 
 ### Patterning in Cardigan Bay
 
