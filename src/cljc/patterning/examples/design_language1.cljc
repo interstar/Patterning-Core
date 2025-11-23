@@ -4,9 +4,9 @@
             [patterning.library.std :refer [poly square diamond drunk-line cross ogee]]
             [patterning.groups :refer [rotate stretch scale] ]
             [patterning.groups :as groups]
-            [patterning.layouts :refer [clock-rotate nested-stack stack diamond-layout v-mirror random-turn-groups
-                                        superimpose-layout half-drop-grid-layout framed random-grid-layout four-round
-                                        alt-rows-grid-layout checked-layout four-mirror grid-layout ]]
+            [patterning.layouts :refer [clock-rotate nested-stack stack diamond-grid v-mirror random-turn-groups
+                                        superimpose-layout half-drop-grid framed random-grid four-round
+                                        alt-rows-grid-layout checkered-grid four-mirror grid ]]
             [patterning.library.complex-elements :refer [petal-pair-group  spoke-flake-group
                                                          face-group polyflower-group]]
 
@@ -66,7 +66,7 @@
 (def tri (poly 3 0.7 0 0 {:stroke (p-color 240 200 170)}))
 (def star (stack tri (groups/rotate maths/PI tri)))
 (def emp (groups/empty-pattern))
-(def star-band (grid-layout 7 (cycle [emp emp emp star emp emp emp])))
+(def star-band (grid 7 (cycle [emp emp emp star emp emp emp])))
 
 (defn complex-ogee
   ([] (complex-ogee (take 5 (cycle [my-purple my-blue my-green])) ) )
@@ -127,25 +127,25 @@
 
 
         final-pattern-framed (framed 6 (repeat corner) (repeat edge)
-                              (random-grid-layout 4 (repeat pink-tile )))
+                              (random-grid 4 (repeat pink-tile )))
 
-        final-pattern9 (diamond-layout 4 (cycle [ complex-diamond  complex-ogee] ))
+        final-pattern9 (diamond-grid 4 (cycle [ complex-diamond  complex-ogee] ))
 
 
-        final-pattern8 (diamond-layout 7 (cycle [ (groups/scale 0.9  (clock-rotate 3  (v-mirror complex-diamond)))
+        final-pattern8 (diamond-grid 7 (cycle [ (groups/scale 0.9  (clock-rotate 3  (v-mirror complex-diamond)))
                                                   complex-ogee a-cross flake clock ]) )
 
 
 
 
 
-        final-pattern6 (groups/scale 1  (diamond-layout 4 (cycle [complex-ogee complex-ogee2])))
+        final-pattern6 (groups/scale 1  (diamond-grid 4 (cycle [complex-ogee complex-ogee2])))
 
-        final-pattern5 (diamond-layout 6 (cycle [ complex-diamond complex-square]))
+        final-pattern5 (diamond-grid 6 (cycle [ complex-diamond complex-square]))
 
         final-pattern4 (groups/scale 1  (superimpose-layout
-                                         (half-drop-grid-layout 7 (repeat square))
-                                        (half-drop-grid-layout 7
+                                         (half-drop-grid 7 (repeat square))
+                                        (half-drop-grid 7
                                                                (random-turn-groups (repeat test-shape) ))))
 
 
@@ -154,7 +154,7 @@
          (alt-rows-grid-layout
           2 (repeat  test-shape)
           (repeat
-           (checked-layout
+           (checkered-grid
             3 (cycle
                [flake
                 (polyflower-group

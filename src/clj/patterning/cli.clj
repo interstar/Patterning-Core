@@ -135,9 +135,9 @@
     (println "DIAGNOSTICS: poly(0) detected - this will cause divide by zero")
     (println "DIAGNOSTICS: poly needs at least 3 arguments: x, y, radius, and sides"))
   
-  (when (re-find #"grid-layout\s*\(\s*\d+\s*\)" content)
-    (println "DIAGNOSTICS: grid-layout with only one argument detected")
-    (println "DIAGNOSTICS: grid-layout needs two arguments: size and a sequence of groups"))
+  (when (re-find #"grid\s*\(\s*\d+\s*\)" content)
+    (println "DIAGNOSTICS: grid with only one argument detected")
+    (println "DIAGNOSTICS: grid needs two arguments: size and a sequence of groups"))
   
   (println "DIAGNOSTICS: Analysis complete"))
 

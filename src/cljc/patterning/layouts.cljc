@@ -112,13 +112,13 @@
 
 (defn scale-group-stream [n groups] (map (partial groups/scale (/ 1 n)) groups))
 
-(defn grid-layout "Takes an n and a group-stream and returns items from the group-stream in an n X n grid "
+(defn grid "Takes an n and a group-stream and returns items from the group-stream in an n X n grid "
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (grid-layout-positions n))  )
 
-(defn half-drop-grid-layout "Like grid but with half-drop"
+(defn half-drop-grid "Like grid but with half-drop"
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (half-drop-grid-layout-positions n)))
 
-(defn diamond-layout "Like half-drop"
+(defn diamond-grid "Like half-drop"
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (diamond-layout-positions n)))
 
 (defn q1-rot-group [group] (groups/rotate (float (/ maths/PI 2)) group ) )
@@ -137,15 +137,15 @@
 
 
 
-(defn random-grid-layout  "Takes a group and returns a grid with random quarter rotations"
+(defn random-grid  "Takes a group and returns a grid with random quarter rotations"
   [n groups & {:keys [random] :or {random default-random}}] 
-  (grid-layout n (random-turn-groups groups :random random)))
+  (grid n (random-turn-groups groups :random random)))
 
 
 (defn drop-every [n xs] (lazy-seq (if (seq xs) (concat (take (dec n) xs) (drop-every n (drop n xs))))))
 
 
-(defn check-seq "returns the appropriate lazy seq of groups for constructing a checked-layout"
+(defn check-seq "returns the appropriate lazy seq of groups for constructing a checkered-grid"
   [n groups1 groups2]
   (let [ together (interleave groups1 groups2 ) ]
     (if (= 0 (mod n 2))
@@ -154,9 +154,9 @@
 
 
 
-(defn checked-layout "does checks using grid layout"
+(defn checkered-grid "does checks using grid layout"
   [number groups1 groups2]
-  (grid-layout number (check-seq number groups1 groups2)))
+  (grid number (check-seq number groups1 groups2)))
 
 
 (defn one-x-layout
@@ -186,10 +186,10 @@
   (interleave groups1 groups2))
 
 (defn alt-cols-grid-layout "Every other column from two streams" [n groups1 groups2]
-  (grid-layout n (alt-cols n groups1 groups2)))
+  (grid n (alt-cols n groups1 groups2)))
 
 (defn alt-rows-grid-layout "Every other row from two streams" [n groups1 groups2]
-  (grid-layout n (alt-rows n groups1 groups2)))
+  (grid n (alt-rows n groups1 groups2)))
 
 
 
@@ -255,7 +255,7 @@
                     (repeat gs2 (groups/empty-pattern))
                     [ (q3-rot-group edge)]
             )     ]
-    (grid-layout grid-size (concat [nw] (repeat gs2 edge) [sw]
+    (grid grid-size (concat [nw] (repeat gs2 edge) [sw]
                                    (mapcat identity (repeat gs2 col))
                                    [ne] (repeat gs2 (q2-rot-group edge)) [se] ))
     )  )

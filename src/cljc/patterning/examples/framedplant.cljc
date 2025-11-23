@@ -3,7 +3,7 @@
             [patterning.sshapes :refer [->SShape ]]
             [patterning.groups :refer [ translate h-reflect reframe scale
                                        rotate over-style rect]]
-            [patterning.layouts :refer [stack alt-rows-grid-layout checked-layout framed]]
+            [patterning.layouts :refer [stack alt-rows-grid-layout checkered-grid framed]]
             [patterning.library.std :refer [poly square]]
             [patterning.library.turtle :refer [basic-turtle]]
             [patterning.library.l_systems :refer [l-system]]
@@ -31,10 +31,10 @@
 
 (defn inner [] (stack (reframe ( sys-g1))
                   (alt-rows-grid-layout
-                   4 (repeat (checked-layout 2 (repeat design-language/flower) (repeat [])))
+                   4 (repeat (checkered-grid 2 (repeat design-language/flower) (repeat [])))
                    (cycle [sprey sprey (h-reflect sprey) (h-reflect sprey)]))))
 
-(defn trees [] (framed 6 (repeat design-language/corner) (repeat (sprey)) (checked-layout 4 (repeat design-language/pink-tile)
+(defn trees [] (framed 6 (repeat design-language/corner) (repeat (sprey)) (checkered-grid 4 (repeat design-language/pink-tile)
                                                                                           (repeat design-language/flower )) ))
 
 

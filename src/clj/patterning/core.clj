@@ -8,9 +8,9 @@
             [patterning.strings :as strings]
             [patterning.groups :as groups :refer [translate scale stretch reframe rotate]]
             [patterning.layouts
-             :refer [framed clock-rotate stack grid-layout diamond-layout
-                     four-mirror four-round nested-stack checked-layout
-                     half-drop-grid-layout random-turn-groups h-mirror ring
+             :refer [framed clock-rotate stack grid diamond-grid
+                     four-mirror four-round nested-stack checkered-grid
+                     half-drop-grid random-turn-groups h-mirror ring
                      sshape-as-layout]]
 
             [patterning.library.std
@@ -51,7 +51,7 @@
 (defn randomize-color [p] (let [c (rand-col)] (groups/over-style {:fill c
                                                                   :stroke (darker-color c)} p ) ))
 
-(def final-pattern (grid-layout
+(def final-pattern (grid
                     6
                     (map randomize-color (cycle (map a-round [3 4 5 6 7])))) )
 
@@ -131,13 +131,13 @@
         ]
     (stack
      (square {:fill (p-color 255 10 10)})
-     (half-drop-grid-layout
+     (half-drop-grid
       17 (map rand-rot
               (map rand-nth
                    (repeat [whites []
                             small-yellow small-yellow ]))))
 
-     (half-drop-grid-layout 6 leafy-seq)
+     (half-drop-grid 6 leafy-seq)
      ) ))
 
 
@@ -228,7 +228,7 @@
      (stack
       (groups/rect -1 -1 2 2 {:fill (p-color 0)})
       
-      (grid-layout
+      (grid
        5 
        (repeat (t1 []  {:stroke (p-color 250 180 200)
                         :stroke-weight 2}))

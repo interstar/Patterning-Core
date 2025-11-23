@@ -6,7 +6,7 @@
               rect stretch]]
             [patterning.layouts :refer
              [stack h-mirror clock-rotate
-              grid-layout checked-layout framed]]
+              grid checkered-grid framed]]
             [patterning.library.std :refer [poly square clock]]
             [patterning.library.turtle :refer [basic-turtle]]
             [patterning.library.l_systems :refer [l-system]]
@@ -163,7 +163,7 @@
 
 (def grid-windows
   (scale 0.8
-       (grid-layout 3 (repeat (rect -0.6 -0.6 1.2 1.2 engrave)))
+       (grid 3 (repeat (rect -0.6 -0.6 1.2 1.2 engrave)))
     )
 )
 
@@ -249,7 +249,7 @@
 (defn city [size & {:keys [random time-map] :or {random maths/default-random time-map (maths/get-time)}}]
   (stack
    (rect -1 -1 2 2 {:fill (p-color 255)})
-   (grid-layout size
+   (grid size
                 (tile-stream size random time-map)
                 )
    ))

@@ -3,9 +3,9 @@
   (:require [patterning.sshapes :refer [->SShape add-property]])
 
   (:require [patterning.groups :as groups])
-  (:require [patterning.layouts :refer [framed clock-rotate stack grid-layout diamond-layout
-                                        four-mirror four-round nested-stack checked-layout
-                                        half-drop-grid-layout random-turn-groups h-mirror
+  (:require [patterning.layouts :refer [framed clock-rotate stack grid diamond-grid
+                                        four-mirror four-round nested-stack checkered-grid
+                                        half-drop-grid random-turn-groups h-mirror
                                         superimpose-layout]])
 
   (:require [patterning.library.std :refer [poly spiral horizontal-line]])
@@ -83,8 +83,8 @@
 ; Layouts (simplified)
 (defn -superimpose [p1 p2] (superimpose-layout p1 p2))
 
-(defn -grid [size p] (into [] (grid-layout size (repeat p))))
-(defn -gridList [size p] (into [] (grid-layout size (cycle p)) ))
+(defn -grid [size p] (into [] (grid size (repeat p))))
+(defn -gridList [size p] (into [] (grid size (cycle p)) ))
 
 (defn -fourRound [p] (into [] (four-round p)))
 (defn -fourMirror [p] (into [] (four-mirror p)))
