@@ -161,12 +161,33 @@
 )
 
 (defn paint 
+  "Creates a style map with stroke, optional fill, and stroke-weight.
+   
+   Arities:
+   (paint stroke) - sets stroke only, no fill, default stroke-weight 1
+   (paint stroke :nofill) - sets stroke only, no fill, default stroke-weight 1
+   (paint stroke :nofill weight) - sets stroke only, no fill, explicit stroke-weight
+   (paint stroke fill) - sets stroke and fill, default stroke-weight 1
+   (paint stroke fill weight) - sets stroke, fill, and stroke-weight"
   ([stroke fill thick]
+   (if (= fill :nofill)
+     ;; Second arg is :nofill, so third arg is stroke-weight
+     {:stroke (resolve-color stroke)
+      :stroke-weight (resolve-thickness thick)}
+     ;; Normal case: stroke, fill, weight
      {:stroke (resolve-color stroke)
       :fill (resolve-color fill)
-      :stroke-weight (resolve-thickness thick)
-     })
+      :stroke-weight (resolve-thickness thick)}))
   ([stroke fill]
-   (paint stroke fill 1))
+   (if (= fill :nofill)
+     ;; Second arg is :nofill, use default stroke-weight
+     {:stroke (resolve-color stroke)
+      :stroke-weight 1}
+     ;; Normal case: stroke and fill, default stroke-weight
+     {:stroke (resolve-color stroke)
+      :fill (resolve-color fill)
+      :stroke-weight 1}))
   ([stroke]
-    (paint stroke :grey 1)))
+   ;; Single arg: stroke only, no fill, default stroke-weight
+   {:stroke (resolve-color stroke)
+    :stroke-weight 1}))
