@@ -44,8 +44,8 @@
       (is (groups/validate-group result))
       (is (> (count result) 1))))
   
-  (testing "grid-layout function"
-    (let [result (eval-sci "(grid-layout 2 (repeat (square)))")]
+  (testing "grid function"
+    (let [result (eval-sci "(grid 2 (repeat (square)))")]
       (is (seq? result))
       (is (groups/validate-group result))
       (is (= 4 (count result)))))
@@ -85,7 +85,7 @@
       (is (> (count result) 0))))
   
   (testing "Pattern with grid layout"
-    (let [code "(grid-layout 3 (repeat (square {:fill (p-color 100 100 200)})))"
+    (let [code "(grid 3 (repeat (square {:fill (p-color 100 100 200)})))"
           result (eval-sci code)]
       (is (groups/validate-group result))
       (is (= 9 (count result)))))
