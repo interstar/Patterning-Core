@@ -150,6 +150,20 @@
       (. js/console log "SVG download process completed"))
     (. js/console log "No pattern to download - pattern-atom is nil")))
 
+(defn download-png []
+  (. js/console log "=== DOWNLOAD PNG FUNCTION CALLED ===")
+  (if-let [p5-instance js/window.p5Instance]
+    (do
+      (. js/console log "p5 instance found, saving canvas as PNG")
+      (try
+        ;; p5.js saveCanvas method saves the canvas as PNG
+        (.saveCanvas p5-instance "pattern" "png")
+        (. js/console log "PNG download initiated")
+        (catch :default e
+          (. js/console error "Error in PNG download:" e)))
+      (. js/console log "PNG download process completed"))
+    (. js/console log "No p5 instance available - pattern may not be rendered yet")))
+
 (defn save-code [editor]
   "Save the current editor code as a downloadable .cljs file"
   (. js/console log "=== SAVE CODE FUNCTION CALLED ===")
@@ -393,8 +407,9 @@
         save-code-btn (. js/document getElementById "save-code")
         load-code-btn (. js/document getElementById "load-code")
         download-edn-btn (. js/document getElementById "download-edn")
-        download-svg-btn (. js/document getElementById "download-svg")]
-    (if (and copy-code-btn save-code-btn load-code-btn download-edn-btn download-svg-btn)
+        download-svg-btn (. js/document getElementById "download-svg")
+        download-png-btn (. js/document getElementById "download-png")]
+    (if (and copy-code-btn save-code-btn load-code-btn download-edn-btn download-svg-btn download-png-btn)
       (do
         (. js/console log "All buttons found, setting up listeners")
         (.addEventListener copy-code-btn "click" 
@@ -417,6 +432,10 @@
                           (fn [event]
                             (. js/console log "SVG button clicked via event listener")
                             (download-svg)))
+        (.addEventListener download-png-btn "click" 
+                          (fn [event]
+                            (. js/console log "PNG button clicked via event listener")
+                            (download-png)))
         (. js/console log "Event listeners added successfully")
         true)
       false)))
@@ -428,6 +447,7 @@
   (set! js/window.loadCode #(load-code editor))
   (set! js/window.downloadEdn #(download-edn))
   (set! js/window.downloadSvg #(download-svg))
+  (set! js/window.downloadPng #(download-png))
   
   (set! js/window.testCopyCode 
         (fn []
@@ -448,7 +468,11 @@
   (set! js/window.testDownloadSvg 
         (fn []
           (. js/console log "JavaScript wrapper called")
-          (download-svg))))
+          (download-svg)))
+  (set! js/window.testDownloadPng 
+        (fn []
+          (. js/console log "JavaScript wrapper called")
+          (download-png))))
 
 (defn setup-download-buttons [editor]
   "Set up download button event listeners with retry mechanism"
