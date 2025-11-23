@@ -2,7 +2,7 @@
 ;; Description: Takes 3 args. Sequences for corners and edges. And a single central pattern.
 
 (ns frame
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid framed]]
             [patterning.groups :as p]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]

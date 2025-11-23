@@ -2,7 +2,7 @@
 ;; Description: Map random turns onto a stream of patterns, then lay this out in a grid
 
 (ns randomturn
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid framed]]
             [patterning.groups :as p :refer [rotate]] 
             [patterning.sshapes :refer [->SShape]]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
@@ -45,7 +45,7 @@
     (stack
      (std/square 
       {:fill (p-color 50 80 100)})
-     (grid-layout 10
+     (grid 10
       (random-turn-groups
        (repeat
         [(->SShape

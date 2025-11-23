@@ -2,7 +2,7 @@
 ;; Description: A checked-layout interleaves multiple streams of patterns
 
 (ns check1
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid]]
             [patterning.groups :as p]
             [patterning.library.std :as std :refer [poly]]
             [patterning.library.complex_elements :as complex]
@@ -30,7 +30,7 @@
     (poly 0 0 0.7 5
           {:stroke (p-color 0 0 255)
            :stroke-weight 2})]
-    (checked-layout 6 (repeat pentagon) (repeat triangles)))
+    (checkered-grid 6 (repeat pentagon) (repeat triangles)))
   )
 
 ;; PATTERN END

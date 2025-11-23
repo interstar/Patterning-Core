@@ -2,7 +2,7 @@
 ;; Description: A line made from a "drunkards walk"
 
 (ns drunkline
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid]]
             [patterning.groups :as p]
             [patterning.library.std :as std :refer [poly drunk-line]]
             [patterning.library.complex_elements :as complex]

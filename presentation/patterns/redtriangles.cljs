@@ -2,7 +2,7 @@
 ;; Description: Five Red Triangles in a circle using Clock Rotate 
 
 (ns redtriangles
-  (:require [patterning.layouts :as l :refer [clock-rotate grid-layout checked-layout]]
+  (:require [patterning.layouts :as l :refer [clock-rotate grid checkered-grid]]
            [patterning.groups :as p]
            [patterning.library.std :as std :refer [poly]]
            [patterning.library.complex_elements :as complex]

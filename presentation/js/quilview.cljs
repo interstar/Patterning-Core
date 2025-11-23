@@ -108,7 +108,7 @@
   (let [max-size 24]
     (groups/scale
      0.9
-     (l/checked-layout
+     (l/checkered-grid
       9
       (repeat (std/poly 0 0 (:x01 mouse) 4
                        {:fill (p-color 0 255 255)}))

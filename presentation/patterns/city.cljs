@@ -2,7 +2,7 @@
 ;; Description: A Stylized City Made of Reusable Parts
 
 (ns city
-  (:require [patterning.layouts :as l :refer [stack clock-rotate h-mirror grid-layout checked-layout framed h-reflect]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate h-mirror grid checkered-grid framed h-reflect]]
             [patterning.groups :as p :refer [reframe translate scale rotate stretch rect]]
             [patterning.library.turtle :refer [basic-turtle]]
             [patterning.sshapes :as sshape :refer [->SShape]]

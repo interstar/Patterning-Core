@@ -2,7 +2,7 @@
 ;; Description: An SShape is just a sequence of points. So we can use one as a layout
 
 (ns sshapelayout
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid framed]]
             [patterning.groups :as p :refer [scale reframe]]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]

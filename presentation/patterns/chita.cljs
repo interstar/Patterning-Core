@@ -3,7 +3,7 @@
 ;; Tags: flowers, leaves, geometric, grid, organic
 
 (ns chita
-  (:require [patterning.layouts :refer [stack clock-rotate half-drop-grid-layout]]
+  (:require [patterning.layouts :refer [stack clock-rotate half-drop-grid]]
             [patterning.groups :refer [translate stretch scale rotate over-style]]
             [patterning.library.std :refer [poly diamond square]]
             [patterning.library.complex_elements :refer [petal-group]]
@@ -91,12 +91,12 @@
 
         pattern (stack
                  (square {:fill (p-color 255 10 10)})
-                 (half-drop-grid-layout
+                 (half-drop-grid
                   11 (map rand-rot
                           (map #(.randomNth random %)
                                (repeat [whites []
                                         small-yellow small-yellow]))))
-                 (half-drop-grid-layout 6 leafy-seq))]
+                 (half-drop-grid 6 leafy-seq))]
 
     pattern))
 

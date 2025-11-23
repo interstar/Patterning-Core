@@ -2,7 +2,7 @@
 ;; Description: Two "Plants" Grown With L-Systems 
 
 (ns plant
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid framed]]
             [patterning.groups :as p]
              [patterning.library.turtle :refer [basic-turtle]]
             [patterning.library.l_systems :refer [l-system]]

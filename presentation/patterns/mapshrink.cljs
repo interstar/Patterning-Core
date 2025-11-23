@@ -2,7 +2,7 @@
 ;; Description: We map a "shrinking" function to a pattern
 
 (ns mapshrink
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid framed]]
             [patterning.groups :as p]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]
@@ -32,7 +32,7 @@
   (let
    [lc (p-color 220 140 180) 
     fc (p-color 255 190 200 100)]
-    (grid-layout 4
+    (grid 4
      (iterate (partial p/scale 0.9) 
               (a-round 9 lc fc)))))
 

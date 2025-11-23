@@ -2,7 +2,7 @@
 ;; Description: Bezier Curves
 
 (ns bez
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid]]
             [patterning.groups :as p]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]

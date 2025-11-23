@@ -2,7 +2,7 @@
 ;; Description: Layout a pattern in a grid. Note we must create a lazy-seq with repeat
 
 (ns grid1
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid]]
             [patterning.groups :as p]
             [patterning.library.std :as std :refer [poly]]
             [patterning.library.complex_elements :as complex]
@@ -20,7 +20,7 @@
 ;; PATTERN START
 
 (defn the-pattern [params]
-(grid-layout 6
+(grid 6
  (repeat
   (stack
    (poly 0 0 0.7 5 {:stroke (p-color 0 0 255), 

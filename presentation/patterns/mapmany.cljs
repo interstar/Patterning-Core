@@ -2,7 +2,7 @@
 ;; Description: We can map more then one transformation across a stream
 
 (ns mapmany
-  (:require [patterning.layouts :as l :refer [stack clock-rotate grid-layout checked-layout framed]]
+  (:require [patterning.layouts :as l :refer [stack clock-rotate grid checkered-grid framed]]
             [patterning.groups :as p :refer [over-style rotate scale ]]
             [patterning.library.std :as std :refer [poly drunk-line bez-curve]]
             [patterning.library.complex_elements :as complex]
@@ -34,7 +34,7 @@
     (stack
      (poly 0 0 0.6 3 {:stroke-weight 1})
      (std/horizontal-line 0 {:stroke-weight 2}))]
-    (grid-layout
+    (grid
      6
      (map
       rand-color
