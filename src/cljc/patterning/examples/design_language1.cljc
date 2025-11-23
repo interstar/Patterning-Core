@@ -72,7 +72,7 @@
   ([] (complex-ogee (take 5 (cycle [my-purple my-blue my-green])) ) )
   ([colours]
      (nested-stack (mod-styles color-to-fill (color-seq colours))
-                   (ogee 0.1 3 {:stroke-weight 2})
+                   (ogee 3 0.1 {:stroke-weight 2})
                    (fn [x] (- x 0.2)))))
 
 
@@ -116,7 +116,7 @@
 
 
         complex-ogee2 (nested-stack ( color-seq (take 5 (cycle [my-purple my-red my-pink])))
-                                    (ogee 0.1 3 {:stroke-weight 2})
+                                    (ogee 3 0.1 {:stroke-weight 2})
                                     (fn [x] (- x 0.2)))
 
         my-style {:stroke (p-color 0) :stroke-weight 1}
