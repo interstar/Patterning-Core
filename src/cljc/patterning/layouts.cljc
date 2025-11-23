@@ -15,9 +15,14 @@
   [& groups] (reduce superimpose-layout groups))
 
 (defn nested-stack "superimpose smaller copies of a shape"
-  [styles group reducer]
-  (let [gen-next (fn [[style x]] (groups/over-style style (groups/scale x group)))]
-    (lazy-seq (stack (mapcat gen-next (map vector styles (iterate reducer 1 )))))  ))
+  [group reducer & [styles]]
+  (if styles
+    ;; With styles: apply different style to each scaled copy
+    (let [gen-next (fn [[style x]] (groups/over-style style (groups/scale x group)))]
+      (apply stack (map gen-next (map vector styles (iterate reducer 1)))))
+    ;; Without styles: just scale, keeping original styles
+    (let [gen-next (fn [x] (groups/scale x group))]
+      (apply stack (map gen-next (iterate reducer 1))))))
 
 
 (defn cart "Cartesian Product of two collections" [colls]
