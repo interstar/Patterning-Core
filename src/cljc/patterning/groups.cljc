@@ -218,3 +218,50 @@
       (horizontal-centre-pattern-in-pattern outer-pattern)
       (vertical-centre-pattern-in-pattern outer-pattern))
   )
+
+
+;; Tile set functions for creating rotated and reflected variants
+
+(defn rotate-tile-set
+  "Creates a vector of rotated variants of patterns.
+   Each argument can be either:
+   - A pattern (defaults to 4 rotations: 0°, 90°, 180°, 270°)
+   - A vector [pattern n] where n is 2 or 4 (for 2-fold or 4-fold symmetry)
+   
+   Examples:
+   (rotate-tile-set p1 p2 p3) ; 12 tiles (4 rotations each)
+   (rotate-tile-set [p1 2] p2 p3) ; 10 tiles (2 rotations for p1, 4 for p2 and p3)"
+  [& args]
+  (into []
+        (mapcat (fn [arg]
+                  (if (vector? arg)
+                    ;; Vector form: [pattern n]
+                    (let [[pattern n] arg]
+                      (case n
+                        2 [pattern (rotate maths/d90 pattern)]
+                        4 [pattern 
+                           (rotate maths/d90 pattern)
+                           (rotate maths/d180 pattern)
+                           (rotate maths/d270 pattern)]
+                        (throw (ex-info "Rotation count must be 2 or 4" {:n n :arg arg}))))
+                    ;; Plain pattern: default to 4 rotations
+                    [arg
+                     (rotate maths/d90 arg)
+                     (rotate maths/d180 arg)
+                     (rotate maths/d270 arg)]))
+                args)))
+
+(defn reflect-tile-set
+  "Creates a vector of reflected variants of patterns.
+   For each pattern, returns: [original, h-reflect, v-reflect, both]
+   
+   Examples:
+   (reflect-tile-set p1 p2 p3) ; 12 tiles (4 reflections each)"
+  [& patterns]
+  (into []
+        (mapcat (fn [pattern]
+                  [pattern
+                   (h-reflect pattern)
+                   (v-reflect pattern)
+                   (h-reflect (v-reflect pattern))])
+                patterns)))
