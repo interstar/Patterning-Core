@@ -115,6 +115,29 @@
 (defn grid "Takes an n and a group-stream and returns items from the group-stream in an n X n grid "
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (grid-layout-positions n))  )
 
+(defn rgrid-layout-positions "calculates the positions for a rectangular grid layout in row-wise order (left to right, top to bottom)"
+  [cols rows]
+  (let [maxdim (max cols rows)
+        spacing (/ 2 maxdim)  ; Same spacing in both dimensions to keep tiles square
+        ;; Calculate starting positions to center the grid (center of range should be at 0)
+        init-x (/ (- (* (dec cols) spacing)) 2)
+        init-y (/ (- (* (dec rows) spacing)) 2)
+        inc-x (fn [x] (+ spacing x))
+        inc-y (fn [y] (+ spacing y))
+        h-iterator (take cols (iterate inc-x init-x))
+        v-iterator (take rows (iterate inc-y init-y))]
+    ;; Generate positions row-wise: for each y, iterate through all x values
+    (for [y v-iterator
+          x h-iterator]
+      [x y])))
+
+(defn rgrid "Takes cols, rows, and a group-stream and returns items in a rectangular grid with square tiles, filled row-wise (left to right, top to bottom)"
+  [cols rows groups]
+  (let [maxdim (max cols rows)
+        scaled-groups (scale-group-stream maxdim (ensure-sequence groups))
+        positions (rgrid-layout-positions cols rows)]
+    (place-groups-at-positions scaled-groups positions)))
+
 (defn half-drop-grid "Like grid but with half-drop"
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (half-drop-grid-layout-positions n)))
 
