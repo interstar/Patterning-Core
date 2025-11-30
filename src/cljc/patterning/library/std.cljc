@@ -240,7 +240,7 @@
 
 ;; Others
 (defn on-background [color pattern]
-  (stack (square {:fill color}) pattern))
+  (stack (square {:fill color :stroke-weight 0}) pattern))
 
 
 
