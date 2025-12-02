@@ -237,6 +237,22 @@
   ([points style] (APattern (sshapes/s-bez-curve style points)))
   ([points] (bez-curve points {})))
 
+(defn hex-side-center
+  "Get the center point of a hexagon side.
+   radius: distance from center to side center
+   side-index: 0-5, where 0 is right side (angle 0), increasing counterclockwise
+   
+   For a hexagon, side centers are evenly spaced at d60 (60°) intervals:
+   side 0: angle 0 (right)
+   side 1: angle d60 (top-right)
+   side 2: angle (* 2 d60) (top-left)
+   side 3: angle d180 (left)
+   side 4: angle (* 4 d60) (bottom-left)
+   side 5: angle (* 5 d60) (bottom-right)"
+  [radius side-index]
+  (let [angle (* side-index maths/d60)]  ; Each side is d60 apart
+    (maths/pol-to-rec [radius angle])))
+
 
 ;; Others
 (defn on-background [color pattern]

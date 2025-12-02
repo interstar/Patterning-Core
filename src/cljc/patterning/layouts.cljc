@@ -31,7 +31,7 @@
     (for [x (first colls) more (cart (rest colls))]
       (cons x more))))
 
-(defn grid-layout-positions "calculates the positions for a grid layout"
+(defn grid-layout-positions "calculates the positions for a grid layout (column-wise: top to bottom, then next column)"
   [number]
   (let [ offset (/ 2 number)
          inc (fn [x] (+ offset x))
@@ -40,6 +40,19 @@
          h-iterator (take number (iterate inc init))
          v-iterator (take number (iterate inc init)) ]
   (cart [h-iterator v-iterator])  ) )
+
+(defn h-grid-layout-positions "calculates the positions for a grid layout (row-wise: left to right, then next row)"
+  [number]
+  (let [ offset (/ 2 number)
+         inc (fn [x] (+ offset x))
+         ino (float (/ offset 2))
+         init (- ino 1)
+         h-iterator (take number (iterate inc init))
+         v-iterator (take number (iterate inc init)) ]
+    ;; Generate positions row-wise: for each y, iterate through all x values
+    (for [y v-iterator
+          x h-iterator]
+      [x y])))
 
 
 
@@ -112,8 +125,11 @@
 
 (defn scale-group-stream [n groups] (map (partial groups/scale (/ 1 n)) groups))
 
-(defn grid "Takes an n and a group-stream and returns items from the group-stream in an n X n grid "
+(defn grid "Takes an n and a group-stream and returns items from the group-stream in an n X n grid (column-wise: top to bottom, then next column)"
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (grid-layout-positions n))  )
+
+(defn h-grid "Takes an n and a group-stream and returns items from the group-stream in an n X n grid (row-wise: left to right, then next row)"
+  [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (h-grid-layout-positions n))  )
 
 (defn rgrid-layout-positions "calculates the positions for a rectangular grid layout in row-wise order (left to right, top to bottom)"
   [cols rows]
@@ -143,6 +159,45 @@
 
 (defn diamond-grid "Like half-drop"
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (diamond-layout-positions n)))
+
+(defn hex-grid-layout-positions "calculates positions for a hexagonal grid layout (pointy-top hexagons)"
+  [number]
+  (let [;; For pointy-top hexagons:
+        ;; - Horizontal spacing: sqrt(3) * radius
+        ;; - Vertical spacing: 1.5 * radius
+        ;; - Every other row is offset by half horizontal spacing
+        
+        ;; Calculate hexagon radius to fit in [-1, 1] space
+        ;; We want approximately 'number' hexagons in each direction
+        ;; The total width needed: (number - 1) * sqrt(3) * radius + 2 * radius
+        ;; Solving for radius: radius = 2 / ((number - 1) * sqrt(3) + 2)
+        sqrt3 (maths/sqrt 3)
+        radius (/ 2.0 (+ (* (dec number) sqrt3) 2))
+        
+        ;; Spacing between hexagon centers
+        h-spacing (* sqrt3 radius)  ; horizontal spacing
+        v-spacing (* 1.5 radius)     ; vertical spacing
+        
+        ;; Calculate starting positions to center the grid
+        total-width (* (dec number) h-spacing)
+        total-height (* (dec number) v-spacing)
+        init-x (/ (- total-width) 2)
+        init-y (/ (- total-height) 2)
+        
+        ;; Generate positions row by row
+        rows (range number)
+        cols (range number)]
+    (for [row rows
+          col cols]
+      (let [x (+ init-x (* col h-spacing)
+                 ;; Offset odd rows by half horizontal spacing
+                 (if (odd? row) (/ h-spacing 2) 0))
+            y (+ init-y (* row v-spacing))]
+        [x y]))))
+
+(defn hex-grid "Takes an n and a group-stream and returns items in a hexagonal grid layout"
+  [n groups]
+  (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (hex-grid-layout-positions n)))
 
 (defn q1-rot-group [group] (groups/rotate (float (/ maths/PI 2)) group ) )
 (defn q2-rot-group [group] (groups/rotate maths/PI group))
@@ -177,9 +232,13 @@
 
 
 
-(defn checkered-grid "does checks using grid layout"
+(defn checkered-grid "does checks using grid layout (column-wise)"
   [number groups1 groups2]
   (grid number (check-seq number groups1 groups2)))
+
+(defn h-checkered-grid "does checks using h-grid layout (row-wise)"
+  [number groups1 groups2]
+  (h-grid number (check-seq number groups1 groups2)))
 
 
 (defn one-x-layout

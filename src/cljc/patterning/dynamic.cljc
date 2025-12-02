@@ -50,10 +50,13 @@
    'nested-stack #'p-layouts/nested-stack
    'clock-rotate #'p-layouts/clock-rotate
    'grid #'p-layouts/grid
+   'h-grid #'p-layouts/h-grid
    'half-drop-grid #'p-layouts/half-drop-grid
    'diamond-grid #'p-layouts/diamond-grid
    'random-grid #'p-layouts/random-grid
    'checkered-grid #'p-layouts/checkered-grid
+   'h-checkered-grid #'p-layouts/h-checkered-grid
+   'hex-grid #'p-layouts/hex-grid
    'framed #'p-layouts/framed
    'aspect-ratio-framed #'p-layouts/aspect-ratio-framed
    'aspect-ratio-frame #'p-layouts/aspect-ratio-frame
@@ -72,6 +75,7 @@
    'horizontal-line #'p-lib-std/horizontal-line
    'square #'p-lib-std/square
    'drunk-line #'p-lib-std/drunk-line
+   'hex-side-center #'p-lib-std/hex-side-center
    ;; Additional functions needed for complex patterns like Pelican
    'translate #'p-groups/translate
    'scale #'p-groups/scale
@@ -530,9 +534,9 @@
                                  ;; Macro functions
                                  (include-from sci-vars 'p-macros-sci ['defcolor])
                                  ;; Standard library shapes
-                                 (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line 'on-background])
+                                 (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line 'on-background 'hex-side-center])
                                  ;; Layout functions
-                                 (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'clock-rotate 'grid 'half-drop-grid 'diamond-grid 'random-grid 'checkered-grid 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
+                                 (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'clock-rotate 'grid 'h-grid 'half-drop-grid 'diamond-grid 'random-grid 'checkered-grid 'h-checkered-grid 'hex-grid 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
                                  ;; Group/transform functions
                                  (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe 'h-reflect 'v-reflect 'rotate-tile-set 'reflect-tile-set])
                                  ;; Shape construction
