@@ -55,7 +55,7 @@
 
 (defn narrow_ [p]
    (stack
-     (h-mirror [(->SShape engrave [[-0.8 -1] [-0.4 -0.8] [-0.4 0.8] [-0.8 1]])])
+     (h-mirror (stretch 1 2 [(->SShape engrave [[-0.8 -1] [-0.4 -0.8] [-0.4 0.8] [-0.8 1]])]) )
      (scale 0.8 p)
    )
 )
@@ -116,9 +116,9 @@
       ]
      )] ]
      (stack
-       half
-       (h-reflect half)
-     )
+      half
+      (h-reflect half)
+      )
    )
 )
 

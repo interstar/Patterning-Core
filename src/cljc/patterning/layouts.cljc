@@ -131,6 +131,24 @@
 (defn h-grid "Takes an n and a group-stream and returns items from the group-stream in an n X n grid (row-wise: left to right, then next row)"
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (h-grid-layout-positions n))  )
 
+(defn h-row "Takes n (number of groups), margin (spacing between groups), and groups (sequence of patterns). Lays out groups left to right with margin spacing."
+  [n margin groups]
+  (let [groups-seq (take n (ensure-sequence groups))
+        positioned (loop [remaining groups-seq
+                          current-x 0
+                          acc []]
+                     (if (empty? remaining)
+                       acc
+                       (let [group (first remaining)
+                             leftmost-x (groups/leftmost group)
+                             width (groups/width group)
+                             positioned-group (groups/translate (- current-x leftmost-x) 0 group)
+                             next-x (+ current-x width margin)]
+                         (recur (rest remaining)
+                                next-x
+                                (concat acc positioned-group)))))]
+    positioned))
+
 (defn rgrid-layout-positions "calculates the positions for a rectangular grid layout in row-wise order (left to right, top to bottom)"
   [cols rows]
   (let [maxdim (max cols rows)
@@ -276,28 +294,36 @@
 
 
 (defn four-mirror "Four-way mirroring. Returns the group repeated four times reflected vertically and horizontall" [group]
-  (let [nw (groups/translate (- 0.5) (- 0.5) (groups/scale (float (/ 1 2)) group))
+  (let [nw (groups/translate -0.5 -0.5 (groups/scale 0.5 group))
         ne (groups/h-reflect nw)
         sw (groups/v-reflect nw)
         se (groups/h-reflect sw) ]
     (concat nw ne sw se)))
 
 (defn h-mirror "Reflect horizontally and stretch"  [group]
-  (let [left  (groups/translate -0.5 0 (groups/stretch 0.5 1 group))
+  (let [left  (groups/translate -0.5 0 (groups/scale 0.5 group))
         right (groups/h-reflect left)]
     (stack left right)))
 
 (defn v-mirror "Reflect vertically and stretch" [group]
-  (let [top    (groups/translate 0 -0.5 (groups/stretch 1 0.5 group))
+  (let [top    (groups/translate 0 -0.5 (groups/scale 0.5 group))
         bottom (groups/v-reflect top)]
     (stack top bottom)))
 
-(defn clock-rotate "Circular layout. Returns n copies in a rotation"
-  [n group]
-  (let [angs (maths/clock-angles n)
-        groups (ensure-sequence group)]
-    (concat (mapcat (fn [a g] (groups/rotate a g)) angs groups ))
-    ))
+(defn clock-rotate "Circular layout. Returns n copies in a rotation. Optional offset pushes items out from center before rotating."
+  ([n group]
+   (clock-rotate n 0 group))
+  ([n offset group]
+   (let [angs (maths/clock-angles n)
+         ;; Rotate by d90 first, then translate by offset, then rotate by angle
+         ;; (clock-angles starts at 12 o'clock, but patterns expect 3 o'clock)
+         prepared-groups (map (fn [g]
+                                (->> g
+                                     (groups/rotate maths/d90)
+                                     (groups/translate offset 0)))
+                              (ensure-sequence group))]
+     (concat (mapcat (fn [a g] (groups/rotate a g)) angs prepared-groups ))
+     )))
 
 (defn ring "Better clock-rotate" [n offset groups]
   (let [shift-f (fn [g] (groups/translate

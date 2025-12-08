@@ -191,34 +191,36 @@ Some improvisations made at a gallery opening event in Portugal.
 ))
 
 (defn triangles [x]
-   (map     
-     #(->>
+   (map 
+     (fn [_] 
+       (->>
         (poly 3 0.6 0 1.1 {:fill (p-color 205 100 255)})
         (rotate (/ 3.14159 x))
-    )
-    (range 0 100)
+      ))
+     (range 0 100)
   )
 )
 
 (->>
-(stack 
-(->>
-(grid 4
-  (repeat (rect -1 -1 2 2 
-    {:fill (p-color 180 250 180)
-     :stroke-weight 3
-     :stroke (p-color 200 255 200) }))
- 
-)
-)
-(checkered-grid 2
-  (squares 0)
-  (triangles 1)
-))
+    (stack 
+    (->>
+        (grid 4
+          (repeat (rect -1 -1 2 2 
+            {:fill (p-color 180 250 180)
+             :stroke-weight 3
+             :stroke (p-color 200 255 200) }))
+         
+        )
+    )
+    (checkered-grid 2
+      (squares 0)
+      (triangles 1)
+    ))
+
   (scale 0.9)
   (rotate (/ 3.15 -6) )
   (h-mirror)
   (four-round)
-  (#(grid 1 (repeat %)))
+  (grid 1)
 
 )

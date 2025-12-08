@@ -40,6 +40,7 @@ Once you have either a an online workspace, or the library available from within
 * [[The Turtorial]] - a Turtle and an L-System which work well together.
 * [[Douat]] a tiling technique inspired by Truchet and Douat's research
 * [[Color]] - a word on colour
+* [[HexGrid]] - Hexagonal grids are fun.
 
 Other Patterns
 

@@ -53,7 +53,8 @@ The original exhibition featured a larger laser-engraved panel made of 5 x 4 sma
 
 (defn narrow_ [p]
    (stack
-     (h-mirror [(->SShape engrave [[-0.8 -1] [-0.4 -0.8] [-0.4 0.8] [-0.8 1]])])
+     (h-mirror 
+     (stretch 1 2 [(->SShape engrave [[-0.8 -1] [-0.4 -0.8] [-0.4 0.8] [-0.8 1]])]))
      (scale 0.8 p)
    )
 )

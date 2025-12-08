@@ -135,8 +135,9 @@
 (def vertical-line (optional-styled-primitive [x] [[x -1] [x 1] [x -1] [x 1]]))
 
 (defn drunk-line-internal [steps stepsize random angle-range]
-  (let [angle-changes (take steps (maths/random-angles angle-range random))
-        cumulative-angles (reductions + 0 angle-changes)
+  (let [initial-angle (* (.randomFloat random) maths/TwoPI)  ; Random starting direction
+        angle-changes (take steps (maths/random-angles angle-range random))
+        cumulative-angles (reductions + initial-angle angle-changes)
         offs (map (fn [a] [stepsize a]) cumulative-angles)]
     (loop [pps offs current [0 0] acc [[0 0]]]
       (if (empty? pps) acc

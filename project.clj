@@ -1,4 +1,4 @@
-(defproject com.alchemyislands/patterning "0.7.0"
+(defproject com.alchemyislands/patterning "0.7.4"
   :description "Generating Patterns with Clojure"
   :url "http://alchemyislands.com/"
   :license {:name "Gnu Lesser Public License"
@@ -68,6 +68,20 @@
                                    :main worker
                                    :optimizations :simple
                                    :source-map "workbench/worker.js.map"}}]}
+
+  ;; Profile for app-development builds (optional - only active when app-development/ exists)
+  ;; This allows project.clj to be in git without requiring app-development to exist
+  :profiles {:app-dev {:cljsbuild {:builds [{:id "app-dev"
+                                              :source-paths ["src/cljc" "src/cljs" "app-development/source"]
+                                              :compiler {:output-to ~(str "app-development/dist/" (or (System/getenv "APP_NAME") "default") ".js")
+                                                         :optimizations :advanced
+                                                         :output-dir ~(str "app-development/dist/" (or (System/getenv "APP_NAME") "default") "/build")
+                                                         :main ~(symbol (or (System/getenv "APP_NAME") "default"))
+                                                         :preloads ['patterning.view 'patterning.canvasview]
+                                                         :source-map false
+                                                         :closure-defines {"goog.DEBUG" false}
+                                                         :elide-asserts true
+                                                         :pretty-print false}}]}}}
 
   :aot [patterning.core patterning.cli]
   :main patterning.core
