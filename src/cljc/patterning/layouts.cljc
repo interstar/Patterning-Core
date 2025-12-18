@@ -14,6 +14,39 @@
 (defn stack "superimpose a number of groups"
   [& groups] (reduce superimpose-layout groups))
 
+(defn ensure-sequence
+  "If xs is a single group/pattern (sequence of SShapes), repeat it.
+   If xs is already a sequence of groups/patterns, return as-is."
+  [xs]
+  (if (and (seq xs)
+           (sshapes/is-sshape? (first xs)))
+    ;; It's a single group/pattern (sequence of SShapes)
+    (repeat xs)
+    ;; It's already a sequence of groups/patterns
+    xs))
+
+(defn map-stack
+  "Maps a function across a sequence of patterns and stacks the results.
+   Can accept either a single pattern or a sequence of patterns.
+   
+   Examples:
+   (map-stack #(groups/scale 0.8 %) [pat1 pat2 pat3])
+   (map-stack #(groups/rotate (/ maths/PI 4) %) pattern)"
+  [f patterns]
+  (apply stack (map f (ensure-sequence patterns))))
+
+(defn iterate-stack
+  "Applies a transformation function iteratively to a pattern and stacks all results.
+   Returns n+1 patterns: [original, f(original), f(f(original)), ...] for n iterations.
+   
+   Examples:
+   (iterate-stack #(groups/scale 0.8 %) 3 pattern)  ; progressively smaller
+   (iterate-stack #(groups/translate 0.1 0.1 %) 5 pattern)  ; progressive translation
+   (iterate-stack #(groups/rotate (/ maths/PI 8) %) 4 pattern)  ; progressive rotation"
+  [f n pattern]
+  (let [iterated (take (inc n) (iterate f pattern))]
+    (apply stack iterated)))
+
 (defn nested-stack "superimpose smaller copies of a shape"
   [reducer n group & [styles]]
   (if styles
@@ -105,19 +138,6 @@
         ]
     (concat (cart [h1-iterator v1-iterator]) (cart [h2-iterator v2-iterator]))))
 
-
-
-
-(defn ensure-sequence
-  "If xs is a single group/pattern (sequence of SShapes), repeat it.
-   If xs is already a sequence of groups/patterns, return as-is."
-  [xs]
-  (if (and (seq xs)
-           (sshapes/is-sshape? (first xs)))
-    ;; It's a single group/pattern (sequence of SShapes)
-    (repeat xs)
-    ;; It's already a sequence of groups/patterns
-    xs))
 
 (defn place-groups-at-positions "Takes a list of groups and a list of positions and puts one of the groups at each position"
   [groups positions]

@@ -9,6 +9,9 @@
   ([r g b] (p-color r g b 255))
   ([x] (p-color x x x 255))  )
 
+;; Default style for shapes - ensures visibility in P5 rendering
+(def default-style {:stroke (p-color 0) :stroke-weight 1})
+
 ;; Color helpers
 (defn color-seq "handy for creating sequences of color changes"
   [colors] (into [] (map (fn [c] {:stroke c}) colors )))

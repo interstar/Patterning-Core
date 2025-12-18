@@ -1,13 +1,13 @@
 (ns patterning.library.complex-elements
   (:require [patterning.maths :as maths
-            :refer [default-random]]
+             :refer [default-random]]
             [patterning.sshapes :as sshapes]
             [patterning.sshapes :refer [->SShape tie-together]]
             [patterning.groups :as groups]
             [patterning.layouts :as layouts]
             [patterning.library.std :as std]
             [patterning.library.turtle :as turtle]
-            [patterning.color :refer [p-color]]))
+            [patterning.color :refer [p-color default-style]]))
 
 
 
@@ -31,7 +31,7 @@
   ( [sides-per-poly no-polies radius style]
       (layouts/clock-rotate no-polies (std/poly 0 0 radius sides-per-poly style)))
 
-  ( [sides-per-poly no-polies radius] (polyflower-group sides-per-poly no-polies radius {})))
+  ( [sides-per-poly no-polies radius] (polyflower-group sides-per-poly no-polies radius default-style)))
 
 
 
@@ -62,7 +62,7 @@
 ;; Made with Turtle
 
 (defn zig-zag [[x y]] (turtle/basic-turtle [x y] 0.1 (/ maths/PI 2)
-                                      (/ maths/PI 3) "++F-FF+FF-FF+FF-FF+FF-FF+FF-FF+F" {}
+                                      (/ maths/PI 3) "++F-FF+FF-FF+FF-FF+FF-FF+FF-FF+F" default-style
                                       {:stroke (p-color 150 210 200) :stroke-weight 4}))
 
 ;; Scrolls
@@ -84,5 +84,5 @@
                                       style extras) ))
 
 (defn vase [d da count style]
-  (let [scroll (r-scroll d da count style {})]
+  (let [scroll (r-scroll d da count style default-style)]
     (layouts/stack scroll (groups/v-reflect scroll) )))

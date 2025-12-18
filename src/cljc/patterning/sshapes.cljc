@@ -1,5 +1,6 @@
 (ns patterning.sshapes
   (:require [patterning.maths :as maths]
+            [patterning.color :refer [default-style]]
             [clojure.data :refer [diff]])
   #?(:clj (:require [patterning.macros :refer [optional-styled-primitive]])
      :cljs (:require-macros [patterning.macros :refer [optional-styled-primitive]] )
@@ -71,7 +72,7 @@
 ;; Specs
 
 (defrecord SShape [style points])
-(defn empty-sshape [] (->SShape {} []))
+(defn empty-sshape [] (->SShape default-style []))
 
 (defn is-sshape?
   "Tests if x is an SShape (has :style and :points keys)"

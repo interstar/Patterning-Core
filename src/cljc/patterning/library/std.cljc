@@ -5,7 +5,8 @@
             [patterning.sshapes :as sshapes]
             [patterning.groups :refer [APattern]]
             [patterning.layouts :refer [stack four-mirror clock-rotate]]
-            [patterning.macros :refer [optional-styled-primitive]]))
+            [patterning.macros :refer [optional-styled-primitive]]
+            [patterning.color :refer [default-style]]))
 
 ;;; Some basic sshapes
 
@@ -27,9 +28,9 @@
   ([n radius cx cy style]
    (let [make-point (fn [a] (maths/add-points [cx cy] (maths/pol-to-rec [radius a])))]
      (APattern (->SShape style (close-shape (into [] (map make-point (maths/clock-angles n))))))))
-  ([n radius cx cy] (poly n radius cx cy {}))
+  ([n radius cx cy] (poly n radius cx cy default-style))
   ([n radius style] (poly n radius 0 0 style))
-  ([n radius] (poly n radius 0 0 {})))
+  ([n radius] (poly n radius 0 0 default-style)))
 
 (defn arc
   "Creates an arc (fraction of a circle).
@@ -37,7 +38,7 @@
    start-angle: starting angle in radians
    offset: angular span of the arc in radians (can be negative to go backwards)
    resolution: number of points in the arc (default: 30)
-   style: optional style map (default: {})
+   style: optional style map (default: {:stroke (p-color 0) :stroke-weight 1})
    cx: center X coordinate (default: 0)
    cy: center Y coordinate (default: 0)
    
@@ -47,11 +48,11 @@
    (arc radius start-angle offset resolution style) - all parameters
    (arc radius start-angle offset style) - if 4th arg is a map, it's style, resolution defaults to 30"
   ([radius start-angle offset]
-   (arc radius start-angle offset 30 {} 0 0))
+   (arc radius start-angle offset 30 default-style 0 0))
   ([radius start-angle offset second-arg]
    (if (number? second-arg)
      ;; Second arg is resolution
-     (arc radius start-angle offset second-arg {} 0 0)
+     (arc radius start-angle offset second-arg default-style 0 0)
      ;; Second arg is style map
      (arc radius start-angle offset 30 second-arg 0 0)))
   ([radius start-angle offset resolution style]
@@ -70,9 +71,9 @@
      (APattern (->SShape style (close-shape (sshapes/translate-shape
                                               cx cy
                                               (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles total-points)))))))))
-  ([n rads cx cy] (star n rads cx cy {}))
+  ([n rads cx cy] (star n rads cx cy default-style))
   ([n rads style] (star n rads 0 0 style))
-  ([n rads] (star n rads 0 0 {})))
+  ([n rads] (star n rads 0 0 default-style)))
 
 (defn find-cycle
   "Find a single cycle starting from start-idx, returning [cycle-points new-visited]"
@@ -122,9 +123,9 @@
                            (->SShape style (close-shape translated-points)))
                          translated-cycles)]
          (apply APattern sshapes)))))
-  ([n rad cx cy] (nangle n rad cx cy {}))
+  ([n rad cx cy] (nangle n rad cx cy default-style))
   ([n rad style] (nangle n rad 0 0 style))
-  ([n rad] (nangle n rad 0 0 {})))
+  ([n rad] (nangle n rad 0 0 default-style)))
 
 (defn random-rect [style & {:keys [random] :or {random default-random}}]
   (let [rr (fn [l] (.randomFloat random))
@@ -150,7 +151,7 @@
         {:keys [random angle-range] :or {random default-random angle-range 0.3}}
         (when (even? (count rest-args))
           (apply hash-map rest-args))]
-    (APattern (->SShape (or style {})
+    (APattern (->SShape (or style default-style)
                         (drunk-line-internal steps stepsize random angle-range)))))
 
 (def h-sin (optional-styled-primitive [] (into [] (map (fn [a] [a (maths/sin (* maths/PI a))]) (range (- 1) 1 0.05)))))
@@ -187,9 +188,9 @@
    (spiral nopoints dr-per-cycle num-cycles style) - starts at r=0, a=0
    (spiral nopoints dr-per-cycle num-cycles r a) - explicit start position, default style
    (spiral nopoints dr-per-cycle num-cycles r a style) - all parameters"
-  ([nopoints dr-per-cycle num-cycles] (spiral nopoints dr-per-cycle num-cycles 0 0 {}))
+  ([nopoints dr-per-cycle num-cycles] (spiral nopoints dr-per-cycle num-cycles 0 0 default-style))
   ([nopoints dr-per-cycle num-cycles style] (spiral nopoints dr-per-cycle num-cycles 0 0 style))
-  ([nopoints dr-per-cycle num-cycles r a] (spiral nopoints dr-per-cycle num-cycles r a {}))
+  ([nopoints dr-per-cycle num-cycles r a] (spiral nopoints dr-per-cycle num-cycles r a default-style))
   ([nopoints dr-per-cycle num-cycles r a style]
    (let [da (/ maths/TwoPI nopoints)           ; angle increment per step
          dr (/ dr-per-cycle nopoints)            ; radius increment per step
@@ -206,21 +207,21 @@
 
 
 (defn ogee
-  "An ogee shape.
+  "   An ogee shape.
    stretch: controls the stretch of the ogee curve
    resolution: step size for generating points (default: 0.1)
-   style: optional style map (default: {})
+   style: optional style map (default: {:stroke (p-color 0) :stroke-weight 1})
    
    Supports multiple arities:
-   (ogee stretch) - uses default resolution (0.1) and default style ({})
+   (ogee stretch) - uses default resolution (0.1) and default style
    (ogee stretch resolution) - if second arg is a number, it's resolution
    (ogee stretch style) - if second arg is a map, it's style
    (ogee stretch resolution style) - all parameters"
-  ([stretch] (ogee stretch 0.1 {}))
+  ([stretch] (ogee stretch 0.1 default-style))
   ([stretch second-arg]
    (if (number? second-arg)
      ;; Second arg is resolution
-     (ogee stretch second-arg {})
+     (ogee stretch second-arg default-style)
      ;; Second arg is style map
      (ogee stretch 0.1 second-arg)))
   ([stretch resolution style]
@@ -236,7 +237,7 @@
 
 (defn bez-curve
   ([points style] (APattern (sshapes/s-bez-curve style points)))
-  ([points] (bez-curve points {})))
+  ([points] (bez-curve points default-style)))
 
 (defn hex-side-center
   "Get the center point of a hexagon side.
@@ -272,7 +273,7 @@
                    (- (* 0.35 (maths/cos hour-angle)))]
         minute-hand [(+ (* 0.4 (maths/sin minute-angle)))
                      (- (* 0.4 (maths/cos minute-angle)))]]
-    [(->SShape {} [hour-hand [0 0] minute-hand])]))
+    [(->SShape default-style [hour-hand [0 0] minute-hand])]))
 
 (defn clock-face [style]
   (stack

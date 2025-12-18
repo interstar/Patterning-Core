@@ -44,10 +44,13 @@
    'p-color #'p-color/p-color
    'hex-color #'p-color/hex-color
    'defcolor #'p-macros/defcolor
+   'defpalette #'p-macros/defpalette
    'poly #'p-lib-std/poly
    'arc #'p-lib-std/arc
    'stack #'p-layouts/stack
    'nested-stack #'p-layouts/nested-stack
+   'map-stack #'p-layouts/map-stack
+   'iterate-stack #'p-layouts/iterate-stack
    'clock-rotate #'p-layouts/clock-rotate
    'grid #'p-layouts/grid
    'h-grid #'p-layouts/h-grid
@@ -532,11 +535,11 @@
                                  ;; Color functions
                                  (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color])
                                  ;; Macro functions
-                                 (include-from sci-vars 'p-macros-sci ['defcolor])
+                                 (include-from sci-vars 'p-macros-sci ['defcolor 'defpalette])
                                  ;; Standard library shapes
                                  (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line 'on-background 'hex-side-center])
                                  ;; Layout functions
-                                 (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'clock-rotate 'grid 'h-grid 'half-drop-grid 'diamond-grid 'random-grid 'checkered-grid 'h-checkered-grid 'hex-grid 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
+                                 (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'map-stack 'iterate-stack 'clock-rotate 'grid 'h-grid 'half-drop-grid 'diamond-grid 'random-grid 'checkered-grid 'h-checkered-grid 'hex-grid 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
                                  ;; Group/transform functions
                                  (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe 'h-reflect 'v-reflect 'rotate-tile-set 'reflect-tile-set])
                                  ;; Shape construction
