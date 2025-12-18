@@ -3,7 +3,8 @@
             [patterning.maths :as maths]
             [patterning.groups :refer [mol=]]
             [patterning.library.std :refer [poly bez-curve arc]]
-            [patterning.sshapes :refer [mol=shapes]]))
+            [patterning.sshapes :refer [mol=shapes]]
+            [patterning.color :refer [default-style]]))
 
 (deftest test-std-library
   (let []
@@ -27,7 +28,7 @@
             shape (first result)
             points (:points shape)]
         (is (= 1 (count result)) "arc should return a single shape")
-        (is (= {} (:style shape)) "arc should have default empty style")
+        (is (= default-style (:style shape)) "arc should have default style")
         ;; With resolution 8, we should get exactly 8 points for the arc
         (is (= 8 (count points)) "arc should have exactly resolution number of points")
         ;; First point should be at angle 0: [radius, 0] = [0.5, 0]
