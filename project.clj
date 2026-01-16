@@ -15,6 +15,7 @@
 
   :dependencies [[org.clojure/clojure "1.11.3"]
                  [org.clojure/clojurescript "1.11.132"]
+                 [org.clojure/data.xml "0.2.0-alpha8"]
                  [metosin/malli "0.14.0"]
                  [org.babashka/sci "0.10.49"]]
 

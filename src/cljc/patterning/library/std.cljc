@@ -22,6 +22,10 @@
 
 (def square (optional-styled-primitive [] [[-1 -1] [-1 1] [1 1] [1 -1] [-1 -1]]))
 
+(def truchet
+  (optional-styled-primitive []
+    [[1 1] [-1 1] [-1 -1] [1 1]]))
+
 
 
 (defn poly

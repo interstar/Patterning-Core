@@ -45,6 +45,7 @@
    'hex-color #'p-color/hex-color
    'defcolor #'p-macros/defcolor
    'defpalette #'p-macros/defpalette
+   'set-standard-colors #'p-macros/set-standard-colors
    'poly #'p-lib-std/poly
    'arc #'p-lib-std/arc
    'stack #'p-layouts/stack
@@ -77,6 +78,7 @@
    'diamond #'p-lib-std/diamond
    'horizontal-line #'p-lib-std/horizontal-line
    'square #'p-lib-std/square
+   'truchet #'p-lib-std/truchet
    'drunk-line #'p-lib-std/drunk-line
    'hex-side-center #'p-lib-std/hex-side-center
    ;; Additional functions needed for complex patterns like Pelican
@@ -535,9 +537,9 @@
                                  ;; Color functions
                                  (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color])
                                  ;; Macro functions
-                                 (include-from sci-vars 'p-macros-sci ['defcolor 'defpalette])
+                                 (include-from sci-vars 'p-macros-sci ['defcolor 'defpalette 'set-standard-colors])
                                  ;; Standard library shapes
-                                 (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'drunk-line 'on-background 'hex-side-center])
+                                 (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'truchet 'drunk-line 'on-background 'hex-side-center])
                                  ;; Layout functions
                                  (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'map-stack 'iterate-stack 'clock-rotate 'grid 'h-grid 'half-drop-grid 'diamond-grid 'random-grid 'checkered-grid 'h-checkered-grid 'hex-grid 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
                                  ;; Group/transform functions

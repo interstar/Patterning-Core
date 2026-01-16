@@ -40,10 +40,10 @@
    Returns n+1 patterns: [original, f(original), f(f(original)), ...] for n iterations.
    
    Examples:
-   (iterate-stack #(groups/scale 0.8 %) 3 pattern)  ; progressively smaller
-   (iterate-stack #(groups/translate 0.1 0.1 %) 5 pattern)  ; progressive translation
-   (iterate-stack #(groups/rotate (/ maths/PI 8) %) 4 pattern)  ; progressive rotation"
-  [f n pattern]
+   (iterate-stack 3 #(groups/scale 0.8 %) pattern)  ; progressively smaller
+   (iterate-stack 5 #(groups/translate 0.1 0.1 %) pattern)  ; progressive translation
+   (iterate-stack 4 #(groups/rotate (/ maths/PI 8) %) pattern)  ; progressive rotation"
+  [n f pattern]
   (let [iterated (take (inc n) (iterate f pattern))]
     (apply stack iterated)))
 
@@ -568,4 +568,3 @@
 
 (defn sshape-as-layout [sshape group-stream scalar]
   (place-groups-at-positions (map #(groups/scale scalar %) group-stream) (sshape-to-positions sshape )  ))
-
