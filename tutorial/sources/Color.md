@@ -19,7 +19,7 @@ For those more used to HTML / CSS / SVG style colours there's a new function cal
 
 It also supports transparency by adding a fourth hex number at the end. Eg. "ff339988"
 
-### def-color
+### defcolor
 
 Often you might want to make a palette of colours which you'll re-use throughout your pattern. It's a bit verbose to define these with p-color every time you want to use them, so you'll end up doing something like
 
@@ -32,6 +32,41 @@ As this is verbose we now have a convenience macro `defcolor` which lets you def
     (defcolor cyan "00ddff")
 
 etc.
+
+### defpalette
+
+If you want a whole named palette at once, use `defpalette`. It creates both
+individual colour vars and a map keyed by keywords.
+
+    (defpalette ocean
+      deep-blue "002244"
+      sea "3388aa"
+      foam [200 240 255]
+      kelp '(30 80 40))
+
+This gives you `deep-blue`, `sea`, `foam`, `kelp` in the global namespace,
+and the map `ocean`:
+
+    (paint deep-blue sea 2)
+    (ocean :sea)
+
+### Standard palette
+
+There is a built-in macro that defines a default palette of 32 standard colours
+with English names.
+
+    (set-standard-colors)
+
+This creates:
+ - individual vars like `red`, `blue`, `light-grey`, `turquoise`, `crimson`
+ - a map called `standard-colors` that you can use with keywords:
+
+    (standard-colors :turquoise)
+
+Example:
+
+    (set-standard-colors)
+    (paint navy turquoise 2)
 
 ### Make a style with paint
 

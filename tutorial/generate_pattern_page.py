@@ -105,6 +105,69 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             height: auto;
             max-height: 400px;
         }
+
+        /* Inline thumbnail styles */
+        .pattern-thumbnail {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            margin: 0.25em;
+            vertical-align: middle;
+        }
+
+        .pattern-thumbnail svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Small pattern styles */
+        .pattern-small {
+            display: flex;
+            gap: 1em;
+            align-items: flex-start;
+            margin: 1.5em 0;
+            padding: 1em;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .pattern-small-code {
+            flex: 1 1 auto;
+            max-width: 60%;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .pattern-small-code pre {
+            margin: 0;
+            padding: 1em;
+            color: #1a202c;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+            height: 200px;
+            overflow: auto;
+            box-sizing: border-box;
+        }
+
+        .pattern-small-preview {
+            width: 200px;
+            height: 200px;
+            flex: 0 0 auto;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pattern-small-preview svg {
+            width: 100%;
+            height: 100%;
+        }
         
         /* Pattern action buttons */
         .pattern-actions {
@@ -166,7 +229,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <script>
         const patterns = {};
         {% for pattern in patterns %}
-        patterns['pattern{{ loop.index }}'] = {{ pattern | tojson }};
+        patterns['pattern{{ pattern.id }}'] = {{ pattern.code | tojson }};
         {% endfor %}
         
         // Action functions
@@ -267,7 +330,7 @@ def convert_wiki_links(content):
     
     return re.sub(pattern, replace_link, content)
 
-def generate_svg_for_pattern(pattern_code, pattern_id, output_dir, page_name):
+def generate_svg_for_pattern(pattern_code, pattern_id, output_dir, page_name, width, height):
     """Generate SVG for a pattern using the Patterning CLI tool."""
     try:
         # Create temporary file for pattern code
@@ -282,7 +345,7 @@ def generate_svg_for_pattern(pattern_code, pattern_id, output_dir, page_name):
         # Since we're now running from the root, we can use current directory
         cwd = '.'
         
-        cmd = ['lein', 'run', '-m', 'patterning.cli', temp_file_path, svg_path, 'svg', '400', '400']
+        cmd = ['lein', 'run', '-m', 'patterning.cli', temp_file_path, svg_path, 'svg', str(width), str(height)]
         print(f"DEBUG: Running command: {' '.join(cmd)}")
         print(f"DEBUG: Working directory: {cwd}")
         print(f"DEBUG: Target SVG path: {svg_path}")
@@ -315,6 +378,61 @@ def generate_svg_for_pattern(pattern_code, pattern_id, output_dir, page_name):
         except:
             pass
 
+def read_svg_content(svg_path):
+    """Read generated SVG content for embedding."""
+    print(f"DEBUG: Attempting to read SVG file: {svg_path}")
+    print(f"DEBUG: File exists: {os.path.exists(svg_path)}")
+    if os.path.exists(svg_path):
+        print(f"DEBUG: File size: {os.path.getsize(svg_path)} bytes")
+    try:
+        with open(svg_path, 'r') as f:
+            svg_content = f.read()
+        print(f"DEBUG: Successfully read SVG content, length: {len(svg_content)}")
+        return svg_content, None
+    except IOError as e:
+        print(f"DEBUG: IOError reading SVG file: {e}")
+        return None, f"Error reading SVG file: {e}"
+    except Exception as e:
+        print(f"DEBUG: Unexpected error reading SVG file: {e}")
+        return None, f"Unexpected error reading SVG file: {e}"
+
+def render_pattern_container(pattern, pattern_id, svg_content, block_type, error_message=None):
+    """Render the HTML container for a pattern block."""
+    preview_content = svg_content if not error_message else f"<p>{error_message}</p>"
+    if block_type == ':patterning-thumbnail':
+        return f'''
+<span class="pattern-thumbnail" id="pattern-{pattern_id}-thumbnail">
+    {preview_content}
+</span>'''
+    if block_type == ':patterning-small':
+        link_open = ''
+        link_close = ''
+        if not error_message:
+            link_open = f'<a href="#" onclick="openInWorkbench(\'pattern{pattern_id}\'); return false;">'
+            link_close = '</a>'
+        return f'''
+<div class="pattern-small">
+    <div class="pattern-small-preview" id="pattern-{pattern_id}-preview">
+        {link_open}{preview_content}{link_close}
+    </div>
+    <div class="pattern-small-code">
+        <pre><code>{pattern}</code></pre>
+    </div>
+</div>'''
+    return f'''
+<div class="pattern-example">
+    <div class="pattern-code">
+        <pre><code>{pattern}</code></pre>
+    </div>
+    <div class="pattern-preview" id="pattern-{pattern_id}-preview">
+        {preview_content}
+    </div>
+    <div class="pattern-actions">
+        <button class="copy" onclick="copyCode('pattern{pattern_id}')">Copy Code</button>
+        <button class="workbench" onclick="openInWorkbench('pattern{pattern_id}')">Open in Workbench</button>
+    </div>
+</div>'''
+
 def process_blocks(content, output_dir, page_name, tutorial_root):
     """Process content by splitting on hyphens and handling each block appropriately."""
     # Split on 4 or more hyphens
@@ -324,6 +442,12 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
     patterns = []
     markdown_blocks = []
     failed_patterns = []  # Track failed pattern generations
+    pattern_counter = 0
+    block_configs = {
+        ':patterning': {'size': (400, 400), 'store_code': True},
+        ':patterning-thumbnail': {'size': (200, 200), 'store_code': False},
+        ':patterning-small': {'size': (200, 200), 'store_code': True},
+    }
     
     for block in blocks:
         block = block.strip()
@@ -332,14 +456,20 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
             
         # Check if this is a pattern block
         lines = block.split('\n')
-        if lines[0].strip() == ':patterning':
+        block_type = lines[0].strip()
+        if block_type in block_configs:
             # This is a pattern block - collect all the code
             pattern = '\n'.join(lines[1:]).strip()
-            patterns.append(pattern)
+            if block_configs[block_type]['store_code']:
+                patterns.append({'id': None, 'code': pattern})
             
             # Generate SVG for this pattern with page name prefix
-            pattern_id = len(patterns)
-            svg_path = generate_svg_for_pattern(pattern, pattern_id, output_dir, page_name)
+            pattern_counter += 1
+            pattern_id = pattern_counter
+            svg_width, svg_height = block_configs[block_type]['size']
+            svg_path = generate_svg_for_pattern(pattern, pattern_id, output_dir, page_name, svg_width, svg_height)
+            if block_configs[block_type]['store_code']:
+                patterns[-1]['id'] = pattern_id
             
             # Track failed patterns
             if not svg_path:
@@ -349,50 +479,13 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
                     'expected_svg_path': os.path.join(output_dir, f'{page_name}-pattern-{pattern_id}.svg')
                 })
             
-            # Add a pattern example div with the new styling
+            # Add a pattern example container
             if svg_path:
-                print(f"DEBUG: Attempting to read SVG file: {svg_path}")
-                print(f"DEBUG: File exists: {os.path.exists(svg_path)}")
-                if os.path.exists(svg_path):
-                    print(f"DEBUG: File size: {os.path.getsize(svg_path)} bytes")
-                try:
-                    with open(svg_path, 'r') as f:
-                        svg_content = f.read()
-                    print(f"DEBUG: Successfully read SVG content, length: {len(svg_content)}")
-                except IOError as e:
-                    print(f"DEBUG: IOError reading SVG file: {e}")
-                    svg_content = f"<p>Error reading SVG file: {e}</p>"
-                except Exception as e:
-                    print(f"DEBUG: Unexpected error reading SVG file: {e}")
-                    svg_content = f"<p>Unexpected error reading SVG file: {e}</p>"
-                container = f'''
-<div class="pattern-example">
-    <div class="pattern-code">
-        <pre><code>{pattern}</code></pre>
-    </div>
-    <div class="pattern-preview" id="pattern-{pattern_id}-preview">
-        {svg_content}
-    </div>
-    <div class="pattern-actions">
-        <button class="copy" onclick="copyCode('pattern{pattern_id}')">Copy Code</button>
-        <button class="workbench" onclick="openInWorkbench('pattern{pattern_id}')">Open in Workbench</button>
-    </div>
-</div>'''
+                svg_content, error_message = read_svg_content(svg_path)
             else:
-                # Fallback if SVG generation fails
-                container = f'''
-<div class="pattern-example">
-    <div class="pattern-code">
-        <pre><code>{pattern}</code></pre>
-    </div>
-    <div class="pattern-preview">
-        <p>Error generating pattern preview</p>
-    </div>
-    <div class="pattern-actions">
-        <button class="copy" onclick="copyCode('pattern{pattern_id}')">Copy Code</button>
-        <button class="workbench" onclick="openInWorkbench('pattern{pattern_id}')">Open in Workbench</button>
-    </div>
-</div>'''
+                svg_content = None
+                error_message = "Error generating pattern preview"
+            container = render_pattern_container(pattern, pattern_id, svg_content, block_type, error_message)
             
             markdown_blocks.append(container)
         else:

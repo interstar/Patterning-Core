@@ -5,7 +5,7 @@ What if you need something smoother than a line of straight segments?
 Bezier curves? We got 'em
 
 ----
-:patterning
+:patterning-small
 
 (bez-curve
  [[0 1] [-1.5 -0.5] [-0.5 -1.5] [0 0]]
@@ -45,30 +45,27 @@ Framed can be used to generate various bordered patterns
 
 (let
  [corner
-  (stack
-   (square {:fill (p-color 255 0 0 100)})
+  (on-background (p-color 255 0 0 100)
    (poly 4 0.9 0 0 {:fill (p-color 240 100 240)}))
   edge
-  (stack
-   (square {:fill (p-color 0 0 255)})
+  (on-background (p-color 0 0 255)
    (poly 8 0.5 0 0 {:fill (p-color 150 150 255)}))
   centre
   (poly 30 0.9 0 0 {:fill (p-color 150 255 140)})]
  (framed 7 (repeat corner) (repeat edge) centre))
 ----
-Which can be tiled together with grid
+Which can be tiled together with grid.
+
 
 ----
 :patterning
 
 (let
  [corner
-  (stack
-   (square {:fill (p-color 255 0 0 100)})
+  (on-background (p-color 255 0 0 100)
    (poly 4 0.9 0 0 {:fill (p-color 240 100 240)}))
   edge
-  (stack
-   (square {:fill (p-color 0 0 255)})
+  (on-background (p-color 0 0 255)
    (poly 8 0.5 0 0 {:fill (p-color 150 150 255)}))
   centre
   (poly 30 0.9 0 0 {:fill (p-color 150 255 140)})]
@@ -85,16 +82,13 @@ We can map other functions to these streams, for example to randomly rotate them
 ----
 :patterning
 
-(let
- [orange (p-color 254 129 64)]
- (stack
-  (square {:fill (p-color 50 80 100)})
+(on-background (p-color 50 80 100)
   (grid 10
    (random-turn-groups
     (repeat
      [(->SShape
-       {:fill (p-color 230 180 90), :stroke orange}
-       [[-1 -1] [1 -1] [-1 1]])])))))
+       {:fill (p-color 230 180 90),  :stroke-weight 0 }
+       [[-1 -1] [1 -1] [-1 1] [-1 -1]])]))))
 
 ----
 We can increase the complexity of the pattern, mixing streams of various sub-patterns.
@@ -105,9 +99,10 @@ For more information on transforming streams of sub-patterns with functional pro
 :patterning
 
 (let
- [orange (p-color 254 129 64)]
- (stack
-  (square {:fill (p-color 50 80 100)})
+ [orange (p-color 254 129 64)
+  grey (p-color 50 80 100)
+  ]
+ (on-background grey
   (checkered-grid 18
    (cycle
     [(clock-rotate 8
@@ -117,7 +112,7 @@ For more information on transforming streams of sub-patterns with functional pro
    (random-turn-groups
     (repeat
      [(->SShape
-       {:fill (p-color 230 180 90), :stroke orange}
+       {:fill (p-color 230 180 90), :stroke orange :stroke-weight 0}
        [[-1 -1] [1 -1] [-1 1]])])))))
 
 ----

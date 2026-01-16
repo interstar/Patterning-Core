@@ -20,11 +20,10 @@ What this means is that we can write code like this to make a simple 4 tile patt
   (Douat 
    (stack
     (square {:fill (p-color 0)})
-    [(->SShape
-       {:fill (p-color 255) 
-        :stroke-weight 1
-        :stroke (p-color 255)}
-       [[1 1] [-1 1] [-1 -1] ])]
+    (truchet
+     {:fill (p-color 255) 
+      :stroke-weight 1
+      :stroke (p-color 255)})
     ))
  
    A B C D
@@ -44,11 +43,10 @@ However we can go further. By continuing to add rows of four letters to our patt
   (Douat 
    (stack
     (square {:fill (p-color 0 0 0)})
-    [(->SShape
-       {:fill (p-color 255) 
-        :stroke-weight 1
-        :stroke (p-color 255 )}
-       [[1 1] [-1 1] [-1 -1]  ])]
+    (truchet
+     {:fill (p-color 255) 
+      :stroke-weight 1
+      :stroke (p-color 255 )})
     ))
  
    A B D C
