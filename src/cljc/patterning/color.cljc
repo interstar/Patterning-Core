@@ -35,6 +35,11 @@
 
 (defn remove-transparency [c] (conj (take 3 c) 255))
 
+(defn fade
+  "Return the same RGB color with a new alpha value (0-255)."
+  [c a]
+  (conj (vec (take 3 c)) a))
+
 (defn rand-col [& {:keys [random] :or {random default-random}}] 
   (p-color (.randomInt random 255) 
            (.randomInt random 255) 

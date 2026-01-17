@@ -87,8 +87,10 @@
    'rotate #'p-groups/rotate
    'stretch #'p-groups/stretch
    'reframe #'p-groups/reframe
+   'border #'p-groups/border
    'h-reflect #'p-groups/h-reflect
    'v-reflect #'p-groups/v-reflect
+   'close #'p-groups/close
    'rotate-tile-set #'p-groups/rotate-tile-set
    'reflect-tile-set #'p-groups/reflect-tile-set
    'on-background #'p-lib-std/on-background
@@ -535,7 +537,7 @@
                                 ;; Convert key bindings to use SCI vars
                                 (merge
                                  ;; Color functions
-                                 (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color])
+                                 (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color 'fade])
                                  ;; Macro functions
                                  (include-from sci-vars 'p-macros-sci ['defcolor 'defpalette 'set-standard-colors])
                                  ;; Standard library shapes
@@ -543,7 +545,7 @@
                                  ;; Layout functions
                                  (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'map-stack 'iterate-stack 'clock-rotate 'grid 'h-grid 'half-drop-grid 'diamond-grid 'random-grid 'checkered-grid 'h-checkered-grid 'hex-grid 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
                                  ;; Group/transform functions
-                                 (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe 'h-reflect 'v-reflect 'rotate-tile-set 'reflect-tile-set])
+                                 (include-from sci-vars 'p-groups-sci ['APattern 'translate 'scale 'rotate 'stretch 'reframe 'border 'h-reflect 'v-reflect 'close 'rotate-tile-set 'reflect-tile-set])
                                  ;; Shape construction
                                  (include-from sci-vars 'p-sshapes-sci ['->SShape])
                                  ;; Maths functions

@@ -126,6 +126,8 @@
 (defn width [sshape] (- (rightmost sshape) (leftmost sshape)))
 (defn height [sshape] (- (bottom sshape) (top sshape)))
 
+(defn close-sshape [{:keys [style points]}]
+  {:style style :points (close-shape points)})
 
 (defn ss-filter [p? {:keys [style, points]}] (->SShape style (filter-shape p? points)))
 

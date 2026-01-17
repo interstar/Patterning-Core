@@ -76,36 +76,37 @@
   "Define a default palette of 32 standard colors with English names.
    Creates individual color vars plus a map named standard-colors."
   []
-  `(defpalette standard-colors
-     black "#000000"
-     white "#ffffff"
-     grey "#808080"
-     light-grey "#d3d3d3"
-     dark-grey "#696969"
-     red "#ff0000"
-     green "#008000"
-     blue "#0000ff"
-     cyan "#00ffff"
-     magenta "#ff00ff"
-     yellow "#ffff00"
-     orange "#ffa500"
-     purple "#800080"
-     brown "#a52a2a"
-     pink "#ffc0cb"
-     lime "#00ff00"
-     navy "#000080"
-     teal "#008080"
-     olive "#808000"
-     maroon "#800000"
-     silver "#c0c0c0"
-     gold "#ffd700"
-     violet "#ee82ee"
-     indigo "#4b0082"
-     turquoise "#40e0d0"
-     coral "#ff7f50"
-     salmon "#fa8072"
-     khaki "#f0e68c"
-     beige "#f5f5dc"
-     chocolate "#d2691e"
-     crimson "#dc143c"
-     azure "#f0ffff"))
+  (let [colors [["black" "#000000"]
+                ["white" "#ffffff"]
+                ["grey" "#808080"]
+                ["light-grey" "#d3d3d3"]
+                ["dark-grey" "#696969"]
+                ["red" "#ff0000"]
+                ["green" "#008000"]
+                ["blue" "#0000ff"]
+                ["cyan" "#00ffff"]
+                ["magenta" "#ff00ff"]
+                ["yellow" "#ffff00"]
+                ["orange" "#ffa500"]
+                ["purple" "#800080"]
+                ["brown" "#a52a2a"]
+                ["pink" "#ffc0cb"]
+                ["lime" "#00ff00"]
+                ["navy" "#000080"]
+                ["teal" "#008080"]
+                ["olive" "#808000"]
+                ["maroon" "#800000"]
+                ["silver" "#c0c0c0"]
+                ["gold" "#ffd700"]
+                ["violet" "#ee82ee"]
+                ["indigo" "#4b0082"]
+                ["turquoise" "#40e0d0"]
+                ["coral" "#ff7f50"]
+                ["salmon" "#fa8072"]
+                ["khaki" "#f0e68c"]
+                ["beige" "#f5f5dc"]
+                ["chocolate" "#d2691e"]
+                ["crimson" "#dc143c"]
+                ["azure" "#f0ffff"]]]
+    `(~'defpalette ~(symbol "standard-colors")
+       ~@(mapcat (fn [[name hex]] [(symbol name) hex]) colors))))

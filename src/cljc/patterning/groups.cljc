@@ -1,6 +1,6 @@
 (ns patterning.groups
   (:require [patterning.maths :as maths]
-            [patterning.sshapes :refer [->SShape] :as sshapes]
+            [patterning.sshapes :refer [->SShape close-sshape] :as sshapes]
             [patterning.color :refer [p-color]]
             [clojure.set :refer [union]]
             [malli.core :as m]
@@ -88,6 +88,13 @@
 (defn over-style "Changes the style of a pattern" [style pattern]
   (lazy-seq (map (partial sshapes/add-style style) pattern)))
 
+(defn border
+  "Apply a border style to a pattern and stack a scaled copy inside it."
+  [shrink border-style fig]
+  (let [main (over-style border-style fig)
+        inner (scale shrink fig)]
+    (lazy-seq (concat main inner))))
+
 (defn extract-points [{:keys [style points]}] points)
 
 (defn style-attribute-set [pattern attribute]
@@ -134,6 +141,8 @@
         ]
     (let []
       (translate dx dy scaled))))
+
+(defn close [pattern] (map close-sshape pattern))
 
 (defn filter-pattern [p? pattern] (map (partial sshapes/ss-filter p?) pattern))
 
