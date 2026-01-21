@@ -124,7 +124,7 @@
   "Returns the core Clojure/ClojureScript functions that need to be explicitly allowed in SCI.
    This centralizes the :allow list to avoid duplication."
   []
-  ['let 'let* 'def 'defn 'fn 'fn* 'if 'when 'cond 'case 'do '-> '->>
+  ['let 'let* 'def 'defn 'fn 'fn* 'if 'when 'cond 'case 'do 'for 'doseq '-> '->>
    'loop 'loop* 'clojure.core/loop* 'recur 'throw 'try 'catch 'finally
    'quote 'syntax-quote 'unquote 'unquote-splicing
    'cycle
@@ -229,6 +229,8 @@
    'clojure.core/cond
    'clojure.core/case
    'clojure.core/do
+   'clojure.core/for
+   'clojure.core/doseq
    'clojure.core/loop
    'clojure.core/loop*
    'clojure.core/recur
@@ -384,70 +386,7 @@
                ;; We still need to allow the bindings themselves, plus core macros and special forms.
                ;; Most clojure.core/cljs.core functions are now covered by the ns-map and all-bindings.
                :allow (set (concat (keys all-bindings)
-                                  ['let 'let* 'def 'defn 'fn 'fn* 'if 'when 'cond 'case 'do '-> '->>
-                                   'clojure.core/->
-                                   'clojure.core/->>
-                                   'loop 'loop* 'clojure.core/loop* 'recur 'throw 'try 'catch 'finally
-                                   'quote 'syntax-quote 'unquote 'unquote-splicing
-                                   'cycle
-                                   'clojure.core/seq-to-map-for-destructuring
-                                   'take
-                                   'repeat
-                                   'rand-nth
-                                   'rand-int
-                                   '/
-                                   'condp
-                                   'clojure.core/get
-                                   '-
-                                   'map
-                                   'conj
-                                   '=
-                                   '<
-                                   '>
-                                   '<=
-                                   '>=
-                                   '*
-                                   '+
-                                   'apply
-                                   'range
-                                   'new
-                                   'mod
-                                   'dissoc
-                                   'into
-                                   'iterate
-                                   'clojure.core/str
-                                   'list
-                                   'shuffle
-                                   'partial
-                                   'remove
-                                   'nth
-                                   'keys
-                                   'drop
-                                   'filter
-                                   'not
-                                   'some
-                                   'fn?
-                                   'last
-                                   'concat
-                                   'or
-                                   'and
-                                   ;; Additional functions needed for complex patterns
-                                   'first
-                                   'second
-                                   'seq
-                                   'rest
-                                   'next
-                                   'cons
-                                   'empty?
-                                   'count
-                                   'clojure.core/first
-                                   'clojure.core/second
-                                   'clojure.core/seq
-                                   'clojure.core/rest
-                                   'clojure.core/next
-                                   'clojure.core/cons
-                                   'clojure.core/empty?
-                                   'clojure.core/count]))})))
+                                   (get-core-allow-list)))})))
 
 (defn evaluate-pattern
   "Evaluate a pattern string using the shared SCI context.
