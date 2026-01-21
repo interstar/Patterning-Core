@@ -13,7 +13,8 @@
             [patterning.library.complex-elements :as p-lib-complex]
             [patterning.library.machines :as p-lib-machines]
             [patterning.library.symbols :as p-lib-symbols]
-            [patterning.library.douat :as p-lib-douat]))
+            [patterning.library.douat :as p-lib-douat]
+            [patterning.library.spiro :as p-lib-spiro]))
 
 (defn get-patterning-namespaces
   "Returns the mapping of SCI namespace names to their public functions.
@@ -32,7 +33,8 @@
    'p-lib-complex (ns-publics 'patterning.library.complex-elements)
    'p-lib-machines (ns-publics 'patterning.library.machines)
    'p-lib-symbols (ns-publics 'patterning.library.symbols)
-   'p-lib-douat (ns-publics 'patterning.library.douat)})
+   'p-lib-douat (ns-publics 'patterning.library.douat)
+   'p-lib-spiro (ns-publics 'patterning.library.spiro)})
 
 (defn get-key-bindings
   "Returns the key bindings that patterns expect to be available.
@@ -75,6 +77,10 @@
    'star #'p-lib-std/star
    'nangle #'p-lib-std/nangle
    'spiral #'p-lib-std/spiral
+   'hypotrochoid #'p-lib-spiro/hypotrochoid
+   'epitrochoid #'p-lib-spiro/epitrochoid
+   'hypotrochoid-points #'p-lib-spiro/hypotrochoid-points
+   'epitrochoid-points #'p-lib-spiro/epitrochoid-points
    'diamond #'p-lib-std/diamond
    'horizontal-line #'p-lib-std/horizontal-line
    'square #'p-lib-std/square
@@ -468,6 +474,7 @@
         p-lib-machines-ns (sci/create-ns 'p-lib-machines nil)
         p-lib-symbols-ns (sci/create-ns 'p-lib-symbols nil)
         p-lib-douat-ns (sci/create-ns 'p-lib-douat nil)
+        p-lib-spiro-ns (sci/create-ns 'p-lib-spiro nil)
         
         ;; Copy all public vars from each namespace
         p-groups-sci (update-vals (ns-publics 'patterning.groups) #(sci/copy-var* % p-groups-ns))
@@ -483,7 +490,8 @@
         p-lib-complex-sci (update-vals (ns-publics 'patterning.library.complex-elements) #(sci/copy-var* % p-lib-complex-ns))
         p-lib-machines-sci (update-vals (ns-publics 'patterning.library.machines) #(sci/copy-var* % p-lib-machines-ns))
         p-lib-symbols-sci (update-vals (ns-publics 'patterning.library.symbols) #(sci/copy-var* % p-lib-symbols-ns))
-        p-lib-douat-sci (update-vals (ns-publics 'patterning.library.douat) #(sci/copy-var* % p-lib-douat-ns))]
+        p-lib-douat-sci (update-vals (ns-publics 'patterning.library.douat) #(sci/copy-var* % p-lib-douat-ns))
+        p-lib-spiro-sci (update-vals (ns-publics 'patterning.library.spiro) #(sci/copy-var* % p-lib-spiro-ns))]
     
     {:namespaces {'p-groups p-groups-sci
                   'p-layouts p-layouts-sci
@@ -498,7 +506,8 @@
                   'p-lib-complex p-lib-complex-sci
                   'p-lib-machines p-lib-machines-sci
                   'p-lib-symbols p-lib-symbols-sci
-                  'p-lib-douat p-lib-douat-sci}
+                  'p-lib-douat p-lib-douat-sci
+                  'p-lib-spiro p-lib-spiro-sci}
      :sci-vars {'p-groups-sci p-groups-sci
                 'p-layouts-sci p-layouts-sci
                 'p-sshapes-sci p-sshapes-sci
@@ -512,7 +521,8 @@
                 'p-lib-complex-sci p-lib-complex-sci
                 'p-lib-machines-sci p-lib-machines-sci
                 'p-lib-symbols-sci p-lib-symbols-sci
-                'p-lib-douat-sci p-lib-douat-sci}}))
+                'p-lib-douat-sci p-lib-douat-sci
+                'p-lib-spiro-sci p-lib-spiro-sci}}))
 
 (defn include-from
   "Helper function to extract SCI vars from a namespace map.
@@ -537,11 +547,13 @@
                                 ;; Convert key bindings to use SCI vars
                                 (merge
                                  ;; Color functions
-                                 (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color 'fade])
+                                 (include-from sci-vars 'p-color-sci ['p-color 'hex-color 'paint 'darker-color 'faint])
                                  ;; Macro functions
                                  (include-from sci-vars 'p-macros-sci ['defcolor 'defpalette 'set-standard-colors])
                                  ;; Standard library shapes
                                  (include-from sci-vars 'p-lib-std-sci ['poly 'arc 'rect 'star 'nangle 'spiral 'diamond 'horizontal-line 'square 'truchet 'drunk-line 'on-background 'hex-side-center])
+                                 ;; Spirograph curves
+                                 (include-from sci-vars 'p-lib-spiro-sci ['hypotrochoid 'epitrochoid 'hypotrochoid-points 'epitrochoid-points])
                                  ;; Layout functions
                                  (include-from sci-vars 'p-layouts-sci ['stack 'nested-stack 'map-stack 'iterate-stack 'clock-rotate 'grid 'h-grid 'half-drop-grid 'diamond-grid 'random-grid 'checkered-grid 'h-checkered-grid 'hex-grid 'framed 'aspect-ratio-framed 'aspect-ratio-frame 'inner-stretch 'inner-min 'inner-max 'q1-rot-group 'q2-rot-group 'q3-rot-group 'four-round])
                                  ;; Group/transform functions

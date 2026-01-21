@@ -35,10 +35,19 @@
 
 (defn remove-transparency [c] (conj (take 3 c) 255))
 
-(defn fade
-  "Return the same RGB color with a new alpha value (0-255)."
+(defn faint
+  "Return the same RGB color with a new alpha value (0-255).
+   Alpha may be a number or a 1-2 digit hex string."
   [c a]
-  (conj (vec (take 3 c)) a))
+  (let [alpha (if (string? a)
+                (let [alpha-str a]
+                  (if (re-matches #"[0-9a-fA-F]{1,2}" alpha-str)
+                    #?(:clj (Integer/parseInt alpha-str 16)
+                       :cljs (js/parseInt alpha-str 16))
+                    (throw (ex-info (str "Invalid alpha string: " alpha-str)
+                                    {:alpha alpha-str}))))
+                a)]
+    (conj (vec (take 3 c)) alpha)))
 
 (defn rand-col [& {:keys [random] :or {random default-random}}] 
   (p-color (.randomInt random 255) 

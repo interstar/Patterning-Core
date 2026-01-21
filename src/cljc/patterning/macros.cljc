@@ -12,19 +12,37 @@
   "Define a color by name. Automatically detects the format:
    - String: hex color (e.g., \"#ff4488\" or \"ff4488dd\" with alpha)
    - Numbers: RGB or RGBA values for p-color (e.g., 255 0 0 or 255 0 0 128)
+   - Existing color/expression: any form that already returns a color
    
    Examples:
    (defcolor my-red \"#ff0000\")
    (defcolor my-blue \"ff0000ff\")
    (defcolor my-green 0 255 0)
-   (defcolor my-transparent 255 0 0 128)"
+   (defcolor my-transparent 255 0 0 128)
+   (defcolor faint-red (faint red 100))"
   [name color-def & args]
-  (if (string? color-def)
+  (cond
+    (string? color-def)
     ;; String format - hex color (use unqualified symbol that will resolve in user namespace)
     `(def ~name (~'hex-color ~color-def))
+
+    (seq args)
     ;; Number format - p-color with RGB or RGBA
     ;; All remaining args are numbers: (defcolor name r g b) or (defcolor name r g b a)
-    `(def ~name (~'p-color ~color-def ~@args))))
+    `(def ~name (~'p-color ~color-def ~@args))
+
+    (number? color-def)
+    `(def ~name (~'p-color ~color-def))
+
+    (and (list? color-def) (= 'quote (first color-def)))
+    `(def ~name (~'apply ~'p-color ~(second color-def)))
+
+    (vector? color-def)
+    `(def ~name (~'apply ~'p-color ~color-def))
+
+    :else
+    ;; Existing color/expression
+    `(def ~name ~color-def)))
 
 (defmacro defpalette
   "Define a palette of colors. Creates individual color variables and a palette map.
@@ -32,16 +50,18 @@
    - String: hex color (e.g., \"#ff4488\" or \"0000ff\")
    - List: RGB/RGBA values for p-color (e.g., '(255 0 0) or '(255 0 255 150))
    - Vector: RGB/RGBA values for p-color (e.g., [255 0 0] or [255 0 255 150])
+   - Existing color/expression: any form that already returns a color
    
    Examples:
    (defpalette palette1
      red '(255 0 0)
      blue \"0000ff\"
-     transparent-pink [255 0 255 150])
+     transparent-pink [255 0 255 150]
+     faint-red (faint red 100))
    
    This creates:
-   - Individual variables: red, blue, transparent-pink
-   - A map: palette1 with {:red ... :blue ... :transparent-pink ...}"
+   - Individual variables: red, blue, transparent-pink, faint-red
+   - A map: palette1 with {:red ... :blue ... :transparent-pink ... :faint-red ...}"
   [palette-name & color-defs]
   (when (odd? (count color-defs))
     (throw (ex-info "defpalette requires an even number of arguments (color-name color-spec pairs)"
@@ -53,15 +73,21 @@
                           (let [color-value (cond
                                                (string? color-spec)
                                                `(~'hex-color ~color-spec)
-                                               
-                                               (list? color-spec)
-                                               `(~'apply ~'p-color ~color-spec)
+
+                                               (and (list? color-spec) (= 'quote (first color-spec)))
+                                               `(~'apply ~'p-color ~(second color-spec))
                                                
                                                (vector? color-spec)
                                                `(~'apply ~'p-color ~color-spec)
+
+                                               (list? color-spec)
+                                               color-spec
+
+                                               (symbol? color-spec)
+                                               color-spec
                                                
                                                :else
-                                               (throw (ex-info "Color spec must be string, list, or vector"
+                                               (throw (ex-info "Color spec must be string, list, vector, or expression"
                                                                {:color-name color-name :color-spec color-spec})))]
                             [`(def ~color-name ~color-value)
                              `[~(keyword color-name) ~color-name]]))
