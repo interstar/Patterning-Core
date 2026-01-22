@@ -39,9 +39,13 @@ We can also create the polygon with a different centre. In this case, we put the
 
 Now let's make a simple pattern.
 
+First, we actually have a palette of standard colours for Patterning now. These are no enabled by default, but you can define them with `(set-standard-colors)`. Calling this will make our code less verbose.
+
+
+Now, we'll
 Take a polygon offset from the centre. And pass it through a *layout* function called clock-rotate
 
-    (clock-rotate 5 (poly 3 0.3 0 -0.6 {:stroke (p-color 255 100 100) :stroke-weight 2 }))
+    (clock-rotate 5 (poly 3 0.3 0 -0.6 {:stroke red :stroke-weight 2 }))
 
 `poly` creates the triangle
 
@@ -53,9 +57,11 @@ Note that we can also use Clojure's threading macros to organise patterns more i
 ----
 :patterning-small
 
+(set-standard-colors)
+
 (->>
   (poly 3 0.3 0 -0.6
-    (paint (p-color 255 100 100) :nofill 2))
+    (paint red :nofill 2))
   (clock-rotate 5))
 
 ----
@@ -65,12 +71,14 @@ Note that we can also use Clojure's threading macros to organise patterns more i
 ----
 :patterning
 
+(set-standard-colors)
+
 (stack
  (poly 5 0.7 0 0 
-   {:stroke (p-color 0 0 255) :stroke-weight 2})
+   {:stroke blue :stroke-weight 2})
  (->>
    (poly 3 0.3 0 -0.6
-     (paint (p-color 255 100 100) :nofill 2))
+     (paint red :nofill 2))
    (clock-rotate 5))
 )
 
@@ -83,12 +91,14 @@ Note that we can also use Clojure's threading macros to organise patterns more i
 ----
 :patterning
 
+(set-standard-colors)
+
 (grid 6
   (stack
-   (poly 5 0.7  {:stroke (p-color 0 0 255), :stroke-weight 2})
+   (poly 5 0.7  {:stroke blue :stroke-weight 2})
    (clock-rotate 5
     (poly 3 0.3 0 -0.6 
-     {:stroke (p-color 255 100 100), :stroke-weight 2}))))
+     {:stroke red :stroke-weight 2}))))
 
 
 ----
@@ -104,10 +114,12 @@ The `checkered-grid` takes two streams of patterns and interpolates between them
 ----
 :patterning-small
 
+(set-standard-colors)
+
 (let
- [t-style {:stroke (p-color 255 100 100), :stroke-weight 2}
+ [t-style {:stroke brown :stroke-weight 2}
   triangles (clock-rotate 5 (poly 3 0.3 0 -0.6 t-style))
-  p-style {:stroke (p-color 0 0 255), :stroke-weight 2}
+  p-style {:stroke teal :stroke-weight 2}
   pentagon
   (poly 5 0.7 0 0 p-style)]
  (checkered-grid 5 (repeat pentagon) (repeat triangles)))
@@ -118,16 +130,17 @@ OK. change of direction, a ''drunkards walk'' is a series of points each of whic
 
 Patterning has a function for that, drunk-line, which takes a number of steps, a step-length and an option style
 
-    (drunk-line 10 0.1 {:stroke (p-color 100 255 100) :stroke-weight 3})
+    (drunk-line 10 0.1 {:stroke purple :stroke-weight 3})
 
 
 ----
 :patterning-small
 
+(set-standard-colors)
+
 (drunk-line
- 10 
- 0.1 
- {:stroke (p-color 100 255 100), :stroke-weight 3})
+ 10 0.1 
+ {:stroke purple :stroke-weight 3})
 
 ----
 

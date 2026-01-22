@@ -61,7 +61,7 @@ This creates:
  - individual vars like `red`, `blue`, `light-grey`, `turquoise`, `crimson`
  - a map called `standard-colors` that you can use with keywords:
 
-    (standard-colors :turquoise)
+    (:turquoise standard-colors)
 
 Example:
 
@@ -102,15 +102,15 @@ And to see the transparency we can stack it on top of a basic grid of squares.
 ----
 :patterning
 
-(defcolor black 0)
-(defcolor purple 100 50 100)
-(defcolor green 100 255 100)
+(set-standard-colors)
+(defcolor transparent-green (faint green 100))
+
 
 (on-background black
   (stack
     (grid 10 (square {:stroke-weight 2, :stroke purple}))
     (over-style
-      {:fill (p-color 150 255 150 150)}
+      {:fill transparent-green}
       (clock-rotate 12
         (drunk-line 20 0.05 {:stroke green :stroke-weight 3})))))
 
