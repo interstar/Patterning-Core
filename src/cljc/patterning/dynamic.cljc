@@ -61,6 +61,7 @@
    'old-ring #'p-layouts/old-ring
    'grid #'p-layouts/grid
    'h-grid #'p-layouts/h-grid
+   'rows #'p-layouts/rows
    'half-drop-grid #'p-layouts/half-drop-grid
    'diamond-grid #'p-layouts/diamond-grid
    'random-grid #'p-layouts/random-grid

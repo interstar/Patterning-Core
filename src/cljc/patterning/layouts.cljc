@@ -192,6 +192,21 @@
         positions (rgrid-layout-positions cols rows)]
     (place-groups-at-positions scaled-groups positions)))
 
+(defn rows
+  "Lay out a nested vector of rows, left-to-right and top-to-bottom.
+   Short rows are padded with empty patterns to match the longest row."
+  [row-groups]
+  (let [row-count (count row-groups)
+        col-count (if (seq row-groups) (apply max 0 (map count row-groups)) 0)]
+    (if (or (zero? row-count) (zero? col-count))
+      (groups/empty-pattern)
+      (let [maxdim (max row-count col-count)
+            pad-row (fn [row] (take col-count (concat row (repeat (groups/empty-pattern)))))
+            groups-seq (mapcat identity (map pad-row row-groups))
+            scaled-groups (map (partial groups/scale (/ 1 maxdim)) groups-seq)
+            positions (rgrid-layout-positions col-count row-count)]
+        (place-groups-at-positions scaled-groups positions)))))
+
 (defn half-drop-grid "Like grid but with half-drop"
   [n groups] (place-groups-at-positions (scale-group-stream n (ensure-sequence groups)) (half-drop-grid-layout-positions n)))
 
