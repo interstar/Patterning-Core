@@ -10,7 +10,7 @@
             [patterning.layouts
              :refer [framed clock-rotate stack grid diamond-grid
                      four-mirror four-round nested-stack checkered-grid
-                     half-drop-grid random-turn-groups h-mirror ring
+                     half-drop-grid random-turn-groups h-mirror ring rgrid
                      sshape-as-layout]]
 
             [patterning.library.std
@@ -31,12 +31,21 @@
             
             
             [patterning.api :refer :all]
+            [patterning.macros :refer [set-standard-colors]]
 
             [clojure.pprint :as pp]
 
             [malli.core :as m]
 
             ))
+
+(set-standard-colors)
+
+(def standard-color-order
+  [:black :white :grey :red :green :dark-green :blue :cyan :magenta :yellow
+   :orange :purple :brown :pink :navy :teal :olive :maroon :silver :gold
+   :violet :indigo :coral :salmon :khaki :beige :chocolate :crimson
+   :skyblue :cream])
 
 
 ;; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -145,7 +154,7 @@
 (defn randomize-color [p] (let [c (rand-col)] (groups/over-style {:fill (darker-color c)
                                                                   :stroke c} p ) ))
 
-(def p4 '(ring 8 0.5 (map randomize-color (cycle (map a-nangle [5 7 9])))))
+(def p4 '(ring 8 0.5 1 (map randomize-color (cycle (map a-nangle [5 7 9])))))
 
 (def p5 '(let [l (drunk-line 10 0.1 :angle-range 0.4)
               s (map randomize-color (cycle (map a-nangle [5 7 9])))   ]
@@ -347,6 +356,13 @@
                                  (stack bg ground w1 w2 frame bird)))]
     (-> (pelican-riding-bike) reframe)))
 
+(def p12
+  '(let [colors (map standard-colors standard-color-order)
+         squares (map (fn [c]
+                        (square {:fill c :stroke (p-color 0) :stroke-weight 0.01}))
+                      colors)]
+     (rgrid 6 5 squares)))
+
 (defn finals [ps]
   (println "Producing Example Outputs in outs/")
   (doseq [[n qp] ps]
@@ -379,5 +395,5 @@
     ["p9 Black Square" p9]
     ["p10 The City We Invent" '(city/city 11)]
     ["p11 Pelican on a Bicycle" pelican-pattern]
+    ["p12 Standard Colors" p12]
     ])  )
-

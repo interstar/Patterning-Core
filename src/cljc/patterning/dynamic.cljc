@@ -55,6 +55,10 @@
    'map-stack #'p-layouts/map-stack
    'iterate-stack #'p-layouts/iterate-stack
    'clock-rotate #'p-layouts/clock-rotate
+   'ring #'p-layouts/ring
+   'ring-rotate #'p-layouts/ring-rotate
+   'ring-out #'p-layouts/ring-out
+   'old-ring #'p-layouts/old-ring
    'grid #'p-layouts/grid
    'h-grid #'p-layouts/h-grid
    'half-drop-grid #'p-layouts/half-drop-grid

@@ -345,20 +345,59 @@
      (concat (mapcat (fn [a g] (groups/rotate a g)) angs prepared-groups ))
      )))
 
-(defn ring "Better clock-rotate" [n offset groups]
+(defn old-ring "Legacy ring layout (pre-2026 behavior)." [n offset groups]
   (let [shift-f (fn [g] (groups/translate
-                        (* offset 2)
-                        0
-                        (groups/scale
-                         (/ (- 1 offset) 2)
-                         (groups/rotate maths/PI (groups/h-centre (groups/reframe g))))))
+                         (* offset 2)
+                         0
+                         (groups/scale
+                          (/ (- 1 offset) 2)
+                          (groups/rotate maths/PI (groups/h-centre (groups/reframe g))))))
         groups-seq (ensure-sequence groups)]
 
     (groups/reframe (groups/rotate (- (/ maths/PI 2))
-                                    (mapcat (fn [a g]
-                                              (groups/rotate a (shift-f g)))
-                                            (iterate (partial + (* 2 (/ maths/PI n))) 0 )
-                                            (take n (cycle groups-seq)))))))
+                                   (mapcat (fn [a g]
+                                             (groups/rotate a (shift-f g)))
+                                           (iterate (partial + (* 2 (/ maths/PI n))) 0 )
+                                           (take n (cycle groups-seq)))))))
+
+(defn ring-rotate
+  "Ring layout where each copy is rotated by its position (clock-rotate style)."
+  ([rotation-number group]
+   (ring-rotate rotation-number 0.6 0.4 group))
+  ([rotation-number radius-offset scale-factor group]
+   (->> group
+        (groups/scale scale-factor)
+        (groups/translate radius-offset 0)
+        (clock-rotate rotation-number))))
+
+(defn ring
+  "Ring layout where each copy keeps its original orientation."
+  ([rotation-number group]
+   (ring rotation-number 0.6 0.4 group))
+  ([rotation-number radius-offset scale-factor group]
+   (let [angs (maths/clock-angles rotation-number)
+         groups-seq (take rotation-number (ensure-sequence group))
+         scaled-groups (map (partial groups/scale scale-factor) groups-seq)]
+     (mapcat (fn [a g]
+               (let [[dx dy] (maths/rotate-point a [radius-offset 0])]
+                 (groups/translate dx dy g)))
+             angs
+             scaled-groups))))
+
+(defn ring-out
+  "Ring layout where each copy faces outward from the center."
+  ([rotation-number group]
+   (ring-out rotation-number 0.6 0.4 group))
+  ([rotation-number radius-offset scale-factor group]
+   (let [angs (maths/clock-angles rotation-number)
+         groups-seq (take rotation-number (ensure-sequence group))
+         scaled-groups (map (partial groups/scale scale-factor) groups-seq)]
+     (mapcat (fn [a g]
+               (let [[dx dy] (maths/rotate-point a [radius-offset 0])
+                     rotated (groups/rotate (+ a maths/d90) g)]
+                 (groups/translate dx dy rotated)))
+             angs
+             scaled-groups))))
 
 
 (defn four-round "Four squares rotated" [group]
