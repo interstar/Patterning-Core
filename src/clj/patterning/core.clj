@@ -20,7 +20,7 @@
             [patterning.library.l_systems :refer [l-system]]
             [patterning.library.complex-elements :refer [vase zig-zag]]
             [patterning.view :refer [make-txpt make-svg]]
-            [patterning.color :refer [p-color remove-transparency] ]
+            [patterning.color :refer [p-color hex-color remove-transparency] ]
             [patterning.examples.framedplant :as framedplant]
             [patterning.examples.design_language1 :as design-language]
             [patterning.examples.city :as city]
@@ -31,7 +31,7 @@
             
             
             [patterning.api :refer :all]
-            [patterning.macros :refer [set-standard-colors]]
+            [patterning.macros :refer [set-standard-colors defpalette defcolor]]
 
             [clojure.pprint :as pp]
 
