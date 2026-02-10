@@ -11,6 +11,72 @@
 (defonce worker-ref (atom nil))
 (defonce timeout-ref (atom nil))
 
+(def standard-palette
+  [{:name "black" :hex "#000000"}
+   {:name "white" :hex "#ffffff"}
+   {:name "grey" :hex "#d3d3d3"}
+   {:name "red" :hex "#ff0000"}
+   {:name "green" :hex "#00ff00"}
+   {:name "dark-green" :hex "#008000"}
+   {:name "blue" :hex "#0000ff"}
+   {:name "cyan" :hex "#00ffff"}
+   {:name "magenta" :hex "#ff00ff"}
+   {:name "yellow" :hex "#ffff00"}
+   {:name "orange" :hex "#ffa500"}
+   {:name "purple" :hex "#800080"}
+   {:name "brown" :hex "#a52a2a"}
+   {:name "pink" :hex "#ffc0cb"}
+   {:name "navy" :hex "#000080"}
+   {:name "teal" :hex "#008080"}
+   {:name "olive" :hex "#808000"}
+   {:name "maroon" :hex "#800000"}
+   {:name "silver" :hex "#c0c0c0"}
+   {:name "gold" :hex "#ffd700"}
+   {:name "violet" :hex "#ee82ee"}
+   {:name "indigo" :hex "#4b0082"}
+   {:name "coral" :hex "#ff7f50"}
+   {:name "salmon" :hex "#fa8072"}
+   {:name "khaki" :hex "#f0e68c"}
+   {:name "beige" :hex "#f5f5dc"}
+   {:name "chocolate" :hex "#d2691e"}
+   {:name "crimson" :hex "#dc143c"}
+   {:name "skyblue" :hex "#87ceeb"}
+   {:name "cream" :hex "#fff7d7"}])
+
+(defn- palette-visible? []
+  (when-let [modal (. js/document getElementById "palette-modal")]
+    (.contains (.-classList modal) "show")))
+
+(defn- set-palette-visible! [visible?]
+  (when-let [modal (. js/document getElementById "palette-modal")]
+    (if visible?
+      (do
+        (.add (.-classList modal) "show")
+        (.setAttribute modal "aria-hidden" "false"))
+      (do
+        (.remove (.-classList modal) "show")
+        (.setAttribute modal "aria-hidden" "true")))))
+
+(defn- palette-item-el [doc {:keys [name hex]}]
+  (let [item (.createElement doc "div")
+        swatch (.createElement doc "div")
+        label (.createElement doc "div")]
+    (set! (.-className item) "palette-item")
+    (set! (.-className swatch) "palette-swatch")
+    (set! (.-className label) "palette-label")
+    (set! (.-textContent label) name)
+    (set! (.-style.backgroundColor swatch) hex)
+    (set! (.-title swatch) (str name " " hex))
+    (.appendChild item swatch)
+    (.appendChild item label)
+    item))
+
+(defn- render-palette! []
+  (when-let [grid (. js/document getElementById "palette-grid")]
+    (set! (.-textContent grid) "")
+    (doseq [entry standard-palette]
+      (.appendChild grid (palette-item-el js/document entry)))))
+
 
 (defn- apply-style [p5 style]
   "Apply fill, stroke, and stroke-weight to p5 context"
@@ -401,6 +467,31 @@
                 (.remove (.-classList data-container) "visible")
                 (set! (.-textContent toggle-btn) "Show Pattern Data")))))))))
 
+(defn setup-palette-button []
+  "Set up the standard palette popup button"
+  (let [toggle-btn (. js/document getElementById "toggle-palette")
+        modal (. js/document getElementById "palette-modal")
+        close-btn (. js/document getElementById "close-palette")]
+    (when (and toggle-btn modal)
+      (render-palette!)
+      (.addEventListener toggle-btn "click"
+        (fn [event]
+          (.preventDefault event)
+          (set-palette-visible! (not (palette-visible?)))))
+      (when close-btn
+        (.addEventListener close-btn "click"
+          (fn [event]
+            (.preventDefault event)
+            (set-palette-visible! false))))
+      (.addEventListener modal "click"
+        (fn [event]
+          (when (= (.-target event) modal)
+            (set-palette-visible! false))))
+      (.addEventListener js/document "keydown"
+        (fn [event]
+          (when (and (= "Escape" (.-key event)) (palette-visible?))
+            (set-palette-visible! false)))))))
+
 (defn setup-button-listeners [editor]
   "Set up event listeners for all download buttons"
   (let [copy-code-btn (. js/document getElementById "copy-code")
@@ -547,6 +638,7 @@
     (setup-editor-status-watcher editor)
     (setup-editor-change-handler editor)
     (setup-data-toggle-button)
+    (setup-palette-button)
     (setup-download-buttons editor)
     (setup-default-code editor)))
 

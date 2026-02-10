@@ -90,6 +90,7 @@
    'horizontal-line #'p-lib-std/horizontal-line
    'square #'p-lib-std/square
    'truchet #'p-lib-std/truchet
+   'pixel #'p-lib-std/pixel
    'drunk-line #'p-lib-std/drunk-line
    'hex-side-center #'p-lib-std/hex-side-center
    ;; Additional functions needed for complex patterns like Pelican

@@ -380,10 +380,13 @@
   ([rotation-number group]
    (ring-rotate rotation-number 0.6 0.4 group))
   ([rotation-number radius-offset scale-factor group]
-   (->> group
-        (groups/scale scale-factor)
-        (groups/translate radius-offset 0)
-        (clock-rotate rotation-number))))
+   (let [groups-seq (take rotation-number (ensure-sequence group))
+         prepared-groups (map (fn [g]
+                                (->> g
+                                     (groups/scale scale-factor)
+                                     (groups/translate radius-offset 0)))
+                              groups-seq)]
+     (clock-rotate rotation-number prepared-groups))))
 
 (defn ring
   "Ring layout where each copy keeps its original orientation."

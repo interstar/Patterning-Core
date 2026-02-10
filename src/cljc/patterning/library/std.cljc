@@ -26,6 +26,40 @@
   (optional-styled-primitive []
     [[1 1] [-1 1] [-1 -1] [1 1]]))
 
+;; Pixel art helper
+(defn- palette-color [palette k]
+  (cond
+    (map? palette) (get palette k)
+    (vector? palette) (nth palette (dec k) nil)
+    (sequential? palette) (nth (vec palette) (dec k) nil)
+    :else nil))
+
+(defn pixel
+  "Create an n x n pixel-art grid from a flat vector of numbers.
+   0 = empty, positive numbers map to palette entries.
+
+   Example:
+   (pixel 2 [0 0 1 1] palette)
+   The palette can be a map keyed by number, or a vector/sequence
+   indexed by (value-1)."
+  [n pixels palette]
+  (let [cell (/ 2.0 n)
+        total (* n n)
+        pixel-list (take total (concat pixels (repeat 0)))]
+    (mapcat
+     identity
+     (keep-indexed
+      (fn [idx v]
+        (when (pos? v)
+          (let [col (mod idx n)
+                row (int (/ idx n))
+                x (+ -1 (* col cell))
+                y (+ -1 (* row cell))
+                c (palette-color palette v)]
+            (when c
+              (rect x y cell cell {:fill c :stroke c :stroke-weight 0})))))
+      pixel-list))))
+
 
 
 (defn poly

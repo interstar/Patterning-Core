@@ -18,6 +18,7 @@
     <div class="header">
         <h1>Patterning : Project RoseEngine</h1>
         <div class="download-buttons">
+            <button id="toggle-palette" class="download-btn palette-btn">Palette</button>
             <button id="copy-code" class="download-btn">Copy Code</button>
             <button id="save-code" class="download-btn">Save Code</button>
             <button id="load-code" class="download-btn">Load Code</button>
@@ -43,6 +44,16 @@
                 </div>
             </div>
             
+        </div>
+    </div>
+
+    <div id="palette-modal" class="palette-modal" aria-hidden="true">
+        <div class="palette-card" role="dialog" aria-modal="false" aria-labelledby="palette-title">
+            <div class="palette-header">
+                <div id="palette-title" class="palette-title">Standard Palette</div>
+                <button id="close-palette" class="palette-close" aria-label="Close palette">Close</button>
+            </div>
+            <div id="palette-grid" class="palette-grid"></div>
         </div>
     </div>
 
