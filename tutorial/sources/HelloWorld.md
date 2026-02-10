@@ -41,6 +41,7 @@ Once you have either a an online workspace, or the library available from within
 * [[Douat]] a tiling technique inspired by Truchet and Douat's research
 * [[Color]] - a word on colour
 * [[HexGrid]] - Hexagonal grids are fun.
+* [[Pixel]] - Convenient way to make "pixel-art" style patterns.
 
 Other Patterns
 

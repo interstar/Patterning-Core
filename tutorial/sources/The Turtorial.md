@@ -18,14 +18,12 @@ For example :
 
 In the program string "F" is a move-forward command, "+" is turn-right, "-" is turn left.
 ----
-:patterning
+:patterning-small
 
 
 (basic-turtle
  [-0.4 -0.4]
- 0.2
- 0
- (/ PI 4)
+ 0.2 0 (/ PI 4)
  "FFFF+F+F+F+FFFFF+F+F+F+F"
  {} 
  {:stroke-weight 2, :stroke (p-color 100 50 100)})
@@ -37,13 +35,10 @@ The result of a turtle's drawing is a pattern that can be processed and combined
 
 
 (four-mirror
- (clock-rotate
-  6
+ (clock-rotate 6
   (basic-turtle
    [-0.7 -0.4]
-   0.1
-   0
-   (/ PI 4)
+   0.1 0 (/ PI 4)
    "FFFF+F+F+F+FFFFF+F+F+F+F"
    {}
    {:stroke-weight 2,
@@ -149,7 +144,6 @@ In the following adaptation of the previous example, we've added a custom "leaf"
 We don't want this fruit to appear everywhere in our tree, so we've created a two step rule to add it. The character "Y" in a string is transformed into "Z" and "Z" triggers the custom leaf.
 ----
 :patterning
-
 
 (let
  [grow (l-system [["F" "F[+F]F[-F]Y[F]"] ["Y" "Z"]])]

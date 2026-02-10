@@ -9,7 +9,7 @@ Patterning now has two functions to support making hexagonal grids patterns.
 The first is the basic `hex-grid` to lay hexagonal tiles out.
 
 ----
-:patterning
+:patterning-small
 
 (def blue (paint :blue (p-color 100 100 255)))
 
@@ -24,7 +24,7 @@ The second function Patterning provides is `hex-side-center`. This is a convenie
 For example, here we draw another polygon at this point for the 1st, 3rd and 5th sides of a hexagon. Note that `hex-side-center`returns a point, ie a vector containing the x and y coordinates. That's why we define the `pip` function here to take a single argument with the two coordinates. We can use Clojure's destructuring assignment to unpack the x and y from the vector in the argument list. Ie. `(defn pip [ [x y]] (poly 15 0.05 x y pink))`
 
 ----
-:patterning
+:patterning-small
 
 (def blue (paint :blue (p-color 100 100 255)))
 (def pink (paint :magenta (p-color 255 100 255)))

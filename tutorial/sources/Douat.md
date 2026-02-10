@@ -15,7 +15,7 @@ What this means is that we can write code like this to make a simple 4 tile patt
 
 
 ----
-:patterning
+:patterning-small
 (->
   (Douat 
    (stack
