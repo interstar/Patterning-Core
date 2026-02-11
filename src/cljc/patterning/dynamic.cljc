@@ -45,6 +45,10 @@
    'PI p-maths/PI
    'p-color #'p-color/p-color
    'hex-color #'p-color/hex-color
+   'paint #'p-color/paint
+   'faint #'p-color/faint
+   'rand-col #'p-color/rand-col
+   'darker-color #'p-color/darker-color
    'defcolor #'p-macros/defcolor
    'defpalette #'p-macros/defpalette
    'set-standard-colors #'p-macros/set-standard-colors
@@ -93,6 +97,8 @@
    'pixel #'p-lib-std/pixel
    'drunk-line #'p-lib-std/drunk-line
    'hex-side-center #'p-lib-std/hex-side-center
+   'make-svg #'p-view/make-svg
+   'make-txpt #'p-view/make-txpt
    ;; Additional functions needed for complex patterns like Pelican
    'translate #'p-groups/translate
    'scale #'p-groups/scale
@@ -108,6 +114,15 @@
    'on-background #'p-lib-std/on-background
    'four-round #'p-layouts/four-round
    'Douat #'p-lib-douat/Douat
+   'A #'p-lib-douat/A
+   'B #'p-lib-douat/B
+   'C #'p-lib-douat/C
+   'D #'p-lib-douat/D
+   'E #'p-lib-douat/E
+   'F #'p-lib-douat/F
+   'G #'p-lib-douat/G
+   'Q #'p-lib-douat/Q
+   'R #'p-lib-douat/R
    'clock-points #'p-maths/clock-points
    'distance #'p-maths/distance
    'atan2 #'p-maths/atan2
