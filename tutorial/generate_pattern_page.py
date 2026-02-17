@@ -31,186 +31,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <link rel="stylesheet" href="css/codemirror/theme/dracula.css">
     <!-- Embedded editor CSS -->
     <link rel="stylesheet" href="css/embedded-editor.css">
-    
-    <style>
-        /* Top bar styles */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: var(--color-dark);
-            display: flex;
-            align-items: center;
-            padding: 0 2rem;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .top-bar a {
-            font-family: 'Analecta', serif;
-            color: var(--color-background);
-            text-decoration: none;
-            font-size: 1.2rem;
-            letter-spacing: 0.05em;
-        }
-        
-        .top-bar a:hover {
-            color: var(--color-accent);
-        }
-        
-        /* Adjust layout to account for fixed top bar */
-        .layout {
-            margin-top: 40px;
-        }
-        
-        /* Pattern example styles */
-        .pattern-example {
-            margin: 2em 0;
-            padding: 1em;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            background: #fafafa;
-        }
-        
-        .pattern-code {
-            margin: 1em 0;
-            background: #2d3748;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .pattern-code pre {
-            margin: 0;
-            padding: 1em;
-            color: #e2e8f0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9em;
-            line-height: 1.4;
-            overflow-x: auto;
-        }
-        
-        .pattern-preview {
-            margin: 1em 0;
-            text-align: center;
-            background: white;
-            border-radius: 4px;
-            padding: 1em;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .pattern-preview img {
-            max-width: 100%;
-            height: auto;
-            max-height: 400px;
-        }
-
-        /* Inline thumbnail styles */
-        .pattern-thumbnail {
-            display: inline-block;
-            width: 200px;
-            height: 200px;
-            margin: 0.25em;
-            vertical-align: middle;
-        }
-
-        .pattern-thumbnail svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Small pattern styles */
-        .pattern-small {
-            display: flex;
-            gap: 1em;
-            align-items: flex-start;
-            margin: 1.5em 0;
-            padding: 1em;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            background: white;
-        }
-
-        .pattern-small-code {
-            flex: 1 1 auto;
-            max-width: 60%;
-            background: white;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .pattern-small-code pre {
-            margin: 0;
-            padding: 1em;
-            color: #1a202c;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85em;
-            line-height: 1.4;
-            height: 200px;
-            overflow: auto;
-            box-sizing: border-box;
-        }
-
-        .pattern-small-preview {
-            width: 200px;
-            height: 200px;
-            flex: 0 0 auto;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .pattern-small-preview svg {
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* Pattern action buttons */
-        .pattern-actions {
-            display: flex;
-            gap: 0.5em;
-            padding: 0.5em;
-            background: #f5f5f5;
-            border-top: 1px solid #ddd;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .pattern-actions button {
-            padding: 0.5em 1em;
-            font-size: 0.9em;
-            font-family: 'JetBrains Mono', monospace;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background 0.2s;
-            height: 36px;
-            line-height: 1;
-        }
-        
-        .pattern-actions button.copy {
-            background: #2c5282;
-            color: white;
-        }
-        
-        .pattern-actions button.copy:hover {
-            background: #2b6cb0;
-        }
-        
-        
-        .pattern-actions button.workbench {
-            background: #805ad5;
-            color: white;
-        }
-        
-        .pattern-actions button.workbench:hover {
-            background: #9f7aea;
-        }
-    </style>
+    <link rel="stylesheet" href="tutorial.css">
 </head>
 <body>
     <div class="top-bar">
@@ -378,27 +199,13 @@ def generate_svg_for_pattern(pattern_code, pattern_id, output_dir, page_name, wi
         except:
             pass
 
-def read_svg_content(svg_path):
-    """Read generated SVG content for embedding."""
-    print(f"DEBUG: Attempting to read SVG file: {svg_path}")
-    print(f"DEBUG: File exists: {os.path.exists(svg_path)}")
-    if os.path.exists(svg_path):
-        print(f"DEBUG: File size: {os.path.getsize(svg_path)} bytes")
-    try:
-        with open(svg_path, 'r') as f:
-            svg_content = f.read()
-        print(f"DEBUG: Successfully read SVG content, length: {len(svg_content)}")
-        return svg_content, None
-    except IOError as e:
-        print(f"DEBUG: IOError reading SVG file: {e}")
-        return None, f"Error reading SVG file: {e}"
-    except Exception as e:
-        print(f"DEBUG: Unexpected error reading SVG file: {e}")
-        return None, f"Unexpected error reading SVG file: {e}"
-
-def render_pattern_container(pattern, pattern_id, svg_content, block_type, error_message=None):
+def render_pattern_container(pattern, pattern_id, svg_rel_path, block_type, error_message=None):
     """Render the HTML container for a pattern block."""
-    preview_content = svg_content if not error_message else f"<p>{error_message}</p>"
+    preview_content = (
+        f'<img src="{svg_rel_path}" alt="Pattern {pattern_id}">'
+        if not error_message and svg_rel_path else
+        f"<p>{error_message}</p>"
+    )
     if block_type == ':patterning-thumbnail':
         return f'''
 <span class="pattern-thumbnail" id="pattern-{pattern_id}-thumbnail">
@@ -480,12 +287,9 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
                 })
             
             # Add a pattern example container
-            if svg_path:
-                svg_content, error_message = read_svg_content(svg_path)
-            else:
-                svg_content = None
-                error_message = "Error generating pattern preview"
-            container = render_pattern_container(pattern, pattern_id, svg_content, block_type, error_message)
+            svg_rel_path = os.path.basename(svg_path) if svg_path else None
+            error_message = None if svg_path else "Error generating pattern preview"
+            container = render_pattern_container(pattern, pattern_id, svg_rel_path, block_type, error_message)
             
             markdown_blocks.append(container)
         else:
