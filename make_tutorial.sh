@@ -10,6 +10,9 @@ mkdir -p tutorial/out
 echo "Copying workbench to tutorial output directory..."
 cp -r workbench tutorial/out/
 
+# Copy shared tutorial stylesheet
+cp tutorial/tutorial.css tutorial/out/tutorial.css
+
 # This is my Virtual Env ... you might have a different one or none at all
 source ~/.main_python_venv/bin/activate
 
