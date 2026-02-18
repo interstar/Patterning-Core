@@ -74,6 +74,11 @@
 (defn cos [a] #?(:clj (Math/cos a) :cljs (js/Math.cos a)))
 (defn sin [a] #?(:clj (Math/sin a) :cljs (js/Math.sin a)))
 
+(defn parse-int-radix
+  [s radix]
+  #?(:clj (Integer/parseInt s radix)
+     :cljs (js/parseInt s radix)))
+
 
 (defn clock-angles [number]
   (let [da (float (/ TwoPI number))]

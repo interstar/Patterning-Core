@@ -1,7 +1,7 @@
 (ns patterning.color
   (:require [patterning.strings :as strings]
             [patterning.maths :as maths
-             :refer [default-random]]))
+             :refer [default-random parse-int-radix]]))
 
 ;; Now we'll use a custom vector as a color
 (defn p-color
@@ -42,8 +42,7 @@
   (let [alpha (if (string? a)
                 (let [alpha-str a]
                   (if (re-matches #"[0-9a-fA-F]{1,2}" alpha-str)
-                    #?(:clj (Integer/parseInt alpha-str 16)
-                       :cljs (js/parseInt alpha-str 16))
+                    (parse-int-radix alpha-str 16)
                     (throw (ex-info (str "Invalid alpha string: " alpha-str)
                                     {:alpha alpha-str}))))
                 a)]
@@ -74,8 +73,7 @@
 (defn hex-char-to-int
   "Convert a single hex character to integer"
   [c]
-  (let [c #?(:clj (clojure.string/lower-case (str c))
-             :cljs (-> (str c) .toLowerCase))]
+  (let [c (strings/lower-case (str c))]
     (case c
       "0" 0  "1" 1  "2" 2  "3" 3  "4" 4  "5" 5  "6" 6  "7" 7
       "8" 8  "9" 9  "a" 10 "b" 11 "c" 12 "d" 13 "e" 14 "f" 15
@@ -94,8 +92,7 @@
    Supports formats: #RGB, #RRGGBB, #RGBA, #RRGGBBAA, RGB, RRGGBB, RGBA, RRGGBBAA
    Returns [r g b] for 3/6 digit formats, [r g b a] for 4/8 digit formats"
   [hex-str]
-  (let [clean-str #?(:clj (clojure.string/replace hex-str #"^#" "")
-                     :cljs (-> hex-str (.replace #"^#" "")))
+  (let [clean-str (strings/strip-leading-hash hex-str)
         len (count clean-str)]
     (cond
       (= len 3) ; #RGB format

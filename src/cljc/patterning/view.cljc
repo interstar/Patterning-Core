@@ -59,7 +59,7 @@
 (defn xml-tpl
   "svg 'template' which also flips the coordinate system via http://www.braveclojure.com/organization/"
   [txpt width height group]
-  (str "<svg height=\"" height "\" width=\"" width "\">"
+  (str "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"" height "\" width=\"" width "\">"
        (inner-xml-tpl txpt width height group)
        "</svg>"))
 
