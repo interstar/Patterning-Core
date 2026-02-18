@@ -151,6 +151,28 @@ def convert_wiki_links(content):
     
     return re.sub(pattern, replace_link, content)
 
+def enable_markdown_in_main_blocks(content):
+    """Allow markdown processing inside raw <main> HTML blocks."""
+    def repl(match):
+        tag = match.group(0)
+        if re.search(r'\bmarkdown\s*=', tag):
+            return tag
+        return tag[:-1] + ' markdown="1">'
+    return re.sub(r'<main\b[^>]*>', repl, content, flags=re.IGNORECASE)
+
+def split_outer_main(content):
+    """If content is wrapped in a single outer <main>...</main>, split wrapper and body."""
+    m = re.match(r'^\s*(<main\b[^>]*>)\s*(.*?)\s*(</main>)\s*$', content,
+                 flags=re.IGNORECASE | re.DOTALL)
+    if m:
+        return m.group(1), m.group(2), m.group(3)
+    return None, content, None
+
+def markdown_to_html(markdown_text):
+    """Convert one markdown card to HTML in isolation."""
+    md = markdown.Markdown(extensions=['extra', 'md_in_html'])
+    return md.convert(markdown_text)
+
 def generate_svg_for_pattern(pattern_code, pattern_id, output_dir, page_name, width, height):
     """Generate SVG for a pattern using the Patterning CLI tool."""
     try:
@@ -241,13 +263,15 @@ def render_pattern_container(pattern, pattern_id, svg_rel_path, block_type, erro
 </div>'''
 
 def process_blocks(content, output_dir, page_name, tutorial_root):
-    """Process content by splitting on hyphens and handling each block appropriately."""
+    """Process content card-by-card so malformed HTML in one card does not affect others."""
+    main_open, content_body, main_close = split_outer_main(content)
+
     # Split on 4 or more hyphens
-    blocks = re.split(r'-{4,}', content)
+    blocks = re.split(r'-{4,}', content_body)
     
     # Process each block
     patterns = []
-    markdown_blocks = []
+    html_blocks = []
     failed_patterns = []  # Track failed pattern generations
     pattern_counter = 0
     block_configs = {
@@ -291,22 +315,16 @@ def process_blocks(content, output_dir, page_name, tutorial_root):
             error_message = None if svg_path else "Error generating pattern preview"
             container = render_pattern_container(pattern, pattern_id, svg_rel_path, block_type, error_message)
             
-            markdown_blocks.append(container)
+            html_blocks.append(container)
         else:
-            # This is a markdown block - keep it as is
-            markdown_blocks.append(block)
-    
-    # Join the markdown blocks back together
-    markdown_content = '\n\n'.join(markdown_blocks)
-    
-    # Convert wiki-style links first
-    markdown_content = convert_wiki_links(markdown_content)
-    
-    # Configure markdown converter
-    md = markdown.Markdown(extensions=['extra'])
-    
-    # Convert markdown to HTML
-    html_content = md.convert(markdown_content)
+            # Convert markdown card in isolation.
+            markdown_block = convert_wiki_links(block)
+            markdown_block = enable_markdown_in_main_blocks(markdown_block)
+            html_blocks.append(markdown_to_html(markdown_block))
+
+    html_content = '\n\n'.join(html_blocks)
+    if main_open and main_close:
+        html_content = f"{main_open}\n{html_content}\n{main_close}"
     
     return html_content, patterns, failed_patterns
 
