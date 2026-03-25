@@ -1,3 +1,13 @@
+^{:kindly/hide-code true
+  :clay {:title "What's new in Patterning?"
+         :quarto {:author :pjones
+                  :description "A brief introduction to the Patterning library, with a particular focus on what's changed"
+                  :type :post
+                  :draft true
+                  :date "2026-02-27"
+                  :category :graphics
+                  :tags [:visual-patterns :art :functional-programming]}}}
+
 (ns patterning-demo.prelude
   {:kindly/options {:kinds-that-hide-code #{:kind/md}}}
   (:require [patterning.prelude :refer :all]
@@ -15,7 +25,12 @@
 
 ^:kindly/hide-code
 (kind/md
- "# Patterning in Clay\n\nThis notebook is a short narrative tour through Patterning. Each section defines a pattern as data, then renders it directly as SVG.")
+ "# What's New in Patterning (2026)
+
+Patterning is a Clojure/ClojureScript library which I started working on in 2014. It's been fairly dormant for much of the 
+")
+
+
 
 ^:kindly/hide-code
 (kind/md "## 1. A simple seed + symmetry")

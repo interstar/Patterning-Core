@@ -92,6 +92,9 @@
    Supports formats: #RGB, #RRGGBB, #RGBA, #RRGGBBAA, RGB, RRGGBB, RGBA, RRGGBBAA
    Returns [r g b] for 3/6 digit formats, [r g b a] for 4/8 digit formats"
   [hex-str]
+  (when-not (string? hex-str)
+    (throw (ex-info "hex-color expects a string like \"#RRGGBB\"."
+                    {:value hex-str :value-type (type hex-str)})))
   (let [clean-str (strings/strip-leading-hash hex-str)
         len (count clean-str)]
     (cond

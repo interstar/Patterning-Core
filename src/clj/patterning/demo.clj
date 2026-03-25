@@ -1,4 +1,4 @@
-(ns patterning.core
+(ns patterning.demo
   (:require [patterning.maths :as maths :refer [PI clock-points distance atan2]]
 
             [patterning.sshapes
@@ -368,7 +368,7 @@
   (doseq [[n qp] ps]
     (println "-----------------------------------------------------------------------")
     (println n)
-    (let [p (binding [*ns* (find-ns 'patterning.core) ] (eval qp))]
+    (let [p (binding [*ns* (find-ns 'patterning.demo) ] (eval qp))]
       (pp/pprint p (clojure.java.io/writer (str "outs/" n ".patdat")) )
       (when-not (m/validate groups/Group p)
         (println "Invalid pattern:" (m/explain groups/Group p)))

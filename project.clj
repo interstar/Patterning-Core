@@ -70,8 +70,8 @@
                                    :optimizations :simple
                                    :source-map "workbench/worker.js.map"}}]}
 
-  :aot [patterning.core patterning.cli]
-  :main patterning.core
+  :aot [patterning.core patterning.cli patterning.demo]
+  :main patterning.demo
   
   ;; Aliases for convenient building
   :aliases {"build-workbench" ["do" ["cljsbuild" "once" "workbench"] ["cljsbuild" "once" "workbench-worker"]]})

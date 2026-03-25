@@ -1,6 +1,5 @@
 (ns patterning.cli
-  (:require [patterning.core :as core]
-            [patterning.view :refer [make-svg]]
+  (:require [patterning.view :refer [make-svg]]
             [patterning.groups :as groups]
             [patterning.sshapes :as sshapes]
             [patterning.layouts :as layouts]

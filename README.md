@@ -78,7 +78,7 @@ See more examples in the [Patterning Tutorial](https://alchemyislands.com/assets
     
 You should see that Patterning has produced several example patterns in the outs directory.
     
-Check the src/clj/core.clj for code that made these patterns.
+Check [src/clj/patterning/demo.clj] for the demo runner that made these patterns.
 
 
 # DEPRECATED 
