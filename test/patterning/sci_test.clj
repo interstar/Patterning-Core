@@ -131,7 +131,7 @@
 (deftest test-library-functions-available
   "Test that library functions are available"
   (testing "star function"
-    (let [result (eval-sci "(star 5 [0.3 0.5] 0 0 {:fill (p-color 255 255 0)})")]
+    (let [result (eval-sci "(star 5 0.3 0.5 0 0 {:fill (p-color 255 255 0)})")]
       (is (seq? result))
       (is (groups/validate-group result))))
   

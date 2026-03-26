@@ -13,7 +13,7 @@ The `rotate-tile-set` is a convenience function that takes a number of patterns,
 
 (let 
   [s
-   (star 5 [0.2 0.6] 
+   (star 5 0.2 0.6 
      {:fill (p-color 100 0 100)
       :stroke (p-color 255 90 180)})
    s2
