@@ -102,16 +102,17 @@
 (def multiline (optional-styled-primitive [ps] ps))
 
 (defn star
-  ([n rads cx cy style]
+  ([n inner-radius outer-radius cx cy style]
    ;; Double n internally so that n represents the number of outer points
    ;; e.g., n=5 creates a 5-pointed star with 10 total points (5 outer, 5 inner)
-   (let [total-points (* 2 n)]
+   (let [total-points (* 2 n)
+         radii (cycle [outer-radius inner-radius])]
      (APattern (->SShape style (close-shape (sshapes/translate-shape
                                               cx cy
-                                              (map maths/pol-to-rec (map vector (cycle rads) (maths/clock-angles total-points)))))))))
-  ([n rads cx cy] (star n rads cx cy default-style))
-  ([n rads style] (star n rads 0 0 style))
-  ([n rads] (star n rads 0 0 default-style)))
+                                              (map maths/pol-to-rec (map vector radii (maths/clock-angles total-points)))))))))
+  ([n inner-radius outer-radius cx cy] (star n inner-radius outer-radius cx cy default-style))
+  ([n inner-radius outer-radius style] (star n inner-radius outer-radius 0 0 style))
+  ([n inner-radius outer-radius] (star n inner-radius outer-radius 0 0 default-style)))
 
 (defn find-cycle
   "Find a single cycle starting from start-idx, returning [cycle-points new-visited]"
